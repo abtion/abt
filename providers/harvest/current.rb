@@ -1,0 +1,84 @@
+# frozen_string_literal: true
+
+module Abt
+  module Providers
+    class Harvest
+      class Current
+        attr_reader :path
+
+        def initialize(path = '')
+          @path = path
+        end
+
+        def call
+          ensure_current_is_valid!
+
+          Abt::GitConfig.local('abt.harvest.projectId', project_id)
+          Abt::GitConfig.local('abt.harvest.taskId', task_id)
+
+          puts [
+            "harvest:#{project['id']}/#{task['id']}",
+            ' - ',
+            "#{project['name']} > #{task['name']}"
+          ].join('')
+        end
+
+        private
+
+        def project_id
+          @project_id ||= begin
+            id = path.split('/')[0].to_i
+            id = Abt::GitConfig.local('abt.harvest.projectId').to_i if id.zero?
+
+            id.zero? ? nil : id
+          end
+        end
+
+        def task_id
+          @task_id ||= begin
+            id = path.split('/')[1].to_i
+            id = Abt::GitConfig.local('abt.harvest.taskId').to_i if id.zero?
+
+            id.zero? ? nil : id
+          end
+        end
+
+        def ensure_current_is_valid!
+          if project_task_assignments.nil?
+            abort "Invalid project id: #{project_id}"
+          end
+
+          if project_task_assignment.nil?
+            abort "Task must belong to project: #{task_id}"
+          end
+        end
+
+        def project
+          project_task_assignment['project']
+        end
+
+        def task
+          project_task_assignment['task']
+        end
+
+        def project_task_assignment
+          @project_task_assignment ||= begin
+            project_task_assignments.find { |a| a['task']['id'] == task_id }
+          end
+        end
+
+        def project_task_assignments
+          @project_task_assignments ||= begin
+            harvest.get_paged("projects/#{project_id}/task_assignments", is_active: true)
+                                        rescue Abt::HttpError::HttpError
+                                          nil
+          end
+        end
+
+        def harvest
+          Abt::Harvest::Client
+        end
+      end
+    end
+  end
+end
