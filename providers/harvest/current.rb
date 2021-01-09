@@ -44,7 +44,7 @@ module Abt
 
         def project_task_assignment
           @project_task_assignment ||= begin
-            project_task_assignments.find { |a| a['task']['id'] == task_id }
+            project_task_assignments.find { |a| a['task']['id'].to_s == task_id }
           end
         end
 
