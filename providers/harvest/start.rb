@@ -8,7 +8,7 @@ module Abt
 
         def initialize(arg_str:, cli:)
           @arg_str = arg_str
-          @cli = arg_str
+          @cli = cli
         end
 
         def call
