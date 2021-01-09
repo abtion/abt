@@ -53,7 +53,7 @@ module Abt
         if new_value.empty?
           abort 'Empty value, aborting'
         else
-          git_config(local, key, value)
+          git_config(local, key, new_value)
         end
       end
     end
