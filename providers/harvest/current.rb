@@ -31,9 +31,7 @@ module Abt
             abort "Invalid project id: #{project_id}"
           end
 
-          if project_task_assignment.nil?
-            abort "Task must belong to project: #{task_id}"
-          end
+          abort "Invalid task id: #{task_id}" if project_task_assignment.nil?
         end
 
         def project
