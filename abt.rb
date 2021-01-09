@@ -9,13 +9,13 @@ module Abt
 
   module Providers; end
 
-  require_relative 'cli/cli.rb'
+  require_relative 'cli.rb'
 
   Dir.glob("#{ROOT}/lib/*.rb").sort.each do |file|
     require file
   end
 
-  Dir.glob("#{ROOT}/providers/*.rb").sort.each do |file|
+  Dir.glob("#{ROOT}/providers/**/*.rb").sort.each do |file|
     require file
   end
 end

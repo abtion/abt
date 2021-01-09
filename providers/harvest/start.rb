@@ -4,14 +4,15 @@ module Abt
   module Providers
     class Harvest
       class Start
-        attr_reader :path
+        attr_reader :arg_str, :cli
 
-        def initialize(path = '')
-          @path = path
+        def initialize(arg_str:, cli:)
+          @arg_str = arg_str
+          @cli = arg_str
         end
 
         def call
-          Current.new(path).call
+          Current.new(arg_str: arg_str, cli: cli).call
 
           body = Oj.dump({
                            project_id: Abt::GitConfig.local('abt.harvest.projectId'),

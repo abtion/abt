@@ -3,33 +3,30 @@
 module Abt
   module Providers
     class Harvest
-      COMMANDS = {}.freeze
+      class << self
+        def parse_arg_string(arg_string)
+          args = arg_string.to_s.split('/')
 
-      attr_reader :args
+          project_id = args[0].to_i
+          if project_id.zero?
+            project_id = Abt::GitConfig.local('abt.harvest.projectId').to_i
+          end
+          project_id = nil if project_id.zero?
 
-      def initialize(args)
-        @args = args
-      end
+          task_id = args[1].to_i
+          if task_id.zero?
+            task_id = Abt::GitConfig.local('abt.harvest.taskId').to_i
+          end
+          task_id = nil if project_id.zero?
 
-      def call
-        first_arg = args.shift
-        args.first.sub(/^harvest:/, '')
+          { project_id: project_id, task_id: task_id }
+        end
 
-        raise NotImplementedError if first_arg.nil?
-
-        process_command(first_arg, args)
-      end
-
-      def process_command(command, args)
-        inflector = Dry::Inflector.new
-
-        command_class_name = inflector.camelize(inflector.underscore(command))
-        command = self.class.const_get command_class_name
-        command.new(*args).call
-      end
-
-      Dir.glob("#{__dir__}/harvest/*.rb").sort.each do |file|
-        require file
+        def store_args(args)
+          Abt::GitConfig.local('abt.harvest.projectId', args[:project_id])
+          Abt::GitConfig.local('abt.harvest.taskId', args[:task_id])
+          true
+        end
       end
     end
   end

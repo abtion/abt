@@ -4,15 +4,13 @@ module Abt
   module Providers
     class Harvest
       class Tasks
-        attr_reader :path
+        attr_reader :project_id
 
-        def initialize(path = '')
-          @path = path
+        def initialize(arg_str:, cli:)
+          @project_id = Harvest.parse_arg_string(arg_str)[:project_id]
         end
 
         def call
-          Current.new(path).call
-
           project_task_assignments.each do |a|
             project = a['project']
             task = a['task']
@@ -33,10 +31,6 @@ module Abt
                                         rescue Abt::HttpError::HttpError
                                           nil
           end
-        end
-
-        def project_id
-          Abt::GitConfig.local('abt.harvest.projectId')
         end
 
         def harvest

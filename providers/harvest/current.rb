@@ -4,17 +4,18 @@ module Abt
   module Providers
     class Harvest
       class Current
-        attr_reader :path
+        attr_reader :args, :project_id, :task_id
 
-        def initialize(path = '')
-          @path = path
+        def initialize(arg_str:, cli:)
+          @args = Harvest.parse_arg_string(arg_str)
+          @project_id = @args[:project_id]
+          @task_id = @args[:task_id]
         end
 
         def call
           ensure_current_is_valid!
 
-          Abt::GitConfig.local('abt.harvest.projectId', project_id)
-          Abt::GitConfig.local('abt.harvest.taskId', task_id)
+          Harvest.store_args(args)
 
           puts [
             "harvest:#{project['id']}/#{task['id']}",
@@ -24,24 +25,6 @@ module Abt
         end
 
         private
-
-        def project_id
-          @project_id ||= begin
-            id = path.split('/')[0].to_i
-            id = Abt::GitConfig.local('abt.harvest.projectId').to_i if id.zero?
-
-            id.zero? ? nil : id
-          end
-        end
-
-        def task_id
-          @task_id ||= begin
-            id = path.split('/')[1].to_i
-            id = Abt::GitConfig.local('abt.harvest.taskId').to_i if id.zero?
-
-            id.zero? ? nil : id
-          end
-        end
 
         def ensure_current_is_valid!
           if project_task_assignments.nil?
