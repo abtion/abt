@@ -33,11 +33,15 @@ module Abt
         def external_link_data
           @external_link_data ||= begin
             lines = `#{$PROGRAM_NAME} harvest-link-time-entry-data #{cli.args.join(' ')}`.split("\n")
-            external_link_data = lines.first
 
-            return {} if external_link_data.nil?
+            return {} if lines.empty?
 
-            Oj.load(external_link_data)
+            # TODO: Make user choose which reference to use by printing the urls
+            if lines.length > 1
+              abort 'Multiple providers had harvest reference data, only one is supported at a time'
+            end
+
+            Oj.load(lines.first)
           end
         end
 
