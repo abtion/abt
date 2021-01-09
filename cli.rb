@@ -18,6 +18,32 @@ module Abt
       end
     end
 
+    def prompt(text, options)
+      puts "#{text}:"
+      options.each_with_index do |option, index|
+        puts "(#{index + 1}) #{option['name']}"
+      end
+
+      loop do
+        print "(1-#{options.length}, q: abort): "
+
+        input = STDIN.gets.strip
+        abort 'Aborted' if input == 'q'
+
+        option_number = input.to_i
+        if option_number <= 0 || option_number > options.length
+          abort 'Invalid selection'
+        end
+
+        option = options[option_number - 1]
+
+        puts "Selected: (#{option_number}) #{option['name']}"
+        return option
+      end
+    end
+
+    private
+
     def process_provider_command(provider, command, arg_str)
       inflector = Dry::Inflector.new
 
@@ -29,10 +55,6 @@ module Abt
 
       command = provider.const_get command_class_name
       command.new(arg_str: arg_str, cli: self).call
-    end
-
-    def process_global_command(_args)
-      raise NotImplementedError
     end
   end
 end
