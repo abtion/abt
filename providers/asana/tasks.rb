@@ -12,7 +12,7 @@ module Abt
         end
 
         def call
-          puts project['name']
+          puts project['name'] if cli.is_a_tty?
           tasks.each do |task|
             puts [
               "asana:#{project['gid']}/#{task['gid']}",
@@ -32,8 +32,15 @@ module Abt
 
         def tasks
           @tasks ||= begin
-            section = cli.prompt 'Which section?', sections
-            asana.get_paged('tasks', section: section['gid'])
+            # Prompt the user for a section, unless if the command is being piped
+            args = if cli.is_a_tty?
+                     section = cli.prompt 'Which section?', sections
+                     { section: section['gid'] }
+                   else
+                     { project: project['gid'] }
+                   end
+
+            asana.get_paged('tasks', args)
           end
         end
 
