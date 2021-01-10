@@ -15,8 +15,16 @@ module Abt
       abort('No command specified') if command.nil?
       abort('No provider arguments') if args.empty?
 
+      used_providers = []
       args.each do |provider_args|
         (provider, arg_str) = provider_args.split(':')
+
+        if used_providers.include?(provider)
+          warn "Dropping command for already used provider: #{provider_args}"
+          next
+        end
+        used_providers << provider
+
         process_provider_command(provider, command, arg_str)
       end
     end
