@@ -37,7 +37,7 @@ module Abt
         value
       end
 
-      def prompt_for_config(local, key, prompt_msg, remedy)
+      def prompt_for_config(local, key, prompt_msg, remedy) # rubocop:disable Metrics/MethodLength
         value = git_config(local, key)
 
         return value unless value == '' || value.nil?

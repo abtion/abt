@@ -18,15 +18,17 @@ module Abt
 
           Harvest.store_args(args)
 
-          cli.print_provider_command('harvest', "#{project['id']}/#{task['id']}", "#{project['name']} > #{task['name']}")
+          cli.print_provider_command(
+            'harvest',
+            "#{project['id']}/#{task['id']}",
+            "#{project['name']} > #{task['name']}"
+          )
         end
 
         private
 
         def ensure_current_is_valid!
-          if project_task_assignments.nil?
-            abort "Invalid project id: #{project_id}"
-          end
+          abort "Invalid project id: #{project_id}" if project_task_assignments.nil?
 
           abort "Invalid task id: #{task_id}" if project_task_assignment.nil?
         end

@@ -43,7 +43,11 @@ module Abt
 
         def connection
           @connection ||= Faraday.new(API_ENDPOINT) do |connection|
-            access_token = Abt::GitConfig.prompt_global('asana.accessToken', 'Please enter your personal asana access_token', '')
+            access_token = Abt::GitConfig.prompt_global(
+              'asana.accessToken',
+              'Please enter your personal asana access_token',
+              ''
+            )
             connection.headers['Authorization'] = "Bearer #{access_token}"
             connection.headers['Content-Type'] = 'application/json'
           end

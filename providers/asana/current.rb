@@ -27,9 +27,7 @@ module Abt
         def ensure_current_is_valid!
           abort "Invalid task gid: #{task_gid}" if task.nil?
 
-          if task['memberships'].any? { |m| m.dig('project', 'gid') == project_gid }
-            return
-          end
+          return if task['memberships'].any? { |m| m.dig('project', 'gid') == project_gid }
 
           abort "Invalid project gid: #{project_gid}"
         end

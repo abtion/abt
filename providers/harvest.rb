@@ -4,19 +4,15 @@ module Abt
   module Providers
     class Harvest
       class << self
-        def parse_arg_string(arg_string)
+        def parse_arg_string(arg_string) # rubocop:disable Metrics/AbcSize
           args = arg_string.to_s.split('/')
 
           project_id = args[0].to_s
-          if project_id.empty?
-            project_id = Abt::GitConfig.local('abt.harvest.projectId').to_s
-          end
+          project_id = Abt::GitConfig.local('abt.harvest.projectId').to_s if project_id.empty?
           project_id = nil if project_id.empty?
 
           task_id = args[1].to_s
-          if task_id.empty?
-            task_id = Abt::GitConfig.local('abt.harvest.taskId').to_s
-          end
+          task_id = Abt::GitConfig.local('abt.harvest.taskId').to_s if task_id.empty?
           task_id = nil if project_id.empty?
 
           { project_id: project_id, task_id: task_id }

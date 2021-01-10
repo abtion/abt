@@ -14,14 +14,8 @@ module Abt
         def call
           Current.new(arg_str: arg_str, cli: cli).call
 
-          body = Oj.dump({
-            project_id: Abt::GitConfig.local('abt.harvest.projectId'),
-            task_id: Abt::GitConfig.local('abt.harvest.taskId'),
-            user_id: Abt::GitConfig.global('harvest.userId'),
-            spent_date: Date.today.iso8601
-          }.merge(external_link_data), mode: :json)
+          create_time_entry
 
-          result = harvest.post('time_entries', body)
           puts 'Tracker successfully started'
         rescue Abt::HttpError::HttpError => e
           puts e
@@ -30,9 +24,20 @@ module Abt
 
         private
 
+        def create_time_entry
+          body = Oj.dump({
+            project_id: Abt::GitConfig.local('abt.harvest.projectId'),
+            task_id: Abt::GitConfig.local('abt.harvest.taskId'),
+            user_id: Abt::GitConfig.global('harvest.userId'),
+            spent_date: Date.today.iso8601
+          }.merge(external_link_data), mode: :json)
+          harvest.post('time_entries', body)
+        end
+
         def external_link_data
           @external_link_data ||= begin
-            lines = `#{$PROGRAM_NAME} harvest-link-time-entry-data #{cli.args.join(' ')}`.split("\n")
+            arg_strs = cli.args.join(' ')
+            lines = `#{$PROGRAM_NAME} harvest-link-time-entry-data #{arg_strs}`.split("\n")
 
             return {} if lines.empty?
 

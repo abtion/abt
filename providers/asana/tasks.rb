@@ -12,7 +12,7 @@ module Abt
         end
 
         def call
-          puts project['name'] if cli.is_a_tty?
+          puts project['name'] if cli.tty?
           tasks.each do |task|
             cli.print_provider_command('asana', "#{project['gid']}/#{task['gid']}", task['name'])
           end
@@ -29,7 +29,7 @@ module Abt
         def tasks
           @tasks ||= begin
             # Prompt the user for a section, unless if the command is being piped
-            args = if cli.is_a_tty?
+            args = if cli.tty?
                      section = cli.prompt 'Which section?', sections
                      { section: section['gid'] }
                    else

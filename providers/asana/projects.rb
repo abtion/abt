@@ -6,7 +6,7 @@ module Abt
       class Projects
         attr_reader :cli
 
-        def initialize(arg_str:, cli:)
+        def initialize(cli:, **)
           @cli = cli
         end
 

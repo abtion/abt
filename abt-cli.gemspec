@@ -11,4 +11,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'faraday'
   s.add_dependency 'oj'
   s.add_development_dependency 'bundler'
+  s.add_development_dependency 'rubocop'
 end

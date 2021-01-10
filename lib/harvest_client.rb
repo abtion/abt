@@ -44,10 +44,18 @@ module Abt
           end
         end
 
-        def connection
+        def connection # rubocop:disable Metrics/MethodLength
           @connection ||= Faraday.new(API_ENDPOINT) do |connection|
-            access_token = Abt::GitConfig.prompt_global('harvest.accessToken', 'Please enter your personal harvest access_token', '')
-            account_id = Abt::GitConfig.prompt_global('harvest.accountId', 'Please enter abtions harvest account id', '')
+            access_token = Abt::GitConfig.prompt_global(
+              'harvest.accessToken',
+              'Please enter your personal harvest access_token',
+              ''
+            )
+            account_id = Abt::GitConfig.prompt_global(
+              'harvest.accountId',
+              'Please enter abtions harvest account id',
+              ''
+            )
 
             connection.headers['Authorization'] = "Bearer #{access_token}"
             connection.headers['Harvest-Account-Id'] = account_id

@@ -16,7 +16,11 @@ module Abt
             project = a['project']
             task = a['task']
 
-            cli.print_provider_command('harvest', "#{project['id']}/#{task['id']}", "#{project['name']} > #{task['name']}")
+            cli.print_provider_command(
+              'harvest',
+              "#{project['id']}/#{task['id']}",
+              "#{project['name']} > #{task['name']}"
+            )
           end
         end
 

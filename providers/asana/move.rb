@@ -14,12 +14,8 @@ module Abt
         def call
           Current.new(arg_str: arg_str, cli: cli).call
 
-          section = cli.prompt 'Move asana task to?', sections
+          move_task
 
-          body = { data: { task: Abt::GitConfig.local('abt.asana.taskGid') } }
-
-          body_json = Oj.dump(body, mode: :json)
-          result = asana.post("sections/#{section['gid']}/addTask", body_json)
           puts "Asana task moved to #{section['name']}"
         rescue Abt::HttpError::HttpError => e
           puts e
@@ -27,6 +23,16 @@ module Abt
         end
 
         private
+
+        def move_task
+          body = { data: { task: Abt::GitConfig.local('abt.asana.taskGid') } }
+          body_json = Oj.dump(body, mode: :json)
+          asana.post("sections/#{section['gid']}/addTask", body_json)
+        end
+
+        def section
+          @section ||= cli.prompt 'Move asana task to?', sections
+        end
 
         def project_gid
           Abt::GitConfig.local('abt.asana.projectGid')

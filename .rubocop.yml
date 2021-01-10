@@ -1,0 +1,17 @@
+AllCops:
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  TargetRubyVersion: 2.6
+  Severity: error
+
+Bundler/DuplicatedGem:
+  Enabled: true
+
+Bundler/OrderedGems:
+  Enabled: true
+
+Layout/LineLength:
+  Max: 100
+
+Style/Documentation:
+  Enabled: false

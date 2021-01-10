@@ -6,13 +6,13 @@ module Abt
       class HarvestLinkTimeEntryData
         attr_reader :args, :project_gid, :task_gid
 
-        def initialize(arg_str:, cli:)
+        def initialize(arg_str:, **)
           @args = Asana.parse_arg_string(arg_str)
           @project_gid = @args[:project_gid]
           @task_gid = @args[:task_gid]
         end
 
-        def call
+        def call # rubocop:disable Metrics/MethodLength
           ensure_current_is_valid!
 
           body = {
@@ -34,9 +34,7 @@ module Abt
         def ensure_current_is_valid!
           abort "Invalid task gid: #{task_gid}" if task.nil?
 
-          if task['memberships'].any? { |m| m.dig('project', 'gid') == project_gid }
-            return
-          end
+          return if task['memberships'].any? { |m| m.dig('project', 'gid') == project_gid }
 
           abort "Invalid project gid: #{project_gid}"
         end

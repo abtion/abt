@@ -8,10 +8,10 @@ module Abt
       (@command, *@args) = argv
 
       @args += args_from_stdin unless STDIN.isatty # Add piped arguments
-      @is_a_tty = STDOUT.isatty ? true : false
+      @tty = STDOUT.isatty ? true : false
     end
 
-    def perform(command = @command, args = @args)
+    def perform(command = @command, args = @args) # rubocop:disable Metrics/MethodLength
       abort('No command specified') if command.nil?
       abort('No provider arguments') if args.empty?
 
@@ -29,7 +29,7 @@ module Abt
       end
     end
 
-    def prompt(text, options)
+    def prompt(text, options) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       puts "#{text}:"
       options.each_with_index do |option, index|
         puts "(#{index + 1}) #{option['name']}"
@@ -38,14 +38,12 @@ module Abt
       loop do
         print "(1-#{options.length}, q: abort): "
 
-        input = get_user_input.strip
+        input = read_user_input.strip
 
         abort 'Aborted' if input == 'q'
 
         option_number = input.to_i
-        if option_number <= 0 || option_number > options.length
-          abort 'Invalid selection'
-        end
+        abort 'Invalid selection' if option_number <= 0 || option_number > options.length
 
         option = options[option_number - 1]
 
@@ -54,8 +52,8 @@ module Abt
       end
     end
 
-    def is_a_tty?
-      @is_a_tty
+    def tty?
+      @tty
     end
 
     def print_provider_command(provider, arg_str, description)
@@ -64,10 +62,8 @@ module Abt
 
     private
 
-    def get_user_input
-      unless is_a_tty?
-        abort 'Cannot get user input when not running in a tty (did you pipe the call?)'
-      end
+    def read_user_input
+      abort 'Cannot get user input when not running in a tty (did you pipe the call?)' unless tty?
 
       open('/dev/tty', &:gets)
     end
