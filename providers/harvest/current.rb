@@ -4,12 +4,13 @@ module Abt
   module Providers
     class Harvest
       class Current
-        attr_reader :args, :project_id, :task_id
+        attr_reader :args, :project_id, :task_id, :cli
 
         def initialize(arg_str:, cli:)
           @args = Harvest.parse_arg_string(arg_str)
           @project_id = @args[:project_id]
           @task_id = @args[:task_id]
+          @cli = cli
         end
 
         def call
@@ -17,11 +18,7 @@ module Abt
 
           Harvest.store_args(args)
 
-          puts [
-            "harvest:#{project['id']}/#{task['id']}",
-            ' - ',
-            "#{project['name']} > #{task['name']}"
-          ].join('')
+          cli.print_provider_command('harvest', "#{project['id']}/#{task['id']}", "#{project['name']} > #{task['name']}")
         end
 
         private

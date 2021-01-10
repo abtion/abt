@@ -4,12 +4,13 @@ module Abt
   module Providers
     class Asana
       class Current
-        attr_reader :args, :project_gid, :task_gid
+        attr_reader :args, :project_gid, :task_gid, :cli
 
         def initialize(arg_str:, cli:)
           @args = Asana.parse_arg_string(arg_str)
           @project_gid = @args[:project_gid]
           @task_gid = @args[:task_gid]
+          @cli = cli
         end
 
         def call
@@ -17,11 +18,7 @@ module Abt
 
           Asana.store_args(args)
 
-          puts [
-            "asana:#{project_gid}/#{task['gid']}",
-            ' - ',
-            task['name']
-          ].join('')
+          cli.print_provider_command('asana', "#{project_gid}/#{task['gid']}", task['name'])
           puts task['permalink_url']
         end
 

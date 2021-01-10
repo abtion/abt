@@ -4,12 +4,16 @@ module Abt
   module Providers
     class Harvest
       class Projects
-        def initialize(arg_str:, cli:); end
+        attr_reader :cli
+
+        def initialize(arg_str:, cli:)
+          @cli = cli
+        end
 
         def call
-          puts(projects.map do |p|
-            "harvest:#{p['id']} - #{p['client']['name']} > #{p['name']}"
-          end)
+          projects.map do |p|
+            cli.print_provider_command('harvest', p['id'], "#{p['client']['name']} > #{p['name']}")
+          end
         end
 
         private

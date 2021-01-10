@@ -58,6 +58,10 @@ module Abt
       @is_a_tty
     end
 
+    def print_provider_command(provider, arg_str, description)
+      puts "#{provider}:#{arg_str} # #{description}"
+    end
+
     private
 
     def get_user_input
@@ -75,7 +79,7 @@ module Abt
 
       input.split("\n").map do |line|
         # Only include part before first space
-        line[/^([^ ]+)/]
+        line.split(' # ').first
       end
     end
 

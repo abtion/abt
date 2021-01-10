@@ -14,11 +14,7 @@ module Abt
         def call
           puts project['name'] if cli.is_a_tty?
           tasks.each do |task|
-            puts [
-              "asana:#{project['gid']}/#{task['gid']}",
-              ' - ',
-              task['name']
-            ].join('')
+            cli.print_provider_command('asana', "#{project['gid']}/#{task['gid']}", task['name'])
           end
         end
 

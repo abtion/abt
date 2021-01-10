@@ -4,12 +4,16 @@ module Abt
   module Providers
     class Asana
       class Projects
-        def initialize(arg_str:, cli:); end
+        attr_reader :cli
+
+        def initialize(arg_str:, cli:)
+          @cli = cli
+        end
 
         def call
-          puts(projects.map do |p|
-            "asana:#{p['gid']} - #{p['name']}"
-          end)
+          projects.map do |project|
+            cli.print_provider_command('asana', project['gid'], project['name'])
+          end
         end
 
         private
