@@ -1,3 +1,11 @@
+PATH
+  remote: .
+  specs:
+    abt-cli (0.0.1)
+      dry-inflector
+      faraday
+      oj
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -11,9 +19,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  dry-inflector
-  faraday
-  oj
+  abt-cli!
+  bundler
 
 BUNDLED WITH
    2.0.2
