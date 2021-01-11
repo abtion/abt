@@ -24,6 +24,7 @@ module Abt
       def git_config(local, key, value = nil)
         if value
           `git config --#{local ? 'local' : 'global'} --replace-all #{key.inspect} #{value.inspect}`
+          value
         else
           git_value = `git config --get #{key.inspect}`.strip
           git_value.empty? ? nil : git_value
