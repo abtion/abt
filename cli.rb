@@ -30,13 +30,13 @@ module Abt
     end
 
     def prompt(text, options) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-      puts "#{text}:"
+      warn "#{text}:"
       options.each_with_index do |option, index|
-        puts "(#{index + 1}) #{option['name']}"
+        warn "(#{index + 1}) #{option['name']}"
       end
 
       loop do
-        print "(1-#{options.length}, q: abort): "
+        STDERR.print "(1-#{options.length}, q: abort): "
 
         input = read_user_input.strip
 
@@ -47,7 +47,7 @@ module Abt
 
         option = options[option_number - 1]
 
-        puts "Selected: (#{option_number}) #{option['name']}"
+        warn "Selected: (#{option_number}) #{option['name']}"
         return option
       end
     end
@@ -63,8 +63,6 @@ module Abt
     private
 
     def read_user_input
-      abort 'Cannot get user input when not running in a tty (did you pipe the call?)' unless tty?
-
       open('/dev/tty', &:gets)
     end
 

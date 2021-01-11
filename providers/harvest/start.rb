@@ -16,9 +16,9 @@ module Abt
 
           create_time_entry
 
-          puts 'Tracker successfully started'
+          warn 'Tracker successfully started'
         rescue Abt::HttpError::HttpError => e
-          puts e
+          warn e
           abort 'Unable to start tracker'
         end
 

@@ -12,7 +12,7 @@ module Abt
         end
 
         def call
-          puts project['name'] if cli.tty?
+          warn project['name'] if cli.tty?
           tasks.each do |task|
             cli.print_provider_command('asana', "#{project['gid']}/#{task['gid']}", task['name'])
           end

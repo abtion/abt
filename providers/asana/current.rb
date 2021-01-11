@@ -19,7 +19,7 @@ module Abt
           Asana.store_args(args)
 
           cli.print_provider_command('asana', "#{project_gid}/#{task['gid']}", task['name'])
-          puts task['permalink_url']
+          warn task['permalink_url']
         end
 
         private

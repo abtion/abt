@@ -31,9 +31,9 @@ module Abt
       end
 
       def prompt(msg)
-        print "#{msg} > "
-        value = STDIN.gets.strip
-        puts
+        STDERR.print "#{msg} > "
+        value = read_user_input.strip
+        warn
         value
       end
 
@@ -42,7 +42,7 @@ module Abt
 
         return value unless value == '' || value.nil?
 
-        puts <<~TXT
+        warn <<~TXT
           Missing git config "#{key}":
           To find this value:
           #{remedy}
@@ -55,6 +55,10 @@ module Abt
         else
           git_config(local, key, new_value)
         end
+      end
+
+      def read_user_input
+        open('/dev/tty', &:gets)
       end
     end
   end

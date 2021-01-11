@@ -16,9 +16,9 @@ module Abt
 
           move_task
 
-          puts "Asana task moved to #{section['name']}"
+          warn "Asana task moved to #{section['name']}"
         rescue Abt::HttpError::HttpError => e
-          puts e
+          warn e
           abort 'Unable to move asana task'
         end
 
