@@ -23,7 +23,7 @@ module Abt
             records += result['data']
             break if result['next_page'].nil?
 
-            path = result['next_page']['path'][1...]
+            path = result['next_page']['path'][1..-1]
           end
 
           records
