@@ -7,4 +7,8 @@ require 'oj'
 
 require_relative '../abt.rb'
 
-Abt::Cli.new(ARGV).perform
+begin
+  Abt::Cli.new(ARGV).perform
+rescue Interrupt
+  abort 'Aborted'
+end
