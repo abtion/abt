@@ -31,7 +31,7 @@ module Abt
         end
 
         def section
-          @section ||= cli.prompt 'Move asana task to?', sections
+          @section ||= cli.prompt_choice 'Move asana task to?', sections
         end
 
         def project_gid

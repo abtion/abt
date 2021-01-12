@@ -3,13 +3,7 @@
 module Abt
   module Providers
     class Harvest
-      class Projects
-        attr_reader :cli
-
-        def initialize(cli:, **)
-          @cli = cli
-        end
-
+      class Projects < BaseCommand
         def call
           projects.map do |p|
             cli.print_provider_command('harvest', p['id'], "#{p['client']['name']} > #{p['name']}")
@@ -19,11 +13,7 @@ module Abt
         private
 
         def projects
-          @projects ||= harvest.get_paged('projects', is_active: true)
-        end
-
-        def harvest
-          Abt::Harvest::Client
+          @projects ||= Harvest.client.get_paged('projects', is_active: true)
         end
       end
     end

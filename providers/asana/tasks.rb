@@ -30,7 +30,7 @@ module Abt
           @tasks ||= begin
             # Prompt the user for a section, unless if the command is being piped
             args = if cli.tty?
-                     section = cli.prompt 'Which section?', sections
+                     section = cli.prompt_choice 'Which section?', sections
                      { section: section['gid'] }
                    else
                      { project: project['gid'] }

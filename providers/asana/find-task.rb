@@ -13,7 +13,7 @@ module Abt
 
         def call
           warn project['name']
-          task = cli.prompt 'Select a task', tasks
+          task = cli.prompt_choice 'Select a task', tasks
           cli.print_provider_command('asana', "#{project_gid}/#{task['gid']}", task['name'])
         end
 
@@ -27,7 +27,7 @@ module Abt
 
         def tasks
           @tasks ||= begin
-            section = cli.prompt 'Which section?', sections
+            section = cli.prompt_choice 'Which section?', sections
             asana.get_paged('tasks', section: section['gid'])
           end
         end

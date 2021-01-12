@@ -11,7 +11,7 @@ module Abt
       @tty = STDOUT.isatty ? true : false
     end
 
-    def perform(command = @command, args = @args) # rubocop:disable Metrics/MethodLength
+    def perform(command = @command, args = @args)
       abort('No command specified') if command.nil?
       abort('No provider arguments') if args.empty?
 
@@ -29,18 +29,29 @@ module Abt
       end
     end
 
-    def prompt(text, options) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    def prompt(question)
+      STDERR.print "#{question}: "
+      read_user_input.strip
+    end
+
+    def prompt_choice(text, options, allow_back_option = false)
+      if options.one?
+        warn "Selected: #{options.first['name']}"
+        return options.first
+      end
+
       warn "#{text}:"
+
       options.each_with_index do |option, index|
         warn "(#{index + 1}) #{option['name']}"
       end
 
       loop do
-        STDERR.print "(1-#{options.length}, q: abort): "
+        STDERR.print "(1-#{options.length}#{allow_back_option ? ', q: back' : ''}): "
 
         input = read_user_input.strip
 
-        abort 'Aborted' if input == 'q'
+        return nil if allow_back_option && input == 'q'
 
         option_number = input.to_i
         abort 'Invalid selection' if option_number <= 0 || option_number > options.length

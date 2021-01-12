@@ -19,7 +19,19 @@ module Abt
         prompt_for_config(false, *args)
       end
 
+      def unset_local(key)
+        unset(true, key)
+      end
+
+      def unset_global(key)
+        unset(false, key)
+      end
+
       private
+
+      def unset(local, key)
+        `git config --#{local ? 'local' : 'global'} --unset #{key.inspect}`
+      end
 
       def git_config(local, key, value = nil)
         if value
@@ -38,7 +50,7 @@ module Abt
         value
       end
 
-      def prompt_for_config(local, key, prompt_msg, remedy) # rubocop:disable Metrics/MethodLength
+      def prompt_for_config(local, key, prompt_msg, remedy = '') # rubocop:disable Metrics/MethodLength
         value = git_config(local, key)
 
         return value unless value == '' || value.nil?

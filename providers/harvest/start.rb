@@ -3,16 +3,9 @@
 module Abt
   module Providers
     class Harvest
-      class Start
-        attr_reader :arg_str, :cli
-
-        def initialize(arg_str:, cli:)
-          @arg_str = arg_str
-          @cli = cli
-        end
-
+      class Start < BaseCommand
         def call
-          Current.new(arg_str: arg_str, cli: cli).call
+          Set.new(arg_str: arg_str, cli: cli).call unless arg_str.nil?
 
           create_time_entry
 
@@ -28,10 +21,10 @@ module Abt
           body = Oj.dump({
             project_id: Abt::GitConfig.local('abt.harvest.projectId'),
             task_id: Abt::GitConfig.local('abt.harvest.taskId'),
-            user_id: Abt::GitConfig.global('harvest.userId'),
+            user_id: Harvest.user_id,
             spent_date: Date.today.iso8601
           }.merge(external_link_data), mode: :json)
-          harvest.post('time_entries', body)
+          Harvest.client.post('time_entries', body)
         end
 
         def external_link_data
@@ -48,10 +41,6 @@ module Abt
 
             Oj.load(lines.first)
           end
-        end
-
-        def harvest
-          Abt::Harvest::Client
         end
       end
     end
