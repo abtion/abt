@@ -92,7 +92,9 @@ module Abt
 
       return unless provider_class.const_defined? command_class_name
 
-      warn "===== #{command} #{provider}#{arg_str} =====".upcase if STDOUT.isatty
+      if STDOUT.isatty
+        warn "===== #{command} #{provider}#{arg_str.nil? ? '' : ":#{arg_str}"} =====".upcase
+      end
 
       command = provider_class.const_get command_class_name
       command.new(arg_str: arg_str, cli: self).call
