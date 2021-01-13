@@ -77,7 +77,8 @@ module Abt
     private
 
     def print_help
-      abort help_text
+      puts help_text
+      exit
     end
 
     def help_text
