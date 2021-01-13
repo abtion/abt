@@ -4,6 +4,14 @@ module Abt
   module Providers
     class Harvest
       class Init < BaseCommand
+        def self.command
+          'init harvest'
+        end
+
+        def self.description
+          'Pick Harvest project for current git repository'
+        end
+
         def call
           warn 'Loading projects'
           projects

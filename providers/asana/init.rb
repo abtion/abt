@@ -4,6 +4,14 @@ module Abt
   module Providers
     class Asana
       class Init < BaseCommand
+        def self.command
+          'init asana'
+        end
+
+        def self.description
+          'Pick Asana project for current git repository'
+        end
+
         def call
           warn 'Loading projects'
           projects

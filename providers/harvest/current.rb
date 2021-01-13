@@ -4,6 +4,14 @@ module Abt
   module Providers
     class Harvest
       class Current < BaseCommand
+        def self.command
+          'current harvest[:<project-id>[/<task-id>]]'
+        end
+
+        def self.description
+          'Get or set project and or task for current git repository'
+        end
+
         def call
           if arg_str.nil?
             show_current_configuration

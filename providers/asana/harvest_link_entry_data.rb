@@ -3,7 +3,15 @@
 module Abt
   module Providers
     class Asana
-      class HarvestLinkTimeEntryData < BaseCommand
+      class HarvestTimeEntryData < BaseCommand
+        def self.command
+          'harvest-time-entry-data asana[:<project-gid>/<task-gid>]'
+        end
+
+        def self.description
+          'Print Harvest time entry data for Asana task as json. Used by harvest start script.'
+        end
+
         def call # rubocop:disable Metrics/MethodLength
           ensure_current_is_valid!
 

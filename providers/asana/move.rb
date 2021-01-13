@@ -4,6 +4,14 @@ module Abt
   module Providers
     class Asana
       class Move < BaseCommand
+        def self.command
+          'move asana[:<project-gid>/<task-gid>]'
+        end
+
+        def self.description
+          'Move current or specified task to another section (column)'
+        end
+
         def call
           cli.print_provider_command('asana', "#{project_gid}/#{task['gid']}", task['name'])
 

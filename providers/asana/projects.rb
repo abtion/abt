@@ -4,6 +4,14 @@ module Abt
   module Providers
     class Asana
       class Projects < BaseCommand
+        def self.command
+          'projects asana'
+        end
+
+        def self.description
+          'List all available projects - E.g. for grepping and selecting `| grep -i <name> | abt current`'
+        end
+
         def call
           projects.map do |project|
             cli.print_provider_command('asana', project['gid'], project['name'])

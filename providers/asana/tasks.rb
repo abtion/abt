@@ -4,6 +4,14 @@ module Abt
   module Providers
     class Asana
       class Tasks < BaseCommand
+        def self.command
+          'tasks asana'
+        end
+
+        def self.description
+          'List available tasks on project - E.g. for grepping and selecting `| grep -i <name> | abt current`'
+        end
+
         def call
           tasks.each do |task|
             cli.print_provider_command('asana', "#{project['gid']}/#{task['gid']}", task['name'])

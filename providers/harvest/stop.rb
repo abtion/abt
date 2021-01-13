@@ -4,6 +4,14 @@ module Abt
   module Providers
     class Harvest
       class Stop < BaseCommand
+        def self.command
+          'stop harvest'
+        end
+
+        def self.description
+          'Stop running harvest tracker'
+        end
+
         def call
           abort 'No running time entry' if time_entry.nil?
 

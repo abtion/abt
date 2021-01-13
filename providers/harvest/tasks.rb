@@ -4,6 +4,14 @@ module Abt
   module Providers
     class Harvest
       class Tasks < BaseCommand
+        def self.command
+          'tasks harvest'
+        end
+
+        def self.description
+          'List available tasks on project - E.g. for grepping and selecting `| grep -i <name> | abt current`'
+        end
+
         def call
           project_task_assignments.each do |a|
             project = a['project']

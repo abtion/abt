@@ -4,8 +4,18 @@ module Abt
   module Providers
     class Harvest
       class Start < BaseCommand
+        def self.command
+          'start harvest[:<project-id>/<task-id>]'
+        end
+
+        def self.description
+          'Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana`'
+        end
+
         def call
           Current.new(arg_str: arg_str, cli: cli).call unless arg_str.nil?
+
+          abort('No task selected') if task_id.nil?
 
           create_time_entry
 
@@ -30,7 +40,7 @@ module Abt
         def external_link_data
           @external_link_data ||= begin
             arg_strs = cli.args.join(' ')
-            lines = `#{$PROGRAM_NAME} harvest-link-time-entry-data #{arg_strs}`.split("\n")
+            lines = `#{$PROGRAM_NAME} harvest-time-entry-data #{arg_strs}`.split("\n")
 
             return {} if lines.empty?
 

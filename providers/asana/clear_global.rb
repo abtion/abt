@@ -4,6 +4,14 @@ module Abt
   module Providers
     class Asana
       class ClearGlobal
+        def self.command
+          'clear-global asana'
+        end
+
+        def self.description
+          'Clear all global configuration'
+        end
+
         def initialize(**); end
 
         def call

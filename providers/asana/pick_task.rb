@@ -4,6 +4,14 @@ module Abt
   module Providers
     class Asana
       class PickTask < BaseCommand
+        def self.command
+          'pick-task asana[:<project-gid>]'
+        end
+
+        def self.description
+          'Pick task for current git repository'
+        end
+
         def call
           warn project['name']
           task = cli.prompt_choice 'Select a task', tasks

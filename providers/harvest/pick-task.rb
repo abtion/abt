@@ -4,6 +4,14 @@ module Abt
   module Providers
     class Harvest
       class PickTask < BaseCommand
+        def self.command
+          'pick-task harvest[:<project-id>]'
+        end
+
+        def self.description
+          'Pick task for current git repository'
+        end
+
         def call
           warn project['name']
           task = cli.prompt_choice 'Select a task', tasks
