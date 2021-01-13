@@ -19,7 +19,7 @@ module Abt
         end
 
         def tasks
-          @tasks ||= asana.get_paged('tasks', project: project['gid'])
+          @tasks ||= Asana.client.get_paged('tasks', project: project['gid'])
         end
       end
     end
