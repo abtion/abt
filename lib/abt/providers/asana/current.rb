@@ -27,9 +27,9 @@ module Abt
           if project_gid.nil?
             warn 'No project selected'
           elsif task_gid.nil?
-            cli.print_provider_command('asana', project['gid'], project['name'])
+            print_project(project)
           else
-            cli.print_provider_command('asana', "#{project_gid}/#{task['gid']}", task['name'])
+            print_task(project, task)
           end
         end
 
@@ -38,12 +38,13 @@ module Abt
           remember_project_gid(project_gid)
 
           if task_gid.nil?
-            cli.print_provider_command('asana', project['gid'], project['name'])
+            print_project(project)
+            remember_task_gid(nil)
           else
             ensure_task_is_valid!
             remember_task_gid(task_gid)
 
-            cli.print_provider_command('asana', "#{project_gid}/#{task['gid']}", task['name'])
+            print_task(project, task)
           end
         end
 

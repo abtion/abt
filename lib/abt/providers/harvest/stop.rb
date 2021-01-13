@@ -17,21 +17,13 @@ module Abt
 
           Harvest.client.patch("time_entries/#{time_entry['id']}/stop")
           warn 'Harvest time entry stopped'
-          print_time_entry
+          print_task(project, task)
         rescue Abt::HttpError::HttpError => e
           warn e
           abort 'Unable to stop time entry'
         end
 
         private
-
-        def print_time_entry
-          cli.print_provider_command(
-            'harvest',
-            "#{project['id']}/#{task['id']}",
-            "#{project['name']} > #{task['name']}"
-          )
-        end
 
         def project
           time_entry['project']

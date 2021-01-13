@@ -19,6 +19,14 @@ module Abt
 
         private
 
+        def print_project(project)
+          cli.print_provider_command('asana', project['gid'], project['name'])
+        end
+
+        def print_task(project, task)
+          cli.print_provider_command('asana', "#{project['gid']}/#{task['gid']}", task['name'])
+        end
+
         def use_current_args
           @project_gid = Abt::GitConfig.local('abt.asana.projectGid').to_s
           @project_gid = nil if project_gid.empty?

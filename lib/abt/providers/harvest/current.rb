@@ -27,17 +27,9 @@ module Abt
           if project_id.nil?
             warn 'No project selected'
           elsif task_id.nil?
-            cli.print_provider_command(
-              'harvest',
-              project['id'].to_s,
-              "#{project['client']['name']} > #{project['name']}"
-            )
+            print_project(project)
           else
-            cli.print_provider_command(
-              'harvest',
-              "#{project['id']}/#{task['id']}",
-              "#{project['name']} > #{task['name']}"
-            )
+            print_task(project, task)
           end
         end
 
@@ -46,20 +38,13 @@ module Abt
           remember_project_id(project_id)
 
           if task_id.nil?
-            cli.print_provider_command(
-              'harvest',
-              project['id'].to_s,
-              "#{project['client']['name']} > #{project['name']}"
-            )
+            print_project(project)
+            remember_task_id(nil)
           else
             ensure_task_is_valid!
             remember_task_id(task_id)
 
-            cli.print_provider_command(
-              'harvest',
-              "#{project['id']}/#{task['id']}",
-              "#{project['name']} > #{task['name']}"
-            )
+            print_task(project, task)
           end
         end
 

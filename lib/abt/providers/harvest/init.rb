@@ -14,9 +14,20 @@ module Abt
 
         def call
           warn 'Loading projects'
-          projects
 
-          project = loop do
+          projects # Load projects up front to make it obvious that searches are instant
+          project = find_search_result
+
+          remember_project_id(project['id'])
+          remember_task_id(nil)
+
+          print_project(project)
+        end
+
+        private
+
+        def find_search_result
+          loop do
             matches = matches_for_string cli.prompt('Enter search')
             if matches.empty?
               warn 'No matches'
@@ -27,14 +38,7 @@ module Abt
             choice = cli.prompt_choice 'Select a project', matches[0...10], true
             break choice unless choice.nil?
           end
-
-          remember_project_id(project['id'])
-          remember_task_id(nil)
-
-          cli.print_provider_command('harvest', project['id'], project['name'])
         end
-
-        private
 
         def matches_for_string(string)
           search_string = sanitize_string(string)

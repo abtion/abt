@@ -4,7 +4,6 @@ Dir.glob("#{File.expand_path(__dir__)}/harvest/*.rb").sort.each do |file|
   require file
 end
 
-
 module Abt
   module Providers
     class Harvest

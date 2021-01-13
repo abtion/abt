@@ -19,7 +19,7 @@ module Abt
           remember_project_id(project_id) # We might have gotten the project ID as an argument
           remember_task_id(task['id'])
 
-          cli.print_provider_command('harvest', "#{project['id']}/#{task['id']}", "#{project['name']} > #{task['name']}")
+          print_task(project, task)
         end
 
         private

@@ -14,9 +14,20 @@ module Abt
 
         def call
           warn 'Loading projects'
-          projects
 
-          project = loop do
+          projects # Load projects up front to make it obvious that searches are instant
+          project = find_search_result
+
+          remember_project_gid(project['gid'])
+          remember_task_gid(nil)
+
+          print_project(project)
+        end
+
+        private
+
+        def find_search_result
+          loop do
             matches = matches_for_string cli.prompt('Enter search')
             if matches.empty?
               warn 'No matches'
@@ -27,14 +38,7 @@ module Abt
             choice = cli.prompt_choice 'Select a project', matches[0...10], true
             break choice unless choice.nil?
           end
-
-          remember_project_gid(project['gid'])
-          remember_task_gid(nil)
-
-          cli.print_provider_command('asana', project['gid'], project['name'])
         end
-
-        private
 
         def matches_for_string(string)
           search_string = sanitize_string(string)
@@ -49,7 +53,8 @@ module Abt
         end
 
         def projects
-          @projects ||= Asana.client.get_paged('projects', workspace: Asana.workspace_gid, archived: false)
+          @projects ||=
+            Asana.client.get_paged('projects', workspace: Asana.workspace_gid, archived: false)
         end
       end
     end

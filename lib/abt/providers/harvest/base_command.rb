@@ -19,6 +19,22 @@ module Abt
 
         private
 
+        def print_project(project)
+          cli.print_provider_command(
+            'harvest',
+            project['id'],
+            "#{project['client']['name']} > #{project['name']}"
+          )
+        end
+
+        def print_task(project, task)
+          cli.print_provider_command(
+            'harvest',
+            "#{project['id']}/#{task['id']}",
+            "#{project['name']} > #{task['name']}"
+          )
+        end
+
         def use_current_args
           @project_id = Abt::GitConfig.local('abt.harvest.projectId').to_s
           @project_id = nil if project_id.empty?

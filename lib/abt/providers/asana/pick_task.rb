@@ -19,15 +19,13 @@ module Abt
           remember_project_gid(project_gid) # We might have gotten the project ID as an argument
           remember_task_gid(task['gid'])
 
-          cli.print_provider_command('asana', "#{project_gid}/#{task['gid']}", task['name'])
+          print_task(project, task)
         end
 
         private
 
         def project
-          @project ||= begin
-            Asana.client.get("projects/#{project_gid}")
-          end
+          @project ||= Asana.client.get("projects/#{project_gid}")
         end
 
         def tasks

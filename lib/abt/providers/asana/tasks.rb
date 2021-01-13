@@ -9,12 +9,12 @@ module Abt
         end
 
         def self.description
-          'List available tasks on project - E.g. for grepping and selecting `| grep -i <name> | abt current`'
+          'List available tasks on project - E.g. for grepping and selecting `| grep -i <name> | abt current`' # rubocop:disable Metrics/LineLength
         end
 
         def call
           tasks.each do |task|
-            cli.print_provider_command('asana', "#{project['gid']}/#{task['gid']}", task['name'])
+            print_task(project, task)
           end
         end
 

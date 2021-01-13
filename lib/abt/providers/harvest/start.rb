@@ -9,7 +9,7 @@ module Abt
         end
 
         def self.description
-          'Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana`'
+          'Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana`' # rubocop:disable Layout/LineLength
         end
 
         def call

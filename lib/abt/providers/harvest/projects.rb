@@ -9,12 +9,12 @@ module Abt
         end
 
         def self.description
-          'List all available projects - E.g. for grepping and selecting `| grep -i <name> | abt current`'
+          'List all available projects - E.g. for grepping and selecting `| grep -i <name> | abt current`' # rubocop:disable Layout/LineLength
         end
 
         def call
-          projects.map do |p|
-            cli.print_provider_command('harvest', p['id'], "#{p['client']['name']} > #{p['name']}")
+          projects.map do |project|
+            print_project(project)
           end
         end
 

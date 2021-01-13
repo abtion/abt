@@ -9,7 +9,7 @@ module Abt
         end
 
         def self.description
-          'List available tasks on project - E.g. for grepping and selecting `| grep -i <name> | abt current`'
+          'List available tasks on project - E.g. for grepping and selecting `| grep -i <name> | abt current`' # rubocop:disable Layout/LineLength
         end
 
         def call
@@ -17,11 +17,7 @@ module Abt
             project = a['project']
             task = a['task']
 
-            cli.print_provider_command(
-              'harvest',
-              "#{project['id']}/#{task['id']}",
-              "#{project['name']} > #{task['name']}"
-            )
+            print_task(project, task)
           end
         end
 

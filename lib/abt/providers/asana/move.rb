@@ -13,7 +13,7 @@ module Abt
         end
 
         def call
-          cli.print_provider_command('asana', "#{project_gid}/#{task['gid']}", task['name'])
+          print_task(project, task)
 
           move_task
 
@@ -37,6 +37,10 @@ module Abt
 
         def section
           @section ||= cli.prompt_choice 'Move asana task to?', sections
+        end
+
+        def project
+          @project ||= Asana.client.get("projects/#{project_gid}")
         end
 
         def sections
