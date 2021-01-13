@@ -42,6 +42,9 @@ module Abt
       when 'help-md'
         puts(Abt::Help::Markdown.content)
         exit
+      when '--version', '-v', 'version'
+        puts(Abt::VERSION)
+        exit
       end
     end
 
