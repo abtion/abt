@@ -5,7 +5,7 @@ This readme was generated with `abt help-md > README.md`
 `abt <command> [<provider:arguments>...]`
 
 Multiple providers and arguments can be passed, e.g.:
-- `abt init asana harvest`: Build a boat
+- `abt init asana harvest`
 - `abt pick-task asana harvest`
 - `abt start asana harvest`
 - `abt clear asana harvest`
