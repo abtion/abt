@@ -7,7 +7,6 @@ end
 module Abt
   class Cli
     include Dialogs
-    include Help
 
     attr_reader :command, :args
 
@@ -17,23 +16,12 @@ module Abt
       @args += args_from_stdin unless STDIN.isatty # Add piped arguments
     end
 
-    def perform(command = @command, args = @args)
+    def perform(command: @command, args: @args)
       handle_global_commands!
 
       abort('No provider arguments') if args.empty?
 
-      used_providers = []
-      args.each do |provider_args|
-        (provider, arg_str) = provider_args.split(':')
-
-        if used_providers.include?(provider)
-          warn "Dropping command for already used provider: #{provider_args}"
-          next
-        end
-        used_providers << provider
-
-        process_provider_command(provider, command, arg_str)
-      end
+      process_providers(command: command, args: args)
     end
 
     def print_provider_command(provider, arg_str, description)
@@ -42,18 +30,17 @@ module Abt
 
     private
 
-    def handle_global_commands!
+    def handle_global_commands! # rubocop:disable Metrics/MethodLength
       case command
       when nil
-        warn('No command specified')
-        warn ''
-        puts help_text
+        warn("No command specified\n\n")
+        puts(Abt::Help::Cli.content)
         exit
       when '--help', '-h', 'help', 'commands'
-        puts help_text
+        puts(Abt::Help::Cli.content)
         exit
       when 'help-md'
-        puts help_md
+        puts(Abt::Help::Markdown.content)
         exit
       end
     end
@@ -68,21 +55,46 @@ module Abt
       end
     end
 
+    def process_providers(command:, args:)
+      used_providers = []
+      args.each do |provider_args|
+        (provider, arg_str) = provider_args.split(':')
+
+        if used_providers.include?(provider)
+          warn "Dropping command for already used provider: #{provider_args}"
+          next
+        end
+
+        used_providers << provider if process_provider_command(provider, command, arg_str)
+      end
+
+      warn 'No matching providers found for command' if used_providers.empty?
+    end
+
     def process_provider_command(provider, command, arg_str)
-      inflector = Dry::Inflector.new
+      command_class = class_for_provider_and_command(provider, command)
 
-      provider_class_name = inflector.camelize(inflector.underscore(provider))
-      command_class_name = inflector.camelize(inflector.underscore(command))
-      provider_class = Abt::Providers.const_get provider_class_name
-
-      return unless provider_class.const_defined? command_class_name
+      return false unless command_class
 
       if STDOUT.isatty
         warn "===== #{command} #{provider}#{arg_str.nil? ? '' : ":#{arg_str}"} =====".upcase
       end
 
-      command = provider_class.const_get command_class_name
-      command.new(arg_str: arg_str, cli: self).call
+      command_class.new(arg_str: arg_str, cli: self).call
+      true
+    end
+
+    def class_for_provider_and_command(provider, command)
+      inflector = Dry::Inflector.new
+      provider_class_name = inflector.camelize(inflector.underscore(provider))
+
+      return unless Abt::Providers.const_defined? provider_class_name
+
+      provider_class = Abt::Providers.const_get provider_class_name
+      command_class_name = inflector.camelize(inflector.underscore(command))
+      return unless provider_class.const_defined? command_class_name
+
+      provider_class.const_get command_class_name
     end
   end
 end

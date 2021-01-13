@@ -16,19 +16,25 @@ module Abt
 
         warn "#{text}:"
 
+        print_options(options)
+        select_options(options, allow_back_option)
+      end
+
+      private
+
+      def print_options(options)
         options.each_with_index do |option, index|
           warn "(#{index + 1}) #{option['name']}"
         end
+      end
 
-        loop do
-          STDERR.print "(1-#{options.length}#{allow_back_option ? ', q: back' : ''}): "
+      def select_options(options, allow_back_option)
+        while (number = read_option_number(options.length, allow_back_option))
+          if number.nil?
+            return nil if allow_back_option
 
-          input = read_user_input.strip
-
-          return nil if allow_back_option && input == 'q'
-
-          option_number = input.to_i
-          abort 'Invalid selection' if option_number <= 0 || option_number > options.length
+            abort
+          end
 
           option = options[option_number - 1]
 
@@ -37,10 +43,24 @@ module Abt
         end
       end
 
-      private
+      def read_option_number(options_length, allow_back_option)
+        STDERR.print "(1-#{options_length}#{allow_back_option ? ', q: back' : ''}): "
+
+        input = read_user_input
+
+        return nil if allow_back_option && input == 'q'
+
+        option_number = input.to_i
+        if option_number <= 0 || option_number > options_length
+          warn 'Invalid selection'
+          return nil
+        end
+
+        option_number
+      end
 
       def read_user_input
-        open('/dev/tty', &:gets)
+        open('/dev/tty', &:gets).strip
       end
     end
   end
