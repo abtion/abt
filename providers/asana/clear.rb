@@ -3,10 +3,12 @@
 module Abt
   module Providers
     class Asana
-      class Start < BaseCommand
+      class Clear
+        def initialize(**); end
 
         def call
-          Move.new(arg_str: arg_str, cli: cli).call
+          warn 'Clearing Asana project configuration'
+          Asana.clear
         end
       end
     end

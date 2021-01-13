@@ -3,16 +3,9 @@
 module Abt
   module Providers
     class Asana
-      class Move
-        attr_reader :arg_str, :cli
-
-        def initialize(arg_str:, cli:)
-          @arg_str = arg_str
-          @cli = cli
-        end
-
+      class Move < BaseCommand
         def call
-          Current.new(arg_str: arg_str, cli: cli).call
+          cli.print_provider_command('asana', "#{project_gid}/#{task['gid']}", task['name'])
 
           move_task
 
@@ -24,28 +17,24 @@ module Abt
 
         private
 
+        def task
+          @task ||= Asana.client.get("tasks/#{task_gid}")
+        end
+
         def move_task
-          body = { data: { task: Abt::GitConfig.local('abt.asana.taskGid') } }
+          body = { data: { task: task_gid } }
           body_json = Oj.dump(body, mode: :json)
-          asana.post("sections/#{section['gid']}/addTask", body_json)
+          Asana.client.post("sections/#{section['gid']}/addTask", body_json)
         end
 
         def section
           @section ||= cli.prompt_choice 'Move asana task to?', sections
         end
 
-        def project_gid
-          Abt::GitConfig.local('abt.asana.projectGid')
-        end
-
         def sections
-          asana.get_paged("projects/#{project_gid}/sections")
+          Asana.client.get_paged("projects/#{project_gid}/sections")
         rescue Abt::HttpError::HttpError
           []
-        end
-
-        def asana
-          Abt::Asana::Client
         end
       end
     end

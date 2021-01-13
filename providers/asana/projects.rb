@@ -3,13 +3,7 @@
 module Abt
   module Providers
     class Asana
-      class Projects
-        attr_reader :cli
-
-        def initialize(cli:, **)
-          @cli = cli
-        end
-
+      class Projects < BaseCommand
         def call
           projects.map do |project|
             cli.print_provider_command('asana', project['gid'], project['name'])
@@ -19,11 +13,7 @@ module Abt
         private
 
         def projects
-          @projects ||= asana.get_paged('projects', workspace: Asana.workspace_gid, archived: false)
-        end
-
-        def asana
-          Abt::Asana::Client
+          @projects ||= Asana.client.get_paged('projects', workspace: Asana.workspace_gid, archived: false)
         end
       end
     end

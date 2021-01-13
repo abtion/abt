@@ -3,15 +3,7 @@
 module Abt
   module Providers
     class Asana
-      class HarvestLinkTimeEntryData
-        attr_reader :args, :project_gid, :task_gid
-
-        def initialize(arg_str:, **)
-          @args = Asana.parse_arg_string(arg_str)
-          @project_gid = @args[:project_gid]
-          @task_gid = @args[:task_gid]
-        end
-
+      class HarvestLinkTimeEntryData < BaseCommand
         def call # rubocop:disable Metrics/MethodLength
           ensure_current_is_valid!
 
@@ -40,11 +32,7 @@ module Abt
         end
 
         def task
-          @task ||= asana.get("tasks/#{task_gid}")
-        end
-
-        def asana
-          Abt::Asana::Client
+          @task ||= Asana.client.get("tasks/#{task_gid}")
         end
       end
     end

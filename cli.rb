@@ -8,7 +8,6 @@ module Abt
       (@command, *@args) = argv
 
       @args += args_from_stdin unless STDIN.isatty # Add piped arguments
-      @tty = STDOUT.isatty ? true : false
     end
 
     def perform(command = @command, args = @args)
@@ -61,10 +60,6 @@ module Abt
         warn "Selected: (#{option_number}) #{option['name']}"
         return option
       end
-    end
-
-    def tty?
-      @tty
     end
 
     def print_provider_command(provider, arg_str, description)
