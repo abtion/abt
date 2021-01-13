@@ -36,9 +36,9 @@ module Abt
             abort
           end
 
-          option = options[option_number - 1]
+          option = options[number - 1]
 
-          warn "Selected: (#{option_number}) #{option['name']}"
+          warn "Selected: (#{number}) #{option['name']}"
           return option
         end
       end
