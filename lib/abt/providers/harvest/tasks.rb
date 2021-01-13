@@ -9,7 +9,7 @@ module Abt
         end
 
         def self.description
-          'List available tasks on project - E.g. for grepping and selecting `| grep -i <name> | abt current`' # rubocop:disable Layout/LineLength
+          'List available tasks on project - useful for piping into grep etc.'
         end
 
         def call

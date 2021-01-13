@@ -25,9 +25,9 @@ Command output can be piped, e.g.:
 | `init asana`                                               | Pick Asana project for current git repository |
 | `move asana[:<project-gid>/<task-gid>]`                    | Move current or specified task to another section (column) |
 | `pick-task asana[:<project-gid>]`                          | Pick task for current git repository |
-| `projects asana`                                           | List all available projects - E.g. for grepping and selecting `| grep -i <name> | abt current` |
+| `projects asana`                                           | List all available projects - useful for piping into grep etc. |
 | `start asana[:<project-gid>/<task-gid>]`                   | Set current task and move it to a section (column) of your choice |
-| `tasks asana`                                              | List available tasks on project - E.g. for grepping and selecting `| grep -i <name> | abt current` |
+| `tasks asana`                                              | List available tasks on project - useful for piping into grep etc. |
 
 ### Harvest
 | Command | Description |
@@ -37,7 +37,7 @@ Command output can be piped, e.g.:
 | `current harvest[:<project-id>[/<task-id>]]` | Get or set project and or task for current git repository |
 | `init harvest`                               | Pick Harvest project for current git repository |
 | `pick-task harvest[:<project-id>]`           | Pick task for current git repository |
-| `projects harvest`                           | List all available projects - E.g. for grepping and selecting `| grep -i <name> | abt current` |
+| `projects harvest`                           | List all available projects - useful for piping into grep etc. |
 | `start harvest[:<project-id>/<task-id>]`     | Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana` |
 | `stop harvest`                               | Stop running harvest tracker |
-| `tasks harvest`                              | List available tasks on project - E.g. for grepping and selecting `| grep -i <name> | abt current` |
+| `tasks harvest`                              | List available tasks on project - useful for piping into grep etc. |
