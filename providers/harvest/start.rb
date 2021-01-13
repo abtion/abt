@@ -5,7 +5,7 @@ module Abt
     class Harvest
       class Start < BaseCommand
         def call
-          Set.new(arg_str: arg_str, cli: cli).call unless arg_str.nil?
+          Current.new(arg_str: arg_str, cli: cli).call unless arg_str.nil?
 
           create_time_entry
 
