@@ -16,7 +16,9 @@ module Abt
         private
 
         def show_current_configuration
-          if task_id.nil?
+          if project_id.nil?
+            warn 'No project selected'
+          elsif task_id.nil?
             cli.print_provider_command(
               'harvest',
               project['id'].to_s,

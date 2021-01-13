@@ -16,7 +16,9 @@ module Abt
         private
 
         def show_current_configuration
-          if task_gid.nil?
+          if project_gid.nil?
+            warn 'No project selected'
+          elsif task_gid.nil?
             cli.print_provider_command('asana', project['gid'], project['name'])
           else
             cli.print_provider_command('asana', "#{project_gid}/#{task['gid']}", task['name'])
