@@ -26,7 +26,7 @@ Command output can be piped, e.g.:
 | `move asana[:<project-gid>/<task-gid>]                   ` | Move current or specified task to another section (column) |
 | `pick-task asana[:<project-gid>]                         ` | Pick task for current git repository |
 | `projects asana                                          ` | List all available projects - E.g. for grepping and selecting `| grep -i <name> | abt current` |
-| `start asana[:<project-id>/<task-id>]                    ` | Set current task and move it to a section (column) of your choice |
+| `start asana[:<project-gid>/<task-gid>]                  ` | Set current task and move it to a section (column) of your choice |
 | `tasks asana                                             ` | List available tasks on project - E.g. for grepping and selecting `| grep -i <name> | abt current` |
 
 ### Harvest
