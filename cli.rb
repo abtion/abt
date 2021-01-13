@@ -88,11 +88,13 @@ module Abt
 
       provider_class_name = inflector.camelize(inflector.underscore(provider))
       command_class_name = inflector.camelize(inflector.underscore(command))
-      provider = Abt::Providers.const_get provider_class_name
+      provider_class = Abt::Providers.const_get provider_class_name
 
-      return unless provider.const_defined? command_class_name
+      return unless provider_class.const_defined? command_class_name
 
-      command = provider.const_get command_class_name
+      warn "===== #{command} #{provider}#{arg_str} =====".upcase if STDOUT.isatty
+
+      command = provider_class.const_get command_class_name
       command.new(arg_str: arg_str, cli: self).call
     end
   end
