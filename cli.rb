@@ -194,8 +194,7 @@ module Abt
       return [] if input.nil?
 
       input.split("\n").map do |line|
-        # Only include part before first space
-        line.split(' # ').first
+        line.split(' # ').first # Exclude comment part of piped input lines
       end
     end
 
