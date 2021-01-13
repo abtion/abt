@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Dir.glob("#{Abt::ROOT}/cli/*.rb").sort.each do |file|
+Dir.glob("#{File.expand_path(__dir__)}/cli/*.rb").sort.each do |file|
   require file
 end
 

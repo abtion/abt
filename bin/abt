@@ -5,7 +5,7 @@ require 'dry-inflector'
 require 'faraday'
 require 'oj'
 
-require_relative '../abt.rb'
+require_relative '../lib/abt.rb'
 
 begin
   Abt::Cli.new(ARGV).perform

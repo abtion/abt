@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative './git_config'
-
 module Abt
   class HarvestClient
     API_ENDPOINT = 'https://api.harvestapp.com/v2'

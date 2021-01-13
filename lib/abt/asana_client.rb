@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative './git_config'
-
 module Abt
   class AsanaClient
     API_ENDPOINT = 'https://app.asana.com/api/1.0'

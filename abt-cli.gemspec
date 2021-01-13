@@ -1,15 +1,26 @@
 # frozen_string_literal: true
 
-Gem::Specification.new do |s|
-  s.name = 'abt-cli'
-  s.summary = ['Very versatile scripts']
-  s.authors = ['Jesper Sørensen']
-  s.version = '0.0.1'
-  s.executables = ['abt']
+lib = File.expand_path('lib', __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'abt/version'
 
-  s.add_dependency 'dry-inflector'
-  s.add_dependency 'faraday'
-  s.add_dependency 'oj'
-  s.add_development_dependency 'bundler'
-  s.add_development_dependency 'rubocop'
+Gem::Specification.new do |spec|
+  spec.name = 'abt-cli'
+  spec.summary = ['Versatile scripts']
+  spec.authors = ['Jesper Sørensen']
+  spec.version = Abt::VERSION
+  spec.executables = ['abt']
+  spec.require_paths = ['lib']
+
+  spec.metadata['source_code_uri'] = 'https://github.com/abtion/abt'
+
+  spec.files = Dir.glob("#{__dir__}/{bin,lib}/**/*.rb").sort.map do |file|
+    file
+  end
+
+  spec.add_dependency 'dry-inflector', '~> 0.2'
+  spec.add_dependency 'faraday', '~> 1.0'
+  spec.add_dependency 'oj', '~> 3.10'
+  spec.add_development_dependency 'bundler'
+  spec.add_development_dependency 'rubocop'
 end
