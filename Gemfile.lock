@@ -35,7 +35,7 @@ PLATFORMS
 
 DEPENDENCIES
   abt-cli!
-  bundler
+  bundler (~> 2.0)
   rubocop
 
 BUNDLED WITH

@@ -6,12 +6,18 @@ require 'abt/version'
 
 Gem::Specification.new do |spec|
   spec.name = 'abt-cli'
-  spec.summary = ['Versatile scripts']
-  spec.authors = ['Jesper Sørensen']
   spec.version = Abt::VERSION
+  spec.authors = ['Jesper Sørensen']
+  spec.email = ['js@abtion.com']
+
+  spec.summary = ['Versatile scripts']
+  spec.homepage = 'https://github.com/abtion/abt'
+  spec.license = 'MIT'
+
   spec.executables = ['abt']
   spec.require_paths = ['lib']
 
+  spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/abtion/abt'
 
   spec.files = Dir.glob("#{__dir__}/{bin,lib}/**/*.rb").sort.map do |file|
@@ -21,6 +27,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'dry-inflector', '~> 0.2'
   spec.add_dependency 'faraday', '~> 1.0'
   spec.add_dependency 'oj', '~> 3.10'
-  spec.add_development_dependency 'bundler'
-  spec.add_development_dependency 'rubocop'
+  spec.add_development_dependency 'bundler', '~> 2.0'
 end
