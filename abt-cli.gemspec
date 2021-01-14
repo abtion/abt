@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.authors = ['Jesper Sørensen']
   spec.email = ['js@abtion.com']
 
-  spec.summary = ['Versatile scripts']
+  spec.summary = 'Versatile scripts'
   spec.homepage = 'https://github.com/abtion/abt'
   spec.license = 'MIT'
 
