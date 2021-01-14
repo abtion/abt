@@ -6,22 +6,29 @@ end
 
 module Abt
   class Cli
+    class AbortError < StandardError; end
+
     include Dialogs
+    include Io
 
-    attr_reader :command, :args
+    attr_reader :command, :args, :input, :output, :err_output
 
-    def initialize(argv)
+    def initialize(argv: ARGV, input: STDIN, output: STDOUT, err_output: STDERR)
       (@command, *@args) = argv
 
-      @args += args_from_stdin unless STDIN.isatty # Add piped arguments
+      @input = input
+      @output = output
+      @err_output = err_output
+
+      @args += args_from_stdin unless input.isatty # Add piped arguments
     end
 
-    def perform(command: @command, args: @args)
+    def perform
       handle_global_commands!
 
       abort('No provider arguments') if args.empty?
 
-      process_providers(command: command, args: args)
+      process_providers
     end
 
     def print_provider_command(provider, arg_str, description)
