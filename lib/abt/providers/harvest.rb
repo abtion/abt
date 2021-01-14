@@ -8,6 +8,15 @@ module Abt
   module Providers
     class Harvest
       class << self
+        def command_names
+          constants.sort.map { |constant_name| Helpers.const_to_command(constant_name) }
+        end
+
+        def command_class(name)
+          const_name = Helpers.command_to_const(name)
+          const_get(const_name) if const_defined?(const_name)
+        end
+
         def user_id
           Abt::GitConfig.prompt_global(
             'abt.harvest.userId',

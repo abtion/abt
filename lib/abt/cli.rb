@@ -6,22 +6,29 @@ end
 
 module Abt
   class Cli
+    class AbortError < StandardError; end
+
     include Dialogs
+    include Io
 
-    attr_reader :command, :args
+    attr_reader :command, :args, :input, :output, :err_output
 
-    def initialize(argv)
+    def initialize(argv: ARGV, input: STDIN, output: STDOUT, err_output: STDERR)
       (@command, *@args) = argv
 
-      @args += args_from_stdin unless STDIN.isatty # Add piped arguments
+      @input = input
+      @output = output
+      @err_output = err_output
+
+      @args += args_from_stdin unless input.isatty # Add piped arguments
     end
 
-    def perform(command: @command, args: @args)
+    def perform
       handle_global_commands!
 
       abort('No provider arguments') if args.empty?
 
-      process_providers(command: command, args: args)
+      process_providers
     end
 
     def print_provider_command(provider, arg_str, description)
@@ -34,13 +41,13 @@ module Abt
       case command
       when nil
         warn("No command specified\n\n")
-        puts(Abt::Help::Cli.content)
+        puts(Abt::Docs::Cli.content)
         exit
       when '--help', '-h', 'help', 'commands'
-        puts(Abt::Help::Cli.content)
+        puts(Abt::Docs::Cli.content)
         exit
       when 'help-md'
-        puts(Abt::Help::Markdown.content)
+        puts(Abt::Docs::Markdown.content)
         exit
       when '--version', '-v', 'version'
         puts(Abt::VERSION)
@@ -58,7 +65,7 @@ module Abt
       end
     end
 
-    def process_providers(command:, args:)
+    def process_providers
       used_providers = []
       args.each do |provider_args|
         (provider, arg_str) = provider_args.split(':')
@@ -71,33 +78,22 @@ module Abt
         used_providers << provider if process_provider_command(provider, command, arg_str)
       end
 
-      warn 'No matching providers found for command' if used_providers.empty?
+      warn 'No matching providers found for command' if used_providers.empty? && output.isatty
     end
 
-    def process_provider_command(provider, command, arg_str)
-      command_class = class_for_provider_and_command(provider, command)
+    def process_provider_command(provider_name, command_name, arg_str)
+      provider = Abt.provider_module(provider_name)
+      return false if provider.nil?
 
-      return false unless command_class
+      command = provider.command_class(command_name)
+      return false if command.nil?
 
-      if STDOUT.isatty
-        warn "===== #{command} #{provider}#{arg_str.nil? ? '' : ":#{arg_str}"} =====".upcase
+      if output.isatty
+        warn "===== #{command_name} #{provider_name}#{arg_str.nil? ? '' : ":#{arg_str}"} =====".upcase
       end
 
-      command_class.new(arg_str: arg_str, cli: self).call
+      command.new(arg_str: arg_str, cli: self).call
       true
-    end
-
-    def class_for_provider_and_command(provider, command)
-      inflector = Dry::Inflector.new
-      provider_class_name = inflector.camelize(inflector.underscore(provider))
-
-      return unless Abt::Providers.const_defined? provider_class_name
-
-      provider_class = Abt::Providers.const_get provider_class_name
-      command_class_name = inflector.camelize(inflector.underscore(command))
-      return unless provider_class.const_defined? command_class_name
-
-      provider_class.const_get command_class_name
     end
   end
 end

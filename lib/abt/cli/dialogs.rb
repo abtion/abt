@@ -4,7 +4,7 @@ module Abt
   class Cli
     module Dialogs
       def prompt(question)
-        STDERR.print "#{question}: "
+        print "#{question}: "
         read_user_input.strip
       end
 
@@ -44,7 +44,7 @@ module Abt
       end
 
       def read_option_number(options_length, allow_back_option)
-        STDERR.print "(1-#{options_length}#{allow_back_option ? ', q: back' : ''}): "
+        print "(1-#{options_length}#{allow_back_option ? ', q: back' : ''}): "
 
         input = read_user_input
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Abt
-  module Help
+  module Docs
     module Markdown
       class << self
         def content
@@ -24,7 +24,7 @@ module Abt
         def example_commands
           lines = []
 
-          Help.examples.each_with_index do |(title, commands), index|
+          Docs.examples.each_with_index do |(title, commands), index|
             lines << '' unless index.zero?
             lines << title
 
@@ -40,7 +40,7 @@ module Abt
         def provider_commands # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
           lines = []
 
-          Help.providers.each_with_index do |(provider_name, commands), index|
+          Docs.providers.each_with_index do |(provider_name, commands), index|
             lines << '' unless index.zero?
             lines << "### #{inflector.humanize(provider_name)}"
             lines << '| Command | Description |'
