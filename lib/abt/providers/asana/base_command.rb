@@ -2,12 +2,13 @@
 
 module Abt
   module Providers
-    class Asana
+    module Asana
       class BaseCommand
-        attr_reader :arg_str, :project_gid, :task_gid, :cli
+        attr_reader :arg_str, :project_gid, :task_gid, :cli, :config
 
         def initialize(arg_str:, cli:)
           @arg_str = arg_str
+          @config = Configuration.new(cli: cli)
 
           if arg_str.nil?
             use_current_args
@@ -45,16 +46,8 @@ module Abt
           @task_gid = nil if @task_gid.empty?
         end
 
-        def remember_project_gid(project_gid)
-          Abt::GitConfig.local('abt.asana.projectGid', project_gid)
-        end
-
-        def remember_task_gid(task_gid)
-          if task_gid.nil?
-            Abt::GitConfig.unset_local('abt.asana.taskGid')
-          else
-            Abt::GitConfig.local('abt.asana.taskGid', task_gid)
-          end
+        def api
+          Abt::Providers::Asana::Api.new(access_token: config.access_token)
         end
       end
     end
