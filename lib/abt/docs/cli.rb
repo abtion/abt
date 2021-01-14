@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Abt
-  module Help
+  module Docs
     module Cli
       class << self
         def content
@@ -20,7 +20,7 @@ module Abt
         def example_commands
           lines = []
 
-          Help.examples.each_with_index do |(title, examples), index|
+          Docs.examples.each_with_index do |(title, examples), index|
             lines << '' unless index.zero?
             lines << title
 
@@ -36,7 +36,7 @@ module Abt
         def providers_commands
           lines = []
 
-          Help.providers.each_with_index do |(provider_name, commands_definition), index|
+          Docs.providers.each_with_index do |(provider_name, commands_definition), index|
             lines << '' unless index.zero?
             lines << "#{inflector.humanize(provider_name)}:"
 

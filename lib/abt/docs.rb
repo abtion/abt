@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-Dir.glob("#{File.expand_path(__dir__)}/help/*.rb").sort.each do |file|
+Dir.glob("#{File.expand_path(__dir__)}/docs/*.rb").sort.each do |file|
   require file
 end
 
 module Abt
-  module Help
+  module Docs
     class << self
       def examples # rubocop:disable Metrics/MethodLength
         {
@@ -28,23 +28,17 @@ module Abt
 
       private
 
-      def commandize(string)
-        string = string.to_s
-        string[0] = string[0].downcase
-        string.gsub(/([A-Z])/, '-\1').downcase
-      end
-
       def provider_definitions
-        Abt::Providers.constants.sort.each_with_object({}) do |provider_name, definition|
-          provider_class = Abt::Providers.const_get(provider_name)
+        Abt.provider_names.sort.each_with_object({}) do |name, definition|
+          provider_module = Abt.provider_module(name)
 
-          definition[commandize(provider_name)] = command_definitions(provider_class)
+          definition[name] = command_definitions(provider_module)
         end
       end
 
-      def command_definitions(provider_class)
-        provider_class.constants.sort.each_with_object({}) do |command_name, definition|
-          command_class = provider_class.const_get(command_name)
+      def command_definitions(provider_module)
+        provider_module.command_names.each_with_object({}) do |name, definition|
+          command_class = provider_module.command_class(name)
 
           if command_class.respond_to?(:command) && command_class.respond_to?(:description)
             definition[command_class.command] = command_class.description
