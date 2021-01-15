@@ -14,7 +14,7 @@ module Abt
           end
 
           def call
-            Current.new(arg_str: arg_str, cli: cli).call unless arg_str.nil?
+            override_current_task unless arg_str.nil?
 
             if task_already_in_wip_section?
               cli.warn "Task already in #{current_task_section['name']}"
@@ -25,6 +25,10 @@ module Abt
           end
 
           private
+
+          def override_current_task
+            Current.new(arg_str: arg_str, cli: cli).call
+          end
 
           def task_already_in_wip_section?
             !task_section_membership.nil?

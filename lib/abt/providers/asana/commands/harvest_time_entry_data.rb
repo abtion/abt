@@ -13,7 +13,7 @@ module Abt
             'Print Harvest time entry data for Asana task as json. Used by harvest start script.'
           end
 
-          def call
+          def call # rubocop:disable Metrics/MethodLength
             ensure_current_is_valid!
 
             body = {

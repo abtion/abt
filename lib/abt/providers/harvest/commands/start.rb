@@ -14,7 +14,7 @@ module Abt
           end
 
           def call
-            Current.new(arg_str: arg_str, cli: cli).call unless arg_str.nil?
+            override_current_task unless arg_str.nil?
 
             cli.abort('No task selected') if task_id.nil?
 
@@ -27,6 +27,10 @@ module Abt
           end
 
           private
+
+          def override_current_task
+            Current.new(arg_str: arg_str, cli: cli).call
+          end
 
           def create_time_entry
             body = Oj.dump({
@@ -47,7 +51,7 @@ module Abt
 
               # TODO: Make user choose which reference to use by printing the urls
               if lines.length > 1
-                cli.abort 'Multiple providers had harvest reference data, only one is supported at a time'
+                cli.abort('Multiple providers had harvest reference data, only one is supported at a time') # rubocop:disable Layout/LineLength
               end
 
               Oj.load(lines.first)

@@ -55,7 +55,8 @@ module Abt
         end
 
         def api
-          @api ||= Abt::Providers::Harvest::Api.new(access_token: config.access_token, account_id: config.account_id)
+          @api ||= Abt::Providers::Harvest::Api.new(access_token: config.access_token,
+                                                    account_id: config.account_id)
         end
       end
     end

@@ -88,12 +88,14 @@ module Abt
       command = provider.command_class(command_name)
       return false if command.nil?
 
-      if output.isatty
-        warn "===== #{command_name} #{provider_name}#{arg_str.nil? ? '' : ":#{arg_str}"} =====".upcase
-      end
+      print_command(command_name, provider_name, arg_str) if output.isatty
 
       command.new(arg_str: arg_str, cli: self).call
       true
+    end
+
+    def print_command(name, provider, arg_str)
+      warn "===== #{name} #{provider}#{arg_str.nil? ? '' : ":#{arg_str}"} =====".upcase
     end
   end
 end

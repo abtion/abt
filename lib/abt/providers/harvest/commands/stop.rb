@@ -16,7 +16,8 @@ module Abt
           def call
             cli.abort 'No running time entry' if time_entry.nil?
 
-            api.patch("time_entries/#{time_entry['id']}/stop")
+            stop_time_entry
+
             cli.warn 'Harvest time entry stopped'
             print_task(project, task)
           rescue Abt::HttpError::HttpError => e
@@ -25,6 +26,10 @@ module Abt
           end
 
           private
+
+          def stop_time_entry
+            api.patch("time_entries/#{time_entry['id']}/stop")
+          end
 
           def project
             time_entry['project']
