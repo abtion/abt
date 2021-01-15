@@ -3,14 +3,16 @@
 module Abt
   class Cli
     module Io
-      %i[puts print].each do |method_name|
-        define_method(method_name) do |*args|
-          output.puts(*args)
-        end
-      end
-
       def warn(*args)
         err_output.puts(*args)
+      end
+
+      def puts(*args)
+        output.puts(*args)
+      end
+
+      def print(*args)
+        output.print(*args)
       end
 
       def abort(message)
