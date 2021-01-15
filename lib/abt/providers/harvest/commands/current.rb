@@ -36,14 +36,14 @@ module Abt
 
           def update_configuration
             ensure_project_is_valid!
-            remember_project_id(project_id)
+            config.project_id = project_id
 
             if task_id.nil?
               print_project(project)
-              remember_task_id(nil)
+              config.task_id = nil
             else
               ensure_task_is_valid!
-              remember_task_id(task_id)
+              config.task_id = task_id
 
               print_task(project, task)
             end
@@ -58,7 +58,7 @@ module Abt
           end
 
           def project
-            @project ||= Harvest.client.get("projects/#{project_id}")
+            @project ||= api.get("projects/#{project_id}")
           end
 
           def task
@@ -69,7 +69,7 @@ module Abt
 
           def project_task_assignments
             @project_task_assignments ||= begin
-              Harvest.client.get_paged("projects/#{project_id}/task_assignments", is_active: true)
+              api.get_paged("projects/#{project_id}/task_assignments", is_active: true)
             rescue Abt::HttpError::HttpError # rubocop:disable Layout/RescueEnsureAlignment
               []
             end

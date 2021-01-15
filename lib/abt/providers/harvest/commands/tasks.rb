@@ -26,7 +26,7 @@ module Abt
 
           def project_task_assignments
             @project_task_assignments ||= begin
-              Harvest.client.get_paged("projects/#{project_id}/task_assignments", is_active: true)
+              api.get_paged("projects/#{project_id}/task_assignments", is_active: true)
             rescue Abt::HttpError::HttpError # rubocop:disable Layout/RescueEnsureAlignment
               []
             end

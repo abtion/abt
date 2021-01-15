@@ -19,8 +19,8 @@ module Abt
             projects # Load projects up front to make it obvious that searches are instant
             project = find_search_result
 
-            remember_project_id(project['id'])
-            remember_task_id(nil)
+            config.project_id = project['id']
+            config.task_id = nil
 
             print_project(project)
           end
@@ -54,7 +54,7 @@ module Abt
           end
 
           def projects
-            @projects ||= Harvest.client.get_paged('projects')
+            @projects ||= api.get_paged('projects')
           end
         end
       end

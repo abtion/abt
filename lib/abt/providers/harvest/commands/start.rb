@@ -32,10 +32,10 @@ module Abt
             body = Oj.dump({
               project_id: Abt::GitConfig.local('abt.harvest.projectId'),
               task_id: Abt::GitConfig.local('abt.harvest.taskId'),
-              user_id: Harvest.user_id,
+              user_id: config.user_id,
               spent_date: Date.today.iso8601
             }.merge(external_link_data), mode: :json)
-            Harvest.client.post('time_entries', body)
+            api.post('time_entries', body)
           end
 
           def external_link_data

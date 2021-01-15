@@ -4,10 +4,11 @@ module Abt
   module Providers
     class Harvest
       class BaseCommand
-        attr_reader :arg_str, :project_id, :task_id, :cli
+        attr_reader :arg_str, :project_id, :task_id, :cli, :config
 
         def initialize(arg_str:, cli:)
           @arg_str = arg_str
+          @config = Configuration.new(cli: cli)
 
           if arg_str.nil?
             use_current_args
@@ -53,16 +54,8 @@ module Abt
           @task_id = nil if @task_id.empty?
         end
 
-        def remember_project_id(project_id)
-          Abt::GitConfig.local('abt.harvest.projectId', project_id)
-        end
-
-        def remember_task_id(task_id)
-          if task_id.nil?
-            Abt::GitConfig.unset_local('abt.harvest.taskId')
-          else
-            Abt::GitConfig.local('abt.harvest.taskId', task_id)
-          end
+        def api
+          @api ||= Abt::HarvestClient.new(access_token: config.access_token, account_id: config.account_id)
         end
       end
     end

@@ -16,7 +16,7 @@ module Abt
           def call
             cli.abort 'No running time entry' if time_entry.nil?
 
-            Harvest.client.patch("time_entries/#{time_entry['id']}/stop")
+            api.patch("time_entries/#{time_entry['id']}/stop")
             cli.warn 'Harvest time entry stopped'
             print_task(project, task)
           rescue Abt::HttpError::HttpError => e
@@ -36,7 +36,7 @@ module Abt
 
           def time_entry
             @time_entry ||= begin
-              Harvest.client.get_paged(
+              api.get_paged(
                 'time_entries',
                 is_running: true,
                 user_id: Harvest.user_id

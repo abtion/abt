@@ -22,7 +22,7 @@ module Abt
           private
 
           def projects
-            @projects ||= Harvest.client.get_paged('projects', is_active: true)
+            @projects ||= api.get_paged('projects', is_active: true)
           end
         end
       end

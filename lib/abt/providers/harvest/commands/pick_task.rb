@@ -17,8 +17,8 @@ module Abt
             cli.warn project['name']
             task = cli.prompt_choice 'Select a task', tasks
 
-            remember_project_id(project_id) # We might have gotten the project ID as an argument
-            remember_task_id(task['id'])
+            config.project_id = project_id # We might have gotten the project ID as an argument
+            config.task_id = task['id']
 
             print_task(project, task)
           end
@@ -26,7 +26,7 @@ module Abt
           private
 
           def project
-            @project ||= Harvest.client.get("projects/#{project_id}")
+            @project ||= api.get("projects/#{project_id}")
           end
 
           def tasks
@@ -35,7 +35,7 @@ module Abt
 
           def project_task_assignments
             @project_task_assignments ||= begin
-              Harvest.client.get_paged("projects/#{project_id}/task_assignments", is_active: true)
+              api.get_paged("projects/#{project_id}/task_assignments", is_active: true)
             rescue Abt::HttpError::HttpError # rubocop:disable Layout/RescueEnsureAlignment
               []
             end
