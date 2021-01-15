@@ -8,65 +8,76 @@ module Abt
 
         def initialize(cli:)
           @cli = cli
+          @git = GitConfig.new(namespace: 'abt.harvest')
         end
 
         def project_id
-          Abt::GitConfig.local('abt.harvest.projectId')
+          git['projectId']
         end
 
         def task_id
-          Abt::GitConfig.local('abt.harvest.taskId')
+          git['taskId']
         end
 
         def project_id=(value)
           return if project_id == value
 
           clear_local
-          Abt::GitConfig.local('abt.harvest.projectId', value) unless value.nil?
+          git['projectId'] = value unless value.nil?
         end
 
         def task_id=(value)
-          if value.nil?
-            Abt::GitConfig.unset_local('abt.harvest.taskId')
-          elsif task_id != value
-            Abt::GitConfig.local('abt.harvest.taskId', value)
-          end
+          git['taskId'] = value
         end
 
         def clear_local
-          Abt::GitConfig.unset_local('abt.harvest.projectId')
-          Abt::GitConfig.unset_local('abt.harvest.taskId')
+          git['projectId'] = nil
+          git['taskId'] = nil
         end
 
         def clear_global
-          Abt::GitConfig.unset_global('abt.harvest.userId')
-          Abt::GitConfig.unset_global('abt.harvest.accountId')
-          Abt::GitConfig.unset_global('abt.harvest.accessToken')
+          git.global['userId'] = nil
+          git.global['accountId'] = nil
+          git.global['accessToken'] = nil
         end
 
         def access_token
-          Abt::GitConfig.prompt_global(
-            'abt.harvest.accessToken',
-            'Please enter your personal harvest access token',
-            'Create your personal access token here: https://id.getharvest.com/developers'
-          )
+          return git.global['accessToken'] unless git.global['accessToken'].nil?
+
+          git.global['accessToken'] = cli.prompt([
+            'Please provide your personal access token for Harvest.',
+            'If you don\'t have one, create one here: https://id.getharvest.com/developers',
+            '',
+            'Enter access token'
+          ].join("\n"))
         end
 
         def account_id
-          Abt::GitConfig.prompt_global(
-            'abt.harvest.accountId',
-            'Please enter the harvest account id',
-            'This information is shown next to your generated access token'
-          )
+          return git.global['accountId'] unless git.global['accountId'].nil?
+
+          git.global['accountId'] = cli.prompt([
+            'Please provide harvest account id.',
+            'This information is shown next to your generated access token',
+            '',
+            'Enter account id'
+          ].join("\n"))
         end
 
         def user_id
-          Abt::GitConfig.prompt_global(
-            'abt.harvest.userId',
-            'Please enter your harvest User ID',
-            'In harvest open "My profile". The ID is the number part of the URL you are taken to'
-          )
+          return git.global['userId'] unless git.global['userId'].nil?
+
+          git.global['userId'] = cli.prompt([
+            'Please provide your harvest User ID.',
+            'To find it open "My profile" inside the harvest web UI.',
+            'The ID is the number part of the URL for that page.',
+            '',
+            'Enter user id'
+          ].join("\n"))
         end
+
+        private
+
+        attr_reader :git
       end
     end
   end

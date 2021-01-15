@@ -29,10 +29,8 @@ module Abt
         end
 
         def use_current_args
-          @project_gid = Abt::GitConfig.local('abt.asana.projectGid').to_s
-          @project_gid = nil if project_gid.empty?
-          @task_gid = Abt::GitConfig.local('abt.asana.taskGid').to_s
-          @task_gid = nil if task_gid.empty?
+          @project_gid = config.project_gid
+          @task_gid = config.task_gid
         end
 
         def use_arg_str(arg_str)

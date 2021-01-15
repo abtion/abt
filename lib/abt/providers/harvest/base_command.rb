@@ -37,10 +37,8 @@ module Abt
         end
 
         def use_current_args
-          @project_id = Abt::GitConfig.local('abt.harvest.projectId').to_s
-          @project_id = nil if project_id.empty?
-          @task_id = Abt::GitConfig.local('abt.harvest.taskId').to_s
-          @task_id = nil if task_id.empty?
+          @project_id = config.project_id
+          @task_id = config.task_id
         end
 
         def use_arg_str(arg_str)

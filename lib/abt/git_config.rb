@@ -2,76 +2,64 @@
 
 module Abt
   class GitConfig
-    class << self
-      def local(*args)
-        git_config(true, *args)
+    attr_reader :namespace, :scope
+
+    def initialize(namespace: '', scope: 'local')
+      @namespace = namespace
+
+      unless %w[local global].include? scope
+        raise ArgumentError, 'scope must be "local" or "global"'
       end
 
-      def global(*args)
-        git_config(false, *args)
-      end
+      @scope = scope
+    end
 
-      def prompt_local(*args)
-        prompt_for_config(true, *args)
-      end
+    def [](key)
+      get(key)
+    end
 
-      def prompt_global(*args)
-        prompt_for_config(false, *args)
-      end
+    def []=(key, value)
+      set(key, value)
+    end
 
-      def unset_local(key)
-        unset(true, key)
-      end
-
-      def unset_global(key)
-        unset(false, key)
-      end
-
-      private
-
-      def unset(local, key)
-        `git config --#{local ? 'local' : 'global'} --unset #{key.inspect}`
-      end
-
-      def git_config(local, key, value = nil)
-        if value
-          `git config --#{local ? 'local' : 'global'} --replace-all #{key.inspect} #{value.inspect}`
-          value
+    def local
+      @local ||= begin
+        if scope == 'local'
+          self
         else
-          git_value = `git config --get #{key.inspect}`.strip
-          git_value.empty? ? nil : git_value
+          self.class.new(namespace: namespace, scope: 'local')
         end
       end
+    end
 
-      def prompt(msg)
-        STDERR.print "#{msg} > "
-        value = read_user_input.strip
-        warn
+    def global
+      @global ||= begin
+        if scope == 'global'
+          self
+        else
+          self.class.new(namespace: namespace, scope: 'global')
+        end
+      end
+    end
+
+    private
+
+    def key_with_namespace(key)
+      namespace.empty? ? key : "#{namespace}.#{key}"
+    end
+
+    def get(key)
+      git_value = `git config --#{scope} --get #{key_with_namespace(key).inspect}`.strip
+      git_value.empty? ? nil : git_value
+    end
+
+    def set(key, value)
+      if value.nil? || value.empty?
+        `git config --#{scope} --unset #{key_with_namespace(key).inspect}`
+        nil
+      else
+        `git config --#{scope} --replace-all #{key_with_namespace(key).inspect} #{value.inspect}`
         value
-      end
-
-      def prompt_for_config(local, key, prompt_msg, remedy = '') # rubocop:disable Metrics/MethodLength
-        value = git_config(local, key)
-
-        return value unless value == '' || value.nil?
-
-        warn <<~TXT
-          Missing git config "#{key}":
-          To find this value:
-          #{remedy}
-        TXT
-
-        new_value = prompt(prompt_msg)
-
-        if new_value.empty?
-          abort 'Empty value, aborting'
-        else
-          git_config(local, key, new_value)
-        end
-      end
-
-      def read_user_input
-        open('/dev/tty', &:gets)
       end
     end
   end

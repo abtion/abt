@@ -34,8 +34,8 @@ module Abt
 
           def create_time_entry
             body = Oj.dump({
-              project_id: Abt::GitConfig.local('abt.harvest.projectId'),
-              task_id: Abt::GitConfig.local('abt.harvest.taskId'),
+              project_id: config.project_id,
+              task_id: config.task_id,
               user_id: config.user_id,
               spent_date: Date.today.iso8601
             }.merge(external_link_data), mode: :json)
