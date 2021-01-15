@@ -2,7 +2,7 @@
 
 module Abt
   module Providers
-    class Harvest
+    module Harvest
       class BaseCommand
         attr_reader :arg_str, :project_id, :task_id, :cli, :config
 

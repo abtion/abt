@@ -2,7 +2,7 @@
 
 module Abt
   module Providers
-    class Harvest
+    module Harvest
       module Commands
         class Stop < BaseCommand
           def self.command

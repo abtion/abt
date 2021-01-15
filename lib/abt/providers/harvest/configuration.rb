@@ -2,7 +2,7 @@
 
 module Abt
   module Providers
-    class Harvest
+    module Harvest
       class Configuration
         attr_accessor :cli
 

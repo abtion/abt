@@ -2,7 +2,7 @@
 
 module Abt
   module Providers
-    class Harvest
+    module Harvest
       module Commands
         class PickTask < BaseCommand
           def self.command

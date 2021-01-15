@@ -2,7 +2,7 @@
 
 module Abt
   module Providers
-    class Harvest
+    module Harvest
       module Commands
         class Current < BaseCommand
           def self.command

@@ -5,7 +5,7 @@ Dir.glob("#{File.expand_path(__dir__)}/harvest/commands/*.rb").sort.each { |file
 
 module Abt
   module Providers
-    class Harvest
+    module Harvest
       def self.command_names
         Commands.constants.sort.map { |constant_name| Helpers.const_to_command(constant_name) }
       end
