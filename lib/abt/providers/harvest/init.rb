@@ -13,7 +13,7 @@ module Abt
         end
 
         def call
-          warn 'Loading projects'
+          cli.warn 'Loading projects'
 
           projects # Load projects up front to make it obvious that searches are instant
           project = find_search_result
@@ -34,7 +34,7 @@ module Abt
               next
             end
 
-            warn 'Showing the 10 first matches' if matches.size > 10
+            cli.warn 'Showing the 10 first matches' if matches.size > 10
             choice = cli.prompt_choice 'Select a project', matches[0...10], true
             break choice unless choice.nil?
           end

@@ -13,14 +13,14 @@ module Abt
         end
 
         def call
-          abort 'No running time entry' if time_entry.nil?
+          cli.abort 'No running time entry' if time_entry.nil?
 
           Harvest.client.patch("time_entries/#{time_entry['id']}/stop")
-          warn 'Harvest time entry stopped'
+          cli.warn 'Harvest time entry stopped'
           print_task(project, task)
         rescue Abt::HttpError::HttpError => e
-          warn e
-          abort 'Unable to stop time entry'
+          cli.warn e
+          cli.abort 'Unable to stop time entry'
         end
 
         private
@@ -41,8 +41,8 @@ module Abt
               user_id: Harvest.user_id
             ).first
           rescue Abt::HttpError::HttpError => e # rubocop:disable Layout/RescueEnsureAlignment
-            warn e
-            abort 'Unable to fetch running time entry'
+            cli.warn e
+            cli.abort 'Unable to fetch running time entry'
           end
         end
       end

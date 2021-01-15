@@ -15,14 +15,14 @@ module Abt
         def call
           Current.new(arg_str: arg_str, cli: cli).call unless arg_str.nil?
 
-          abort('No task selected') if task_id.nil?
+          cli.abort('No task selected') if task_id.nil?
 
           create_time_entry
 
-          warn 'Tracker successfully started'
+          cli.warn 'Tracker successfully started'
         rescue Abt::HttpError::HttpError => e
-          warn e
-          abort 'Unable to start tracker'
+          cli.warn e
+          cli.abort 'Unable to start tracker'
         end
 
         private
@@ -46,7 +46,7 @@ module Abt
 
             # TODO: Make user choose which reference to use by printing the urls
             if lines.length > 1
-              abort 'Multiple providers had harvest reference data, only one is supported at a time'
+              cli.abort 'Multiple providers had harvest reference data, only one is supported at a time'
             end
 
             Oj.load(lines.first)

@@ -13,7 +13,7 @@ module Abt
         end
 
         def call
-          warn project['name']
+          cli.warn project['name']
           task = cli.prompt_choice 'Select a task', tasks
 
           remember_project_id(project_id) # We might have gotten the project ID as an argument

@@ -25,7 +25,7 @@ module Abt
 
         def show_current_configuration
           if project_id.nil?
-            warn 'No project selected'
+            cli.warn 'No project selected'
           elsif task_id.nil?
             print_project(project)
           else
@@ -49,11 +49,11 @@ module Abt
         end
 
         def ensure_project_is_valid!
-          abort "Invalid project: #{project_id}" if project.nil?
+          cli.abort "Invalid project: #{project_id}" if project.nil?
         end
 
         def ensure_task_is_valid!
-          abort "Invalid task: #{task_id}" if task.nil?
+          cli.abort "Invalid task: #{task_id}" if task.nil?
         end
 
         def project

@@ -3,7 +3,7 @@
 module Abt
   module Providers
     class Harvest
-      class ClearGlobal
+      class ClearGlobal < BaseCommand
         def self.command
           'clear-global harvest'
         end
@@ -12,10 +12,8 @@ module Abt
           'Clear all global configuration'
         end
 
-        def initialize(**); end
-
         def call
-          warn 'Clearing Harvest project configuration'
+          cli.warn 'Clearing Harvest project configuration'
           Harvest.clear_global
         end
       end

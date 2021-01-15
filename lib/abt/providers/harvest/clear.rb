@@ -3,7 +3,7 @@
 module Abt
   module Providers
     class Harvest
-      class Clear
+      class Clear < BaseCommand
         def self.command
           'clear harvest'
         end
@@ -15,7 +15,7 @@ module Abt
         def initialize(**); end
 
         def call
-          warn 'Clearing Harvest project configuration'
+          cli.warn 'Clearing Harvest project configuration'
           Harvest.clear
         end
       end
