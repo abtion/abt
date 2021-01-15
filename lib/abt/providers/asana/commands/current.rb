@@ -43,7 +43,7 @@ module Abt
               config.task_gid = nil
             else
               ensure_task_is_valid!
-              config.task_gid task_gid
+              config.task_gid = task_gid
 
               print_task(project, task)
             end
