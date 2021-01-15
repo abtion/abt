@@ -1,20 +1,19 @@
 # frozen_string_literal: true
 
-Dir.glob("#{File.expand_path(__dir__)}/harvest/*.rb").sort.each do |file|
-  require file
-end
+Dir.glob("#{File.expand_path(__dir__)}/harvest/*.rb").sort.each { |file| require file }
+Dir.glob("#{File.expand_path(__dir__)}/harvest/commands/*.rb").sort.each { |file| require file }
 
 module Abt
   module Providers
     class Harvest
       class << self
         def command_names
-          constants.sort.map { |constant_name| Helpers.const_to_command(constant_name) }
+          Commands.constants.sort.map { |constant_name| Helpers.const_to_command(constant_name) }
         end
 
         def command_class(name)
           const_name = Helpers.command_to_const(name)
-          const_get(const_name) if const_defined?(const_name)
+          Commands.const_get(const_name) if Commands.const_defined?(const_name)
         end
 
         def user_id
