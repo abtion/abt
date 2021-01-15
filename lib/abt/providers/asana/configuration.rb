@@ -113,9 +113,8 @@ module Abt
             cli.abort 'Your asana access token does not have access to any workspaces'
           end
 
-          # TODO: Handle if there are multiple workspaces
-          workspace = workspaces.first
-          git.global['abt.asana.workspaceGid'] = workspace['gid']
+          workspace = cli.prompt_choice('Select Asana workspace', workspaces)
+          git.global['workspaceGid'] = workspace['gid']
           workspace
         end
 
