@@ -15,11 +15,12 @@ module Abt
 
           def call
             cli.abort 'No current or specified task' if task.nil?
+            print_task(project_gid, task)
 
             if task_already_in_finalized_section?
-              cli.warn "Task already in #{current_task_section['name']}"
+              cli.warn "Task already in section: #{current_task_section['name']}"
             else
-              cli.warn "Moving task to #{finalized_section['name']}"
+              cli.warn "Moving task to section: #{finalized_section['name']}"
               move_task
             end
           end

@@ -30,16 +30,16 @@ module Abt
             if task.dig('assignee', 'gid') == current_user['gid']
               cli.warn 'You are already assigned to this task'
             else
-              cli.warn "Assigning task to #{current_user['name']}"
+              cli.warn "Assigning task to user: #{current_user['name']}"
               update_assignee
             end
           end
 
           def move_if_needed
             if task_already_in_wip_section?
-              cli.warn "Task already in #{current_task_section['name']}"
+              cli.warn "Task already in section: #{current_task_section['name']}"
             else
-              cli.warn "Moving task to #{wip_section['name']}"
+              cli.warn "Moving task to section: #{wip_section['name']}"
               move_task
             end
           end
@@ -79,7 +79,7 @@ module Abt
           end
 
           def task
-            @task ||= api.get("tasks/#{task_gid}", opt_fields: 'memberships.section.name,assignee')
+            @task ||= api.get("tasks/#{task_gid}", opt_fields: 'name,memberships.section.name,assignee')
           end
         end
       end

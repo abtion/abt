@@ -16,6 +16,8 @@ module Abt
           def call
             override_current_task unless arg_str.nil?
 
+            print_task(project, task)
+
             cli.abort('No task selected') if task_id.nil?
 
             create_time_entry
@@ -40,6 +42,14 @@ module Abt
               spent_date: Date.today.iso8601
             }.merge(external_link_data), mode: :json)
             api.post('time_entries', body)
+          end
+
+          def project
+            @project ||= api.get("projects/#{project_id}")
+          end
+
+          def task
+            @task ||= api.get("tasks/#{task_id}")
           end
 
           def external_link_data

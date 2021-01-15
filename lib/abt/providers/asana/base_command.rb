@@ -25,6 +25,7 @@ module Abt
         end
 
         def print_task(project, task)
+          project = { 'gid' => project } if project.is_a?(String)
           cli.print_provider_command('asana', "#{project['gid']}/#{task['gid']}", task['name'])
         end
 
