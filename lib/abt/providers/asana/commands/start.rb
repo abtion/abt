@@ -16,18 +16,32 @@ module Abt
           def call
             override_current_task unless arg_str.nil?
 
-            if task_already_in_wip_section?
-              cli.warn "Task already in #{current_task_section['name']}"
-            else
-              cli.warn "Moving task to #{wip_section['name']}"
-              move_task
-            end
+            update_assignee_if_needed
+            move_if_needed
           end
 
           private
 
           def override_current_task
             Current.new(arg_str: arg_str, cli: cli).call
+          end
+
+          def update_assignee_if_needed
+            if task.dig('assignee', 'gid') == current_user['gid']
+              cli.warn 'You are already assigned to this task'
+            else
+              cli.warn "Assigning task to #{current_user['name']}"
+              update_assignee
+            end
+          end
+
+          def move_if_needed
+            if task_already_in_wip_section?
+              cli.warn "Task already in #{current_task_section['name']}"
+            else
+              cli.warn "Moving task to #{wip_section['name']}"
+              move_task
+            end
           end
 
           def task_already_in_wip_section?
@@ -54,8 +68,18 @@ module Abt
             api.post("sections/#{config.wip_section_gid}/addTask", body_json)
           end
 
+          def update_assignee
+            body = { data: { assignee: current_user['gid'] } }
+            body_json = Oj.dump(body, mode: :json)
+            api.put("tasks/#{task_gid}", body_json)
+          end
+
+          def current_user
+            @current_user ||= api.get('users/me', opt_fields: 'name')
+          end
+
           def task
-            @task ||= api.get("tasks/#{task_gid}", opt_fields: 'memberships.section.name')
+            @task ||= api.get("tasks/#{task_gid}", opt_fields: 'memberships.section.name,assignee')
           end
         end
       end

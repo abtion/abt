@@ -5,7 +5,7 @@ module Abt
     module Asana
       class Api
         API_ENDPOINT = 'https://app.asana.com/api/1.0'
-        VERBS = %i[get post patch].freeze
+        VERBS = %i[get post put].freeze
 
         attr_reader :access_token
 
