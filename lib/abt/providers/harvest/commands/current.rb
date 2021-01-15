@@ -17,7 +17,7 @@ module Abt
             if arg_str.nil?
               show_current_configuration
             else
-              warn 'Updating configuration'
+              cli.warn 'Updating configuration'
               update_configuration
             end
           end
