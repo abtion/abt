@@ -22,7 +22,10 @@ module Abt
           private
 
           def projects
-            @projects ||= api.get_paged('projects', is_active: true)
+            @projects ||= begin
+              cli.warn 'Fetching projects...'
+              api.get_paged('projects', is_active: true)
+            end
           end
         end
       end

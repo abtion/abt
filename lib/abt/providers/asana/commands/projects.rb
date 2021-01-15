@@ -22,13 +22,15 @@ module Abt
           private
 
           def projects
-            @projects ||=
+            @projects ||= begin
+              cli.warn 'Fetching projects...'
               api.get_paged(
                 'projects',
                 workspace: config.workspace_gid,
                 archived: false,
                 opt_fields: 'name'
               )
+            end
           end
         end
       end

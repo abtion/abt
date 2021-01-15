@@ -33,14 +33,18 @@ module Abt
           def tasks
             @tasks ||= begin
               section = cli.prompt_choice 'Which section?', sections
+              cli.warn 'Fetching tasks...'
               api.get_paged('tasks', section: section['gid'], opt_fields: 'name')
             end
           end
 
           def sections
-            api.get_paged("projects/#{project_gid}/sections", opt_fields: 'name')
-          rescue Abt::HttpError::HttpError
-            []
+            @sections ||= begin
+              cli.warn 'Fetching sections...'
+              api.get_paged("projects/#{project_gid}/sections", opt_fields: 'name')
+                          rescue Abt::HttpError::HttpError
+                            []
+            end
           end
         end
       end

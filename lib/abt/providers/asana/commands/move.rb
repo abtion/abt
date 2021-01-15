@@ -45,9 +45,12 @@ module Abt
           end
 
           def sections
-            api.get_paged("projects/#{project_gid}/sections", opt_fields: 'name')
-          rescue Abt::HttpError::HttpError
-            []
+            @sections ||= begin
+              cli.warn 'Fetching sections...'
+              api.get_paged("projects/#{project_gid}/sections", opt_fields: 'name')
+                          rescue Abt::HttpError::HttpError
+                            []
+            end
           end
         end
       end

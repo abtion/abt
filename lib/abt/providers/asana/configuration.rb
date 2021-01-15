@@ -103,11 +103,13 @@ module Abt
         end
 
         def prompt_section(message)
+          cli.warn 'Fetching sections...'
           sections = api.get_paged("projects/#{project_gid}/sections")
           cli.prompt_choice(message, sections)
         end
 
         def prompt_workspace
+          cli.warn 'Fetching workspaces...'
           workspaces = api.get_paged('workspaces')
           if workspaces.empty?
             cli.abort 'Your asana access token does not have access to any workspaces'

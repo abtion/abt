@@ -14,8 +14,6 @@ module Abt
           end
 
           def call
-            cli.warn 'Loading projects'
-
             projects # Load projects up front to make it obvious that searches are instant
             project = find_search_result
 
@@ -54,7 +52,10 @@ module Abt
           end
 
           def projects
-            @projects ||= api.get_paged('projects')
+            @projects ||= begin
+              cli.warn 'Fetching projects...'
+              api.get_paged('projects')
+            end
           end
         end
       end
