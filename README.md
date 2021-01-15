@@ -21,6 +21,7 @@ Command output can be piped, e.g.:
 | `clear asana`                                              | Clear project/task for current git repository |
 | `clear-global asana`                                       | Clear all global configuration |
 | `current asana[:<project-gid>[/<task-gid>]]`               | Get or set project and or task for current git repository |
+| `finalize asana[:<project-gid>/<task-gid>]`                | Move current/specified task to section (column) for finalized tasks |
 | `harvest-time-entry-data asana[:<project-gid>/<task-gid>]` | Print Harvest time entry data for Asana task as json. Used by harvest start script. |
 | `init asana`                                               | Pick Asana project for current git repository |
 | `move asana[:<project-gid>/<task-gid>]`                    | Move current or specified task to another section (column) |

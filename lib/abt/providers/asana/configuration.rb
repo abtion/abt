@@ -40,6 +40,17 @@ module Abt
           end
         end
 
+        def finalized_section_gid
+          @finalized_section_gid ||= begin
+            current = Abt::GitConfig.local('abt.asana.finalizedSectionGid')
+            if current.nil?
+              prompt_finalized_section['gid']
+            else
+              current
+            end
+          end
+        end
+
         def project_gid=(value)
           return if project_gid == value
 
@@ -59,6 +70,7 @@ module Abt
           Abt::GitConfig.unset_local('abt.asana.projectGid')
           Abt::GitConfig.unset_local('abt.asana.taskGid')
           Abt::GitConfig.unset_local('abt.asana.wipSectionGid')
+          Abt::GitConfig.unset_local('abt.asana.finalizedSectionGid')
         end
 
         def clear_global
@@ -75,6 +87,12 @@ module Abt
         end
 
         private
+
+        def prompt_finalized_section
+          section = prompt_section('Select section for finalized tasks (E.g. "Merged")')
+          Abt::GitConfig.local('abt.asana.finalizedSectionGid', section['gid'])
+          section
+        end
 
         def prompt_wip_section
           section = prompt_section('Select WIP (Work In Progress) section')
