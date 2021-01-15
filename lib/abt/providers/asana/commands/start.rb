@@ -55,7 +55,7 @@ module Abt
           end
 
           def task
-            @task ||= api.get("tasks/#{task_gid}")
+            @task ||= api.get("tasks/#{task_gid}", opt_fields: 'memberships.section.name')
           end
         end
       end

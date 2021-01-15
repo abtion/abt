@@ -58,11 +58,11 @@ module Abt
           end
 
           def project
-            @project ||= api.get("projects/#{project_gid}")
+            @project ||= api.get("projects/#{project_gid}", opt_fields: 'name')
           end
 
           def task
-            @task ||= api.get("tasks/#{task_gid}")
+            @task ||= api.get("tasks/#{task_gid}", opt_fields: 'name')
           end
         end
       end

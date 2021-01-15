@@ -41,7 +41,8 @@ module Abt
           end
 
           def finalized_section
-            @finalized_section ||= api.get("sections/#{config.finalized_section_gid}")
+            @finalized_section ||= api.get("sections/#{config.finalized_section_gid}",
+                                           opt_fields: 'name')
           end
 
           def move_task
@@ -55,7 +56,7 @@ module Abt
               if task_gid.nil?
                 nil
               else
-                api.get("tasks/#{task_gid}")
+                api.get("tasks/#{task_gid}", opt_fields: 'name,memberships.section.name')
               end
             end
           end

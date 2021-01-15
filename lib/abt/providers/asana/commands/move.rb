@@ -41,11 +41,11 @@ module Abt
           end
 
           def project
-            @project ||= api.get("projects/#{project_gid}")
+            @project ||= api.get("projects/#{project_gid}", opt_fields: 'name')
           end
 
           def sections
-            api.get_paged("projects/#{project_gid}/sections")
+            api.get_paged("projects/#{project_gid}/sections", opt_fields: 'name')
           rescue Abt::HttpError::HttpError
             []
           end

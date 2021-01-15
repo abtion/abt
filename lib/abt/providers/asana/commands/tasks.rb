@@ -28,7 +28,7 @@ module Abt
           end
 
           def tasks
-            @tasks ||= api.get_paged('tasks', project: project['gid'])
+            @tasks ||= api.get_paged('tasks', project: project['gid'], opt_fields: 'name')
           end
         end
       end

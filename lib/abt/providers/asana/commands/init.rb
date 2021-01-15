@@ -53,8 +53,10 @@ module Abt
           end
 
           def projects
-            @projects ||=
-              api.get_paged('projects', workspace: config.workspace_gid, archived: false)
+            @projects ||= api.get_paged('projects',
+                                        workspace: config.workspace_gid,
+                                        archived: false,
+                                        opt_fields: 'name')
           end
         end
       end

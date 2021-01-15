@@ -15,6 +15,7 @@ module Abt
 
           def call
             cli.warn project['name']
+
             task = cli.prompt_choice 'Select a task', tasks
 
             config.project_gid = project_gid # We might have gotten the project ID as an argument
@@ -32,12 +33,12 @@ module Abt
           def tasks
             @tasks ||= begin
               section = cli.prompt_choice 'Which section?', sections
-              api.get_paged('tasks', section: section['gid'])
+              api.get_paged('tasks', section: section['gid'], opt_fields: 'name')
             end
           end
 
           def sections
-            api.get_paged("projects/#{project_gid}/sections")
+            api.get_paged("projects/#{project_gid}/sections", opt_fields: 'name')
           rescue Abt::HttpError::HttpError
             []
           end

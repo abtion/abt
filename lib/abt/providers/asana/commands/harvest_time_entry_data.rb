@@ -41,7 +41,7 @@ module Abt
           end
 
           def task
-            @task ||= api.get("tasks/#{task_gid}")
+            @task ||= api.get("tasks/#{task_gid}", opt_fields: 'name,permalink_url,memberships.project')
           end
         end
       end
