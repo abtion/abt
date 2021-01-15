@@ -31,7 +31,7 @@ module Abt
 
         def wip_section_gid
           @wip_section_gid ||= begin
-            current = Abt::GitConfig.global('abt.asana.wipSectionGid')
+            current = Abt::GitConfig.local('abt.asana.wipSectionGid')
             if current.nil?
               prompt_wip_section['gid']
             else
@@ -77,11 +77,14 @@ module Abt
         private
 
         def prompt_wip_section
-          sections = api.get_paged("projects/#{project_gid}/sections")
-
-          section = cli.prompt_choice('Select WIP (Work In Progress) section', sections)
-          Abt::GitConfig.global('abt.asana.wipSectionGid', section['gid'])
+          section = prompt_section('Select WIP (Work In Progress) section')
+          Abt::GitConfig.local('abt.asana.wipSectionGid', section['gid'])
           section
+        end
+
+        def prompt_section(message)
+          sections = api.get_paged("projects/#{project_gid}/sections")
+          cli.prompt_choice(message, sections)
         end
 
         def prompt_workspace
