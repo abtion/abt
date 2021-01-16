@@ -18,6 +18,11 @@ module Abt
           'Command output can be piped, e.g.:' => {
             'abt tasks asana | grep -i <name of task>' => nil,
             'abt tasks asana | grep -i <name of task> | abt start' => nil
+          },
+          'Sharing configuration:' => {
+            'abt share asana harvest | tr "\n" " "' => 'Print current configuration',
+            'abt share asana harvest | tr "\n" " " | pbcopy' => 'Copy configuration (mac only)',
+            'abt start <shared configuration>' => 'Start a shared configuration'
           }
         }
       end

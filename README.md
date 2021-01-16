@@ -14,6 +14,11 @@ Command output can be piped, e.g.:
 - `abt tasks asana | grep -i <name of task>`
 - `abt tasks asana | grep -i <name of task> | abt start`
 
+Sharing configuration:
+- `abt share asana harvest | tr "\n" " "`: Print current configuration
+- `abt share asana harvest | tr "\n" " " | pbcopy`: Copy configuration (mac only)
+- `abt start <shared configuration>`: Start a shared configuration
+
 ## Available commands:
 ### Asana
 | Command | Description |
@@ -27,6 +32,7 @@ Command output can be piped, e.g.:
 | `move asana[:<project-gid>/<task-gid>]`                    | Move current or specified task to another section (column) |
 | `pick asana[:<project-gid>]`                               | Pick task for current git repository |
 | `projects asana`                                           | List all available projects - useful for piping into grep etc. |
+| `share asana[:<project-gid>[/<task-gid>]]`                 | Print project/task config string |
 | `start asana[:<project-gid>/<task-gid>]`                   | Set current task and move it to a section (column) of your choice |
 | `tasks asana`                                              | List available tasks on project - useful for piping into grep etc. |
 
@@ -39,6 +45,7 @@ Command output can be piped, e.g.:
 | `init harvest`                               | Pick Harvest project for current git repository |
 | `pick harvest[:<project-id>]`                | Pick task for current git repository |
 | `projects harvest`                           | List all available projects - useful for piping into grep etc. |
+| `share harvest[:<project-id>[/<task-id>]]`   | Print project/task config string |
 | `start harvest[:<project-id>/<task-id>]`     | Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana` |
 | `stop harvest`                               | Stop running harvest tracker |
 | `tasks harvest`                              | List available tasks on project - useful for piping into grep etc. |

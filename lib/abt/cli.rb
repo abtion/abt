@@ -31,8 +31,10 @@ module Abt
       process_providers
     end
 
-    def print_provider_command(provider, arg_str, description)
-      puts "#{provider}:#{arg_str} # #{description}"
+    def print_provider_command(provider, arg_str, description = nil)
+      command = "#{provider}:#{arg_str}"
+      command += " # #{description}" unless description.nil?
+      output.puts command
     end
 
     private
@@ -60,9 +62,14 @@ module Abt
 
       return [] if input.nil?
 
-      input.split("\n").map do |line|
-        line.split(' # ').first # Exclude comment part of piped input lines
+      # Exclude comment part of piped input lines
+      lines_without_comments = input.lines.map do |line|
+        line.split(' # ').first
       end
+
+      # Allow multiple provider arguments on a single piped input line
+      joined_lines = lines_without_comments.join(' ').strip
+      joined_lines.split(/\s+/)
     end
 
     def process_providers
