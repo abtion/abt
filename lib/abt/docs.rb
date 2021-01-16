@@ -9,11 +9,13 @@ module Abt
     class << self
       def examples # rubocop:disable Metrics/MethodLength
         {
-          'Multiple providers and arguments can be passed, e.g.:' => {
-            'abt init asana harvest' => nil,
-            'abt pick-task asana harvest' => nil,
-            'abt start asana harvest' => nil,
-            'abt clear asana harvest' => nil
+          'Getting started:' => {
+            'abt init asana harvest' => 'Setup asana and harvest project git repo in working dir',
+            'abt pick harvest' => 'Pick harvest tasks, for most projects this will stay the same',
+            'abt pick asana | abt start harvest' => 'Pick asana task and start working',
+            'abt stop harvest' => 'Stop time tracker',
+            'abt start asana harvest' => 'Continue working, e.g. after a break',
+            'abt finalize asana' => 'Finalize the selected asana task'
           },
           'Command output can be piped, e.g.:' => {
             'abt tasks asana | grep -i <name of task>' => nil,

@@ -6,7 +6,7 @@ module Abt
       class << self
         def content
           <<~TXT
-            Usage: abt <command> [<provider:arguments>...]
+            Usage: abt <command> [<provider[:<arguments>]>...]
 
             #{example_commands}
 
