@@ -8,6 +8,22 @@ module Abt
         read_user_input.strip
       end
 
+      def prompt_boolean(text)
+        warn text
+
+        loop do
+          err_output.print '(y / n): '
+
+          case read_user_input.strip
+          when 'y', 'Y' then return true
+          when 'n', 'N' then return false
+          else
+            warn 'Invalid choice'
+            next
+          end
+        end
+      end
+
       def prompt_choice(text, options, allow_back_option = false)
         if options.one?
           warn "Selected: #{options.first['name']}"

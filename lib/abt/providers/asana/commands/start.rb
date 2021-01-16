@@ -27,10 +27,15 @@ module Abt
           end
 
           def update_assignee_if_needed
-            if task.dig('assignee', 'gid') == current_user['gid']
-              cli.warn 'You are already assigned to this task'
-            else
+            current_assignee = task.dig('assignee')
+
+            if current_assignee.nil?
               cli.warn "Assigning task to user: #{current_user['name']}"
+              update_assignee
+            elsif current_assignee['gid'] == current_user['gid']
+              cli.warn 'You are already assigned to this task'
+            elsif cli.prompt_boolean "Task is assigned to: #{current_assignee['name']}, take over?"
+              cli.warn "Reassigning task to user: #{current_user['name']}"
               update_assignee
             end
           end
@@ -79,7 +84,7 @@ module Abt
           end
 
           def task
-            @task ||= api.get("tasks/#{task_gid}", opt_fields: 'name,memberships.section.name,assignee')
+            @task ||= api.get("tasks/#{task_gid}", opt_fields: 'name,memberships.section.name,assignee.name')
           end
         end
       end
