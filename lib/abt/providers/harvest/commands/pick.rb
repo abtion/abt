@@ -4,9 +4,9 @@ module Abt
   module Providers
     module Harvest
       module Commands
-        class PickTask < BaseCommand
+        class Pick < BaseCommand
           def self.command
-            'pick-task harvest[:<project-id>]'
+            'pick harvest[:<project-id>]'
           end
 
           def self.description

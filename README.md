@@ -25,7 +25,7 @@ Command output can be piped, e.g.:
 | `harvest-time-entry-data asana[:<project-gid>/<task-gid>]` | Print Harvest time entry data for Asana task as json. Used by harvest start script. |
 | `init asana`                                               | Pick Asana project for current git repository |
 | `move asana[:<project-gid>/<task-gid>]`                    | Move current or specified task to another section (column) |
-| `pick-task asana[:<project-gid>]`                          | Pick task for current git repository |
+| `pick asana[:<project-gid>]`                               | Pick task for current git repository |
 | `projects asana`                                           | List all available projects - useful for piping into grep etc. |
 | `start asana[:<project-gid>/<task-gid>]`                   | Set current task and move it to a section (column) of your choice |
 | `tasks asana`                                              | List available tasks on project - useful for piping into grep etc. |
@@ -37,7 +37,7 @@ Command output can be piped, e.g.:
 | `clear-global harvest`                       | Clear all global configuration |
 | `current harvest[:<project-id>[/<task-id>]]` | Get or set project and or task for current git repository |
 | `init harvest`                               | Pick Harvest project for current git repository |
-| `pick-task harvest[:<project-id>]`           | Pick task for current git repository |
+| `pick harvest[:<project-id>]`                | Pick task for current git repository |
 | `projects harvest`                           | List all available projects - useful for piping into grep etc. |
 | `start harvest[:<project-id>/<task-id>]`     | Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana` |
 | `stop harvest`                               | Stop running harvest tracker |
