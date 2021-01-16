@@ -29,7 +29,6 @@ Sharing configuration:
 | `finalize asana[:<project-gid>/<task-gid>]`                | Move current/specified task to section (column) for finalized tasks |
 | `harvest-time-entry-data asana[:<project-gid>/<task-gid>]` | Print Harvest time entry data for Asana task as json. Used by harvest start script. |
 | `init asana`                                               | Pick Asana project for current git repository |
-| `move asana[:<project-gid>/<task-gid>]`                    | Move current or specified task to another section (column) |
 | `pick asana[:<project-gid>]`                               | Pick task for current git repository |
 | `projects asana`                                           | List all available projects - useful for piping into grep etc. |
 | `share asana[:<project-gid>[/<task-gid>]]`                 | Print project/task config string |
