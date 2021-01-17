@@ -57,7 +57,7 @@ module Abt
               if task_gid.nil?
                 nil
               else
-                api.get("tasks/#{task_gid}", opt_fields: 'name,memberships.section.name')
+                api.get("tasks/#{task_gid}", opt_fields: 'name,memberships.section.name,permalink_url')
               end
             end
           end

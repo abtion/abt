@@ -34,7 +34,7 @@ module Abt
             @tasks ||= begin
               section = cli.prompt_choice 'Which section?', sections
               cli.warn 'Fetching tasks...'
-              api.get_paged('tasks', section: section['gid'], opt_fields: 'name')
+              api.get_paged('tasks', section: section['gid'], opt_fields: 'name,permalink_url')
             end
           end
 

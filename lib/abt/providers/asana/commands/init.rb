@@ -56,7 +56,7 @@ module Abt
               api.get_paged('projects',
                             workspace: config.workspace_gid,
                             archived: false,
-                            opt_fields: 'name')
+                            opt_fields: 'name,permalink_url')
             end
           end
         end

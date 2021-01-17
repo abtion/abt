@@ -60,14 +60,14 @@ module Abt
           def project
             @project ||= begin
               cli.warn 'Fetching project...'
-              api.get("projects/#{project_gid}", opt_fields: 'name')
+              api.get("projects/#{project_gid}", opt_fields: 'name,permalink_url')
             end
           end
 
           def task
             @task ||= begin
               cli.warn 'Fetching task...'
-              api.get("tasks/#{task_gid}", opt_fields: 'name')
+              api.get("tasks/#{task_gid}", opt_fields: 'name,permalink_url')
             end
           end
         end
