@@ -7,7 +7,7 @@ module Abt
     def self.local_available?
       @local_available ||= begin
         status = nil
-        Open3.popen3('git config --local -l', chdir: '/') do |_i, _o, _e, thread|
+        Open3.popen3('git config --local -l') do |_i, _o, _e, thread|
           status = thread.value
         end
         status.success?
