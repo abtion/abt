@@ -14,6 +14,9 @@ module Abt
           end
 
           def call
+            unless config.local_available?
+              cli.abort 'This is a no-op for tasks outside the current project'
+            end
             cli.abort 'No current or specified task' if task.nil?
             print_task(project_gid, task)
 
