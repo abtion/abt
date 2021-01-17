@@ -16,11 +16,11 @@ module Abt
         end
 
         def project_gid
-          GitConfig.local_available? ? git['projectGid'] : nil
+          local_available? ? git['projectGid'] : nil
         end
 
         def task_gid
-          GitConfig.local_available? ? git['taskGid'] : nil
+          local_available? ? git['taskGid'] : nil
         end
 
         def workspace_gid
@@ -35,13 +35,13 @@ module Abt
         end
 
         def wip_section_gid
-          return nil unless GitConfig.local_available?
+          return nil unless local_available?
 
           @wip_section_gid ||= git['wipSectionGid'] || prompt_wip_section['gid']
         end
 
         def finalized_section_gid
-          return nil unless GitConfig.local_available?
+          return nil unless local_available?
 
           @finalized_section_gid ||= git['finalizedSectionGid'] || prompt_finalized_section['gid']
         end
