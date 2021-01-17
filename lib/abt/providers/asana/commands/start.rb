@@ -14,7 +14,9 @@ module Abt
           end
 
           def call
-            override_current_task unless arg_str.nil?
+            abort 'No current/provided task' if task_gid.nil?
+
+            maybe_override_current_task
 
             update_assignee_if_needed
             move_if_needed
@@ -22,8 +24,13 @@ module Abt
 
           private
 
-          def override_current_task
-            Current.new(arg_str: arg_str, cli: cli).call
+          def maybe_override_current_task
+            return if arg_str.nil?
+            return if same_args_as_config?
+            return unless config.local_available?
+
+            should_override = cli.prompt_boolean 'Set selected task as current?'
+            Current.new(arg_str: arg_str, cli: cli).call if should_override
           end
 
           def update_assignee_if_needed
@@ -41,6 +48,11 @@ module Abt
           end
 
           def move_if_needed
+            unless project_gid == config.project_gid
+              cli.warn 'Task was not moved, this is not implemented for tasks outside current project'
+              return
+            end
+
             if task_already_in_wip_section?
               cli.warn "Task already in section: #{current_task_section['name']}"
             else

@@ -20,6 +20,10 @@ module Abt
 
         private
 
+        def same_args_as_config?
+          project_gid == config.project_gid && task_gid == config.task_gid
+        end
+
         def print_project(project)
           cli.print_provider_command('asana', project['gid'], project['name'])
           cli.warn project['permalink_url'] if project.key?('permalink_url') && cli.output.isatty

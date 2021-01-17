@@ -11,12 +11,16 @@ module Abt
           @git = GitConfig.new(namespace: 'abt.asana')
         end
 
+        def local_available?
+          GitConfig.local_available?
+        end
+
         def project_gid
-          git['projectGid']
+          GitConfig.local_available? ? git['projectGid'] : nil
         end
 
         def task_gid
-          git['taskGid']
+          GitConfig.local_available? ? git['taskGid'] : nil
         end
 
         def workspace_gid
@@ -31,25 +35,15 @@ module Abt
         end
 
         def wip_section_gid
-          @wip_section_gid ||= begin
-            current = git['wipSectionGid']
-            if current.nil?
-              prompt_wip_section['gid']
-            else
-              current
-            end
-          end
+          return nil unless GitConfig.local_available?
+
+          @wip_section_gid ||= git['wipSectionGid'] || prompt_wip_section['gid']
         end
 
         def finalized_section_gid
-          @finalized_section_gid ||= begin
-            current = git['finalizedSectionGid']
-            if current.nil?
-              prompt_finalized_section['gid']
-            else
-              current
-            end
-          end
+          return nil unless GitConfig.local_available?
+
+          @finalized_section_gid ||= git['finalizedSectionGid'] || prompt_finalized_section['gid']
         end
 
         def project_gid=(value)
@@ -64,6 +58,8 @@ module Abt
         end
 
         def clear_local
+          cli.abort 'Not in git repository' unless GitConfig.local_available?
+
           git['projectGid'] = nil
           git['taskGid'] = nil
           git['wipSectionGid'] = nil

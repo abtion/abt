@@ -4,6 +4,7 @@
 require 'dry-inflector'
 require 'faraday'
 require 'oj'
+require 'open3'
 
 require_relative '../lib/abt.rb'
 

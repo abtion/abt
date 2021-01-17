@@ -14,7 +14,7 @@ module Abt
           end
 
           def call
-            if arg_str.nil?
+            if same_args_as_config?
               show_current_configuration
             else
               cli.warn 'Updating configuration'
