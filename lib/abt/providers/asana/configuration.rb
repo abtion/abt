@@ -58,7 +58,7 @@ module Abt
         end
 
         def clear_local
-          cli.abort 'Not in git repository' unless GitConfig.local_available?
+          cli.abort 'No local configuration was found' unless local_available?
 
           git['projectGid'] = nil
           git['taskGid'] = nil
