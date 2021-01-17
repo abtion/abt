@@ -20,6 +20,10 @@ module Abt
 
         private
 
+        def same_args_as_config?
+          project_id == config.project_id && task_id == config.task_id
+        end
+
         def print_project(project)
           cli.print_provider_command(
             'harvest',

@@ -11,12 +11,16 @@ module Abt
           @git = GitConfig.new(namespace: 'abt.harvest')
         end
 
+        def local_available?
+          GitConfig.local_available?
+        end
+
         def project_id
-          git['projectId']
+          local_available? ? git['projectId'] : nil
         end
 
         def task_id
-          git['taskId']
+          local_available? ? git['taskId'] : nil
         end
 
         def project_id=(value)
@@ -31,6 +35,8 @@ module Abt
         end
 
         def clear_local
+          cli.abort 'No local configuration was found' unless local_available?
+
           git['projectId'] = nil
           git['taskId'] = nil
         end

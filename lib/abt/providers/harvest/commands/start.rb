@@ -14,7 +14,9 @@ module Abt
           end
 
           def call
-            override_current_task unless arg_str.nil?
+            abort 'No current/provided task' if task_id.nil?
+
+            maybe_override_current_task
 
             print_task(project, task)
 
@@ -30,14 +32,19 @@ module Abt
 
           private
 
-          def override_current_task
-            Current.new(arg_str: arg_str, cli: cli).call
+          def maybe_override_current_task
+            return if arg_str.nil?
+            return if same_args_as_config?
+            return unless config.local_available?
+
+            should_override = cli.prompt_boolean 'Set selected task as current?'
+            Current.new(arg_str: arg_str, cli: cli).call if should_override
           end
 
           def create_time_entry
             body = Oj.dump({
-              project_id: config.project_id,
-              task_id: config.task_id,
+              project_id: project_id,
+              task_id: task_id,
               user_id: config.user_id,
               spent_date: Date.today.iso8601
             }.merge(external_link_data), mode: :json)

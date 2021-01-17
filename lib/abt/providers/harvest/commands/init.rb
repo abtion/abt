@@ -14,6 +14,8 @@ module Abt
           end
 
           def call
+            cli.abort 'Must be run inside a git repository' unless config.local_available?
+
             projects # Load projects up front to make it obvious that searches are instant
             project = find_search_result
 
