@@ -27,6 +27,8 @@ module Abt
           private
 
           def find_search_result
+            cli.warn 'Select a project'
+
             loop do
               matches = matches_for_string cli.prompt('Enter search')
               if matches.empty?
