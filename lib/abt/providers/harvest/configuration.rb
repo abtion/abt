@@ -74,18 +74,17 @@ module Abt
         def user_id
           return git.global['userId'] unless git.global['userId'].nil?
 
-          git.global['userId'] = cli.prompt([
-            'Please provide your harvest User ID.',
-            'To find it open "My profile" inside the harvest web UI.',
-            'The ID is the number part of the URL for that page.',
-            '',
-            'Enter user id'
-          ].join("\n"))
+          git.global['userId'] = api.get('users/me')['id'].to_s
         end
 
         private
 
         attr_reader :git
+
+        def api
+          @api ||=
+            Abt::Providers::Harvest::Api.new(access_token: access_token, account_id: account_id)
+        end
       end
     end
   end
