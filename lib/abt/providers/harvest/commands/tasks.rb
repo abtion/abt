@@ -14,22 +14,29 @@ module Abt
           end
 
           def call
-            project_task_assignments.each do |a|
-              project = a['project']
-              task = a['task']
-
+            tasks.each do |task|
               print_task(project, task)
             end
           end
 
           private
 
-          def project_task_assignments
-            @project_task_assignments ||= begin
-              api.get_paged("projects/#{project_id}/task_assignments", is_active: true)
-            rescue Abt::HttpError::HttpError # rubocop:disable Layout/RescueEnsureAlignment
-              []
+          def project
+            project_assignment['project']
+          end
+
+          def tasks
+            @tasks ||= project_assignment['task_assignments'].map { |ta| ta['task'] }
+          end
+
+          def project_assignment
+            @project_assignment ||= begin
+              project_assignments.find { |pa| pa['project']['id'].to_s == project_id }
             end
+          end
+
+          def project_assignments
+            @project_assignments ||= api.get_paged('users/me/project_assignments')
           end
         end
       end
