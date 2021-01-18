@@ -13,11 +13,9 @@ module Abt
             'Clear project/task for current git repository'
           end
 
-          def initialize(**); end
-
           def call
             cli.warn 'Clearing Harvest project configuration'
-            config.clear
+            config.clear_local
           end
         end
       end
