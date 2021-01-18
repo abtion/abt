@@ -44,7 +44,7 @@ module Abt
               api.get_paged(
                 'time_entries',
                 is_running: true,
-                user_id: Harvest.user_id
+                user_id: config.user_id
               ).first
             rescue Abt::HttpError::HttpError => e # rubocop:disable Layout/RescueEnsureAlignment
               cli.warn e
