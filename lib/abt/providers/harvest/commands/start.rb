@@ -52,11 +52,23 @@ module Abt
           end
 
           def project
-            @project ||= api.get("projects/#{project_id}")
+            project_assignment['project']
           end
 
           def task
-            @task ||= api.get("tasks/#{task_id}")
+            @task ||= project_assignment['task_assignments'].map { |ta| ta['task'] }.find do |task|
+              task['id'].to_s == task_id
+            end
+          end
+
+          def project_assignment
+            @project_assignment ||= begin
+              project_assignments.find { |pa| pa['project']['id'].to_s == project_id }
+            end
+          end
+
+          def project_assignments
+            @project_assignments ||= api.get_paged('users/me/project_assignments')
           end
 
           def external_link_data
