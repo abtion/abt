@@ -24,13 +24,15 @@ module Abt
         end
 
         def project_id=(value)
+          value = value.to_s unless value.nil?
           return if project_id == value
 
           clear_local
-          git['projectId'] = value unless value.nil?
+          git['projectId'] = value
         end
 
         def task_id=(value)
+          value = value.to_s unless value.nil?
           git['taskId'] = value
         end
 
