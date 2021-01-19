@@ -42,13 +42,21 @@ module Abt
           end
 
           def create_time_entry
-            body = Oj.dump({
+            body = {
               project_id: project_id,
               task_id: task_id,
               user_id: config.user_id,
               spent_date: Date.today.iso8601
-            }.merge(external_link_data), mode: :json)
-            api.post('time_entries', body)
+            }
+
+            if external_link_data
+              body.merge! external_link_data
+            else
+              cli.warn 'No external link provided'
+              body[:notes] ||= cli.prompt('Fill in comment (optional)')
+            end
+
+            api.post('time_entries', Oj.dump(body, mode: :json))
           end
 
           def project
@@ -76,7 +84,7 @@ module Abt
               arg_strs = cli.args.join(' ')
               lines = `#{$PROGRAM_NAME} harvest-time-entry-data #{arg_strs}`.split("\n")
 
-              return {} if lines.empty?
+              return if lines.empty?
 
               # TODO: Make user choose which reference to use by printing the urls
               if lines.length > 1
