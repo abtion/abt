@@ -17,6 +17,10 @@ module Abt
             'abt start asana harvest' => 'Continue working, e.g. after a break',
             'abt finalize asana' => 'Finalize the selected asana task'
           },
+          'Tracking meetings (without changing the config):' => {
+            'abt tasks asana | grep -i standup | abt track harvest' => 'Track on asana meeting task without changing any configuration',
+            'abt tasks harvest | grep -i comment | abt track harvest' => 'Track on harvest "Comment"-task (will prompt for a comment)'
+          },
           'Command output can be piped, e.g.:' => {
             'abt tasks asana | grep -i <name of task>' => nil,
             'abt tasks asana | grep -i <name of task> | abt start' => nil

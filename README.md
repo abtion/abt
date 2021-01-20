@@ -12,6 +12,10 @@ Getting started:
 - `abt start asana harvest`: Continue working, e.g. after a break
 - `abt finalize asana`: Finalize the selected asana task
 
+Tracking meetings (without changing the config):
+- `abt tasks asana | grep -i standup | abt track harvest`: Track on asana meeting task without changing any configuration
+- `abt tasks harvest | grep -i comment | abt track harvest`: Track on harvest "Comment"-task (will prompt for a comment)
+
 Command output can be piped, e.g.:
 - `abt tasks asana | grep -i <name of task>`
 - `abt tasks asana | grep -i <name of task> | abt start`
@@ -47,6 +51,7 @@ Sharing configuration:
 | `pick harvest[:<project-id>]`                | Pick task for current git repository |
 | `projects harvest`                           | List all available projects - useful for piping into grep etc. |
 | `share harvest[:<project-id>[/<task-id>]]`   | Print project/task config string |
-| `start harvest[:<project-id>/<task-id>]`     | Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana` |
+| `start harvest[:<project-id>/<task-id>]`     | As track, but also lets the user override the current task and triggers `start` commands for other providers  |
 | `stop harvest`                               | Stop running harvest tracker |
 | `tasks harvest`                              | List available tasks on project - useful for piping into grep etc. |
+| `track harvest[:<project-id>/<task-id>]`     | Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana` |
