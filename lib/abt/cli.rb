@@ -60,7 +60,7 @@ module Abt
     def args_from_stdin
       input = STDIN.read
 
-      return [] if input.nil?
+      abort 'No input from pipe' if input.nil? || input.empty?
 
       # Exclude comment part of piped input lines
       lines_without_comments = input.lines.map do |line|
