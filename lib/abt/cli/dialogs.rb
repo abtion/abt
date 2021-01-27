@@ -25,11 +25,6 @@ module Abt
       end
 
       def prompt_choice(text, options, allow_back_option = false)
-        if options.one?
-          warn "Selected: #{options.first['name']}"
-          return options.first
-        end
-
         warn "#{text}:"
 
         print_options(options)

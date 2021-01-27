@@ -109,9 +109,13 @@ module Abt
           workspaces = api.get_paged('workspaces')
           if workspaces.empty?
             cli.abort 'Your asana access token does not have access to any workspaces'
+          elsif workspaces.one?
+            workspace = workspaces.first
+            cli.warn "Selected Asana workspace #{workspace['name']}"
+          else
+            workspace = cli.prompt_choice('Select Asana workspace', workspaces)
           end
 
-          workspace = cli.prompt_choice('Select Asana workspace', workspaces)
           git.global['workspaceGid'] = workspace['gid']
           workspace
         end
