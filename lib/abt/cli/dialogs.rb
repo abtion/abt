@@ -27,6 +27,13 @@ module Abt
       def prompt_choice(text, options, allow_back_option = false)
         warn "#{text}:"
 
+        if options.length.zero?
+          abort 'No available options' unless allow_back_option
+
+          warn 'No available options'
+          return nil
+        end
+
         print_options(options)
         select_options(options, allow_back_option)
       end
