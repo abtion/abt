@@ -40,11 +40,12 @@ module Abt
       end
 
       def select_options(options, allow_back_option)
-        while (number = read_option_number(options.length, allow_back_option))
+        loop do
+          number = read_option_number(options.length, allow_back_option)
           if number.nil?
             return nil if allow_back_option
 
-            abort
+            next
           end
 
           option = options[number - 1]
