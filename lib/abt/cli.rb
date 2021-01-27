@@ -20,7 +20,7 @@ module Abt
       @output = output
       @err_output = err_output
 
-      @args += args_from_stdin unless input.isatty # Add piped arguments
+      @args += args_from_input unless input.isatty # Add piped arguments
     end
 
     def perform
@@ -57,13 +57,13 @@ module Abt
       end
     end
 
-    def args_from_stdin
-      input = STDIN.read
+    def args_from_input
+      input_string = input.read
 
-      abort 'No input from pipe' if input.nil? || input.empty?
+      abort 'No input from pipe' if input_string.nil? || input_string.empty?
 
       # Exclude comment part of piped input lines
-      lines_without_comments = input.lines.map do |line|
+      lines_without_comments = input_string.lines.map do |line|
         line.split(' # ').first
       end
 
