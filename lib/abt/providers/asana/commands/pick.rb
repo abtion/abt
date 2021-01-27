@@ -18,7 +18,7 @@ module Abt
 
             cli.warn project['name']
 
-            task = cli.prompt_choice 'Select a task', tasks
+            task = select_task
 
             config.project_gid = project_gid # We might have gotten the project ID as an argument
             config.task_gid = task['gid']
@@ -32,12 +32,24 @@ module Abt
             @project ||= api.get("projects/#{project_gid}")
           end
 
-          def tasks
-            @tasks ||= begin
+          def select_task
+            loop do
               section = cli.prompt_choice 'Which section?', sections
               cli.warn 'Fetching tasks...'
-              api.get_paged('tasks', section: section['gid'], opt_fields: 'name,permalink_url')
+              tasks = tasks_in_section(section)
+
+              if tasks.length.zero?
+                cli.warn 'Section is empty'
+                next
+              end
+
+              task = cli.prompt_choice 'Select a task', tasks, true
+              return task if task
             end
+          end
+
+          def tasks_in_section(section)
+            api.get_paged('tasks', section: section['gid'], opt_fields: 'name,permalink_url')
           end
 
           def sections
