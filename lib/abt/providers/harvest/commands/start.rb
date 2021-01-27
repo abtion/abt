@@ -14,10 +14,10 @@ module Abt
           end
 
           def call
-            start_output = call_start
-            puts start_output
+            track_output = call_track
+            puts track_output
 
-            use_arg_str(arg_str_from_start_output(start_output))
+            use_arg_str(arg_str_from_track_output(track_output))
 
             maybe_override_current_task
           rescue Abt::HttpError::HttpError => e
@@ -27,14 +27,15 @@ module Abt
 
           private
 
-          def arg_str_from_start_output(output)
+          def arg_str_from_track_output(output)
             output = output.split(' # ').first
             output.split(':')[1]
           end
 
-          def call_start
+          def call_track
+            input = StringIO.new(cli.args.join(' '))
             output = StringIO.new
-            Abt::Cli.new(argv: ['track', *cli.args], output: output).perform
+            Abt::Cli.new(argv: ['track'], output: output, input: input).perform
 
             output_str = output.string.strip
             cli.abort 'No task provided' if output_str.empty?
@@ -47,9 +48,9 @@ module Abt
             return unless config.local_available?
             return unless cli.prompt_boolean 'Set selected task as current?'
 
+            input = StringIO.new("harvest:#{project_id}/#{task_id}")
             output = StringIO.new
-            Abt::Cli.new(argv: ['current', "harvest:#{project_id}/#{task_id}"],
-                         output: output).perform
+            Abt::Cli.new(argv: ['current'], output: output, input: input).perform
           end
         end
       end

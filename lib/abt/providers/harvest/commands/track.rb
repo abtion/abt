@@ -50,8 +50,11 @@ module Abt
 
           def external_link_data
             @external_link_data ||= begin
-              arg_strs = cli.args.join(' ')
-              lines = `#{$PROGRAM_NAME} harvest-time-entry-data #{arg_strs}`.split("\n")
+              input = StringIO.new(cli.args.join(' '))
+              output = StringIO.new
+              Abt::Cli.new(argv: ['harvest-time-entry-data'], output: output, input: input).perform
+
+              lines = output.string.strip.lines
 
               return if lines.empty?
 
