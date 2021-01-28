@@ -36,12 +36,11 @@ module Abt
           # cli.warn board['url'] if board.key?('url') && cli.output.isatty # TODO: Web URL
         end
 
-        # def print_work_item(organization, project, board, work_item)
-        #   arg_str = "#{organization}/#{project}/#{board['id']}/#{work_item['id']}"
+        def print_work_item(organization, project, board, work_item)
+          arg_str = "#{organization}/#{project}/#{board['id']}/#{work_item['id']}"
 
-        #   cli.print_provider_command('devops', arg_str, work_item['name'])
-        #   cli.warn work_item['url'] if work_item.key?('url') && cli.output.isatty
-        # end
+          cli.print_provider_command('devops', arg_str, work_item['name'])
+        end
 
         def use_current_args
           @organization_name = config.organization_name

@@ -21,8 +21,8 @@ module Abt
           end
         end
 
-        def get_paged(path, _query = {})
-          result = request(:get, path)
+        def get_paged(path, query = {})
+          result = request(:get, path, query)
           result['value']
 
           # TODO: Loop if necessary
@@ -47,6 +47,8 @@ module Abt
         def connection
           @connection ||= Faraday.new(api_endpoint) do |connection|
             connection.basic_auth username, access_token
+            connection.headers['Content-Type'] = 'application/json'
+            connection.headers['Accept'] = 'application/json; api-version=6.0'
           end
         end
       end
