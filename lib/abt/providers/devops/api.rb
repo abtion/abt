@@ -41,7 +41,7 @@ module Abt
         end
 
         def base_url
-          "https://dev.azure.com/#{organization_name}/#{project_name}"
+          "https://#{organization_name}.visualstudio.com/#{project_name}"
         end
 
         def api_endpoint
