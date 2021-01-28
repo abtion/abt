@@ -13,6 +13,11 @@ module Abt
             'Pick Asana project for current git repository'
           end
 
+          def initialize(cli:, **)
+            @config = Configuration.new(cli: cli)
+            @cli = cli
+          end
+
           def call
             cli.abort 'Must be run inside a git repository' unless config.local_available?
 
