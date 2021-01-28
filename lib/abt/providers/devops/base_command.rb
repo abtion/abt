@@ -40,6 +40,7 @@ module Abt
           arg_str = "#{organization}/#{project}/#{board['id']}/#{work_item['id']}"
 
           cli.print_provider_command('devops', arg_str, work_item['name'])
+          cli.warn(api.url_for_work_item(work_item)) if cli.output.isatty
         end
 
         def use_current_args

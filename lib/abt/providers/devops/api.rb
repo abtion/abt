@@ -40,8 +40,16 @@ module Abt
           end
         end
 
+        def base_url
+          "https://dev.azure.com/#{organization_name}/#{project_name}"
+        end
+
         def api_endpoint
-          "https://dev.azure.com/#{organization_name}/#{project_name}/_apis"
+          "#{base_url}/_apis"
+        end
+
+        def url_for_work_item(work_item)
+          "#{base_url}/_workitems/edit/#{work_item['id']}"
         end
 
         def connection
