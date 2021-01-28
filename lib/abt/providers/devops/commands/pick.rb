@@ -59,12 +59,7 @@ module Abt
             ids = response['workItems'].map { |work_item| work_item['id'] }
             work_items = api.get_paged('wit/workitems', ids: ids.join(','))
 
-            work_items.map do |work_item|
-              work_item.merge(
-                'id' => work_item['id'].to_s,
-                'name' => work_item['fields']['System.Title']
-              )
-            end
+            work_items.map { |work_item| sanitize_work_item(work_item) }
           end
 
           def columns

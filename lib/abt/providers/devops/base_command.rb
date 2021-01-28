@@ -22,6 +22,16 @@ module Abt
 
         private
 
+        def sanitize_work_item(work_item)
+          return nil if work_item.nil?
+
+          work_item.merge(
+            'id' => work_item['id'].to_s,
+            'name' => work_item['fields']['System.Title'],
+            'url' => api.url_for_work_item(work_item)
+          )
+        end
+
         def same_args_as_config?
           organization_name == config.organization_name &&
             project_name == config.project_name &&
@@ -40,7 +50,7 @@ module Abt
           arg_str = "#{organization}/#{project}/#{board['id']}/#{work_item['id']}"
 
           cli.print_provider_command('devops', arg_str, work_item['name'])
-          cli.warn(api.url_for_work_item(work_item)) if cli.output.isatty
+          cli.warn work_item['url'] if work_item.key?('url') && cli.output.isatty
         end
 
         def use_current_args
