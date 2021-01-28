@@ -13,7 +13,7 @@ module Abt
             'Print Harvest time entry data for Asana task as json. Used by harvest start script.'
           end
 
-          def call # rubocop:disable Metrics/MethodLength
+          def call
             ensure_current_is_valid!
 
             body = {
@@ -21,9 +21,7 @@ module Abt
               external_reference: {
                 id: task_gid.to_i,
                 group_id: project_gid.to_i,
-                permalink: task['permalink_url'],
-                service: 'app.asana.com',
-                service_icon_url: 'https://proxy.harvestfiles.com/production_harvestapp_public/uploads/platform_icons/app.asana.com.png'
+                permalink: task['permalink_url']
               }
             }
 
