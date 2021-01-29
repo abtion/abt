@@ -67,7 +67,7 @@ module Abt
           end
 
           def board
-            @boards ||= api.get("work/boards/#{board_id}")
+            @board ||= api.get("work/boards/#{board_id}")
           end
         end
       end
