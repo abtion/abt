@@ -32,6 +32,19 @@ module Abt
       set(key, value)
     end
 
+    def full_keys
+      if scope == 'local' && !self.class.local_available?
+        raise StandardError, 'Local configuration is not available outside a git repository'
+      end
+
+      `git config --#{scope} --get-regexp --name-only ^#{namespace}`.lines.map(&:strip)
+    end
+
+    def keys
+      offset = namespace.length + 1
+      full_keys.map { |key| key[offset..-1] }
+    end
+
     def local
       @local ||= begin
         if scope == 'local'

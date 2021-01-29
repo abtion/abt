@@ -66,6 +66,13 @@ module Abt
           git['workItemId'] = nil
         end
 
+        def clear_global
+          git.global.keys.each do |key|
+            cli.puts 'Deleting configuration: ' + key
+            git.global[key] = nil
+          end
+        end
+
         def username_for_organization(organization_name)
           username_key = "organizations.#{organization_name}.username"
 
