@@ -10,14 +10,13 @@ module Abt
           @arg_str = arg_str
 
           @config = Configuration.new(cli: cli)
+          @cli = cli
 
           if arg_str.nil?
             use_current_args
           else
             use_arg_str(arg_str)
           end
-
-          @cli = cli
         end
 
         private
