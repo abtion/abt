@@ -6,7 +6,7 @@ module Abt
       module Commands
         class HarvestTimeEntryData < BaseCommand
           def self.command
-            'harvest-time-entry-data deveops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]'
+            'harvest-time-entry-data devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]'
           end
 
           def self.description
