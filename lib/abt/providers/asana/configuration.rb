@@ -67,8 +67,10 @@ module Abt
         end
 
         def clear_global
-          git.global['workspaceGid'] = nil
-          git.global['accessToken'] = nil
+          git.global.keys.each do |key|
+            cli.puts 'Deleting configuration: ' + key
+            git.global[key] = nil
+          end
         end
 
         def access_token
