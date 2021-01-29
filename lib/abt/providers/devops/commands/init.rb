@@ -13,7 +13,7 @@ module Abt
           end
 
           def self.description
-            'Pick Devops board for current git repository'
+            'Pick DevOps board for current git repository'
           end
 
           def call

@@ -6,7 +6,7 @@ module Abt
       module Commands
         class Pick < BaseCommand
           def self.command
-            'pick devops[:<organization_name>/<project_name>/<board-id>]'
+            'pick devops[:<organization-name>/<project-name>/<board-id>]'
           end
 
           def self.description

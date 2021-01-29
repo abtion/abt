@@ -6,11 +6,11 @@ module Abt
       module Commands
         class HarvestTimeEntryData < BaseCommand
           def self.command
-            'harvest-time-entry-data deveops[:<organization_name>/<project_name>/<board-id>/work-item-id]'
+            'harvest-time-entry-data deveops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]'
           end
 
           def self.description
-            'Print Harvest time entry data for Devops task as json. Used by harvest start script.'
+            'Print Harvest time entry data for DevOps work item as json. Used by harvest start script.'
           end
 
           def call
