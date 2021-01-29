@@ -41,6 +41,17 @@ Sharing configuration:
 | `start asana[:<project-gid>/<task-gid>]`                   | Set current task and move it to a section (column) of your choice |
 | `tasks asana`                                              | List available tasks on project - useful for piping into grep etc. |
 
+### Devops
+| Command | Description |
+| :------ | :---------- |
+| `clear devops`                                                                                  | Clear DevOps config for current git repository |
+| `clear-global devops`                                                                           | Clear all global configuration |
+| `current devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`               | Get or set DevOps configuration for current git repository |
+| `harvest-time-entry-data devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]` | Print Harvest time entry data for DevOps work item as json. Used by harvest start script. |
+| `init devops`                                                                                   | Pick DevOps board for current git repository |
+| `pick devops[:<organization-name>/<project-name>/<board-id>]`                                   | Pick work item for current git repository |
+| `share devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`                 | Print DevOps config string |
+
 ### Harvest
 | Command | Description |
 | :------ | :---------- |
