@@ -48,16 +48,14 @@ module Abt
           end
 
           def work_items_in_column(column)
-            wiql = <<~WIQL
-              SELECT [System.Id]
-              FROM WorkItems
-              WHERE [System.BoardColumn] = '#{column['name']}'
-              ORDER BY [Microsoft.VSTS.Common.BacklogPriority] ASC
-            WIQL
-
-            response = api.post('wit/wiql', Oj.dump({ query: wiql }, mode: :json))
-            ids = response['workItems'].map { |work_item| work_item['id'] }
-            work_items = api.get_paged('wit/workitems', ids: ids.join(','))
+            work_items = api.work_item_query(
+              <<~WIQL
+                SELECT [System.Id]
+                FROM WorkItems
+                WHERE [System.BoardColumn] = '#{column['name']}'
+                ORDER BY [Microsoft.VSTS.Common.BacklogPriority] ASC
+              WIQL
+            )
 
             work_items.map { |work_item| sanitize_work_item(work_item) }
           end

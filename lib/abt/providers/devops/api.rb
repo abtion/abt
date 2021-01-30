@@ -28,6 +28,18 @@ module Abt
           # TODO: Loop if necessary
         end
 
+        def work_item_query(wiql)
+          response = post('wit/wiql', Oj.dump({ query: wiql }, mode: :json))
+          ids = response['workItems'].map { |work_item| work_item['id'] }
+
+          work_items = []
+          ids.each_slice(200) do |page_ids|
+            work_items += get_paged('wit/workitems', ids: page_ids.join(','))
+          end
+
+          work_items
+        end
+
         def request(*args)
           response = connection.public_send(*args)
 
