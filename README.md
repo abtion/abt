@@ -51,6 +51,7 @@ Sharing configuration:
 | `init devops`                                                                                   | Pick DevOps board for current git repository |
 | `pick devops[:<organization-name>/<project-name>/<board-id>]`                                   | Pick work item for current git repository |
 | `share devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`                 | Print DevOps config string |
+| `work-items devops`                                                                             | List all work items on board - useful for piping into grep etc. |
 
 ### Harvest
 | Command | Description |
