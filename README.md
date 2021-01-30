@@ -44,6 +44,7 @@ Sharing configuration:
 ### Devops
 | Command | Description |
 | :------ | :---------- |
+| `boards devops`                                                                                 | List all boards - useful for piping into grep etc |
 | `clear devops`                                                                                  | Clear DevOps config for current git repository |
 | `clear-global devops`                                                                           | Clear all global configuration |
 | `current devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`               | Get or set DevOps configuration for current git repository |
