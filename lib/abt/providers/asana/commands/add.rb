@@ -6,15 +6,15 @@ module Abt
       module Commands
         class Add < BaseCommand
           def self.command
-            'start asana[:<project-gid>/<task-gid>]'
+            'add asana[:<project-gid>]'
           end
 
           def self.description
-            'Set current task and move it to a section (column) of your choice'
+            'Create a new task for the current/specified Asana project'
           end
 
           def call
-            abort 'No project' if project_gid.nil?
+            abort 'No current/specified project' if project_gid.nil?
 
             task
             print_task(project, task)

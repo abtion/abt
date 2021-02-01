@@ -29,6 +29,7 @@ Sharing configuration:
 ### Asana
 | Command | Description |
 | :------ | :---------- |
+| `add asana[:<project-gid>]`                                | Create a new task for the current/specified Asana project |
 | `clear asana`                                              | Clear project/task for current git repository |
 | `clear-global asana`                                       | Clear all global configuration |
 | `current asana[:<project-gid>[/<task-gid>]]`               | Get or set project and or task for current git repository |
