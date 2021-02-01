@@ -24,18 +24,18 @@ module Abt
         end
       end
 
-      def prompt_choice(text, options, allow_back_option = false)
+      def prompt_choice(text, options, nil_option = false)
         warn "#{text}:"
 
         if options.length.zero?
-          abort 'No available options' unless allow_back_option
+          abort 'No available options' unless nil_option
 
           warn 'No available options'
           return nil
         end
 
         print_options(options)
-        select_options(options, allow_back_option)
+        select_options(options, nil_option)
       end
 
       private
@@ -46,11 +46,11 @@ module Abt
         end
       end
 
-      def select_options(options, allow_back_option)
+      def select_options(options, nil_option)
         loop do
-          number = read_option_number(options.length, allow_back_option)
+          number = read_option_number(options.length, nil_option)
           if number.nil?
-            return nil if allow_back_option
+            return nil if nil_option
 
             next
           end
@@ -62,12 +62,12 @@ module Abt
         end
       end
 
-      def read_option_number(options_length, allow_back_option)
-        err_output.print "(1-#{options_length}#{allow_back_option ? ', q: back' : ''}): "
+      def read_option_number(options_length, nil_option)
+        err_output.print "(1-#{options_length}#{nil_option_string(nil_option)}): "
 
         input = read_user_input
 
-        return nil if allow_back_option && input == 'q'
+        return nil if nil_option && input == nil_option_character(nil_option)
 
         option_number = input.to_i
         if option_number <= 0 || option_number > options_length
@@ -76,6 +76,25 @@ module Abt
         end
 
         option_number
+      end
+
+      def nil_option_string(nil_option)
+        return '' unless nil_option
+
+        ", #{nil_option_character(nil_option)}: #{nil_option_description(nil_option)}"
+      end
+
+      def nil_option_character(nil_option)
+        return 'q' if nil_option == true
+
+        nil_option[0]
+      end
+
+      def nil_option_description(nil_option)
+        return 'back' if nil_option == true
+        return nil_option if nil_option.is_a?(String)
+
+        nil_option[1]
       end
 
       def read_user_input
