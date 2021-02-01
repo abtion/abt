@@ -21,13 +21,19 @@ module Abt
 
             work_item = select_work_item
 
-            # We might have gotten org, project, board as arg str
-            update_config! if arg_str
+            update_config!(work_item)
 
             print_work_item(organization_name, project_name, board, work_item)
           end
 
           private
+
+          def update_config!(work_item)
+            config.organization_name = organization_name
+            config.project_name = project_name
+            config.board_id = board_id
+            config.work_item_id = work_item['id']
+          end
 
           def select_work_item
             loop do
