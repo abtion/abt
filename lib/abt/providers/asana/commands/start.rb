@@ -14,7 +14,7 @@ module Abt
           end
 
           def call
-            abort 'No current/provided task' if task_gid.nil?
+            require_task!
 
             maybe_override_current_task
 

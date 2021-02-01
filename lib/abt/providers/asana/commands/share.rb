@@ -14,9 +14,9 @@ module Abt
           end
 
           def call
-            if project_gid.nil?
-              cli.warn 'No project selected'
-            elsif task_gid.nil?
+            require_project!
+
+            if task_gid.nil?
               cli.print_provider_command('asana', project_gid)
             else
               cli.print_provider_command('asana', "#{project_gid}/#{task_gid}")

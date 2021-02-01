@@ -20,6 +20,17 @@ module Abt
 
         private
 
+        def require_project!
+          cli.abort 'No current/specified project. Did you initialize Asana?' if project_gid.nil?
+        end
+
+        def require_task!
+          if project_gid.nil?
+            cli.abort 'No current/specified project. Did you initialize Asana and pick a task?'
+          end
+          cli.abort 'No current/specified task. Did you pick an Asana task?' if task_gid.nil?
+        end
+
         def same_args_as_config?
           project_gid == config.project_gid && task_gid == config.task_gid
         end

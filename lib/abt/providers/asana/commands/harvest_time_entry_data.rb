@@ -14,6 +14,7 @@ module Abt
           end
 
           def call
+            require_task!
             ensure_current_is_valid!
 
             body = {

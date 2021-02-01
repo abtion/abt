@@ -14,7 +14,7 @@ module Abt
           end
 
           def call
-            abort 'No current/specified project' if project_gid.nil?
+            require_project!
 
             task
             print_task(project, task)
@@ -39,7 +39,7 @@ module Abt
           end
 
           def move_task
-            body = { data: { task: task_gid } }
+            body = { data: { task: task['gid'] } }
             body_json = Oj.dump(body, mode: :json)
             api.post("sections/#{section['gid']}/addTask", body_json)
           end
