@@ -14,8 +14,8 @@ module Abt
           end
 
           def call
-            cli.abort 'No organization selected' if organization_name.nil?
-            cli.abort 'No project selected' if project_name.nil?
+            cli.abort 'No organization selected. Did you initialize DevOps?' if organization_name.nil?
+            cli.abort 'No project selected. Did you initialize DevOps?' if project_name.nil?
 
             boards.map do |board|
               print_board(organization_name, project_name, board)

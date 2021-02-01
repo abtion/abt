@@ -15,7 +15,7 @@ module Abt
 
           def call
             cli.abort 'Must be run inside a git repository' unless config.local_available?
-            cli.abort 'No board selected. Did you run `abt init devops`?' if board_id.nil?
+            require_board!
 
             cli.warn "#{project_name} - #{board['name']}"
 

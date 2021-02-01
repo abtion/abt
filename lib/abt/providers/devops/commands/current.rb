@@ -14,6 +14,8 @@ module Abt
           end
 
           def call
+            require_board!
+
             if same_args_as_config? || !config.local_available?
               show_current_configuration
             else
@@ -25,13 +27,7 @@ module Abt
           private
 
           def show_current_configuration
-            if organization_name.nil?
-              cli.warn 'No organization selected'
-            elsif project_name.nil?
-              cli.warn 'No project selected'
-            elsif board_id.nil?
-              cli.warn 'No board selected'
-            elsif work_item_id.nil?
+            if work_item_id.nil?
               print_board(organization_name, project_name, board)
             else
               print_work_item(organization_name, project_name, board, work_item)

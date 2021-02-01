@@ -14,6 +14,8 @@ module Abt
           end
 
           def call
+            require_board!
+
             work_items.each do |work_item|
               print_work_item(organization_name, project_name, board, work_item)
             end

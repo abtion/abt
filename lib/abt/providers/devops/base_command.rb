@@ -21,6 +21,22 @@ module Abt
 
         private
 
+        def require_board!
+          return if organization_name && project_name && board_id
+
+          cli.abort 'No current/specified board. Did you initialize DevOps?'
+        end
+
+        def require_work_item!
+          unless organization_name && project_name && board_id
+            cli.abort 'No current/specified board. Did you initialize DevOps and pick a work item?'
+          end
+
+          return if work_item_id
+
+          cli.abort 'No current/specified work item. Did you pick a DevOps work item?'
+        end
+
         def sanitize_work_item(work_item)
           return nil if work_item.nil?
 

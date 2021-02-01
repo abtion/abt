@@ -14,6 +14,8 @@ module Abt
           end
 
           def call
+            require_work_item!
+
             body = {
               notes: notes,
               external_reference: {
