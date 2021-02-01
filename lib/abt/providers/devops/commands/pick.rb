@@ -15,16 +15,14 @@ module Abt
 
           def call
             cli.abort 'Must be run inside a git repository' unless config.local_available?
+            cli.abort 'No board selected. Did you run `abt init devops`?' if board_id.nil?
 
             cli.warn "#{project_name} - #{board['name']}"
 
             work_item = select_work_item
 
             # We might have gotten org, project, board as arg str
-            config.organization_name = organization_name
-            config.project_name = project_name
-            config.board_id = board_id
-            config.work_item_id = work_item['id']
+            update_config! if arg_str
 
             print_work_item(organization_name, project_name, board, work_item)
           end
