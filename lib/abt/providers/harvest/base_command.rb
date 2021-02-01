@@ -20,6 +20,17 @@ module Abt
 
         private
 
+        def require_project!
+          cli.abort 'No current/specified project. Did you initialize Harvest?' if project_id.nil?
+        end
+
+        def require_task!
+          if project_id.nil?
+            cli.abort 'No current/specified project. Did you initialize Harvest and pick a task?'
+          end
+          cli.abort 'No current/specified task. Did you pick a Harvest task?' if task_id.nil?
+        end
+
         def same_args_as_config?
           project_id == config.project_id && task_id == config.task_id
         end

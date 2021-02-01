@@ -14,6 +14,8 @@ module Abt
           end
 
           def call
+            require_project!
+
             if same_args_as_config? || !config.local_available?
               show_current_configuration
             else
@@ -25,9 +27,7 @@ module Abt
           private
 
           def show_current_configuration
-            if project_id.nil?
-              cli.warn 'No project selected'
-            elsif task_id.nil?
+            if task_id.nil?
               print_project(project)
             else
               print_task(project, task)

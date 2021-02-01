@@ -14,8 +14,7 @@ module Abt
           end
 
           def call
-            abort 'No current/provided task' if task_id.nil?
-            cli.abort('No task selected') if task_id.nil?
+            require_task!
 
             print_task(created_time_entry['project'], created_time_entry['task'])
 

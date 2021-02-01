@@ -15,6 +15,7 @@ module Abt
 
           def call
             cli.abort 'Must be run inside a git repository' unless config.local_available?
+            require_project!
 
             cli.warn project['name']
             task = cli.prompt_choice 'Select a task', tasks

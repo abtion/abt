@@ -14,6 +14,8 @@ module Abt
           end
 
           def call
+            require_project!
+
             tasks.each do |task|
               print_task(project, task)
             end

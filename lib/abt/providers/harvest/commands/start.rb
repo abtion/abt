@@ -37,9 +37,7 @@ module Abt
             output = StringIO.new
             Abt::Cli.new(argv: ['track'], output: output, input: input).perform
 
-            output_str = output.string.strip
-            cli.abort 'No task provided' if output_str.empty?
-            output_str
+            output.string.strip
           end
 
           def maybe_override_current_task
