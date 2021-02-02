@@ -18,7 +18,7 @@ RSpec.describe Abt::GitConfig do
       expect(system_call).to eq('git config --local -l')
     end
 
-    context 'when command was successful' do
+    context 'when command is successful' do
       it 'is true' do
         stub_const 'Abt::GitConfig::LOCAL_CONFIG_AVAILABLE_CHECK_COMMAND', 'true'
         expect(Abt::GitConfig.local_available?).to be(true)
