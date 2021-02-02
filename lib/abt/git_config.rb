@@ -4,13 +4,17 @@ module Abt
   class GitConfig
     attr_reader :namespace, :scope
 
+    LOCAL_CONFIG_AVAILABLE_CHECK_COMMAND = 'git config --local -l'
+
     def self.local_available?
-      @local_available ||= begin
-        status = nil
-        Open3.popen3('git config --local -l') do |_i, _o, _e, thread|
-          status = thread.value
+      return @local_available if instance_variables.include?(:@local_available)
+
+      @local_available = begin
+        success = false
+        Open3.popen3(LOCAL_CONFIG_AVAILABLE_CHECK_COMMAND) do |_i, _o, _e, thread|
+          success = thread.value.success?
         end
-        status.success?
+        success
       end
     end
 
