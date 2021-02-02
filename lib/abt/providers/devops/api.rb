@@ -6,13 +6,16 @@ module Abt
       class Api
         VERBS = %i[get post put].freeze
 
-        attr_reader :organization_name, :project_name, :username, :access_token
+        CONDITIONAL_ACCESS_POLICY_ERROR_CODE = 'VS403463'
 
-        def initialize(organization_name:, project_name:, username:, access_token:)
+        attr_reader :organization_name, :project_name, :username, :access_token, :cli
+
+        def initialize(organization_name:, project_name:, username:, access_token:, cli:)
           @organization_name = organization_name
           @project_name = project_name
           @username = username
           @access_token = access_token
+          @cli = cli
         end
 
         VERBS.each do |verb|
@@ -50,6 +53,8 @@ module Abt
             encoded_response_body = response.body.force_encoding('utf-8')
             raise error_class, "Code: #{response.status}, body: #{encoded_response_body}"
           end
+        rescue Abt::HttpError::ForbiddenError => e
+          handle_denied_by_conditional_access_policy!(e)
         end
 
         def base_url
@@ -70,6 +75,19 @@ module Abt
             connection.headers['Content-Type'] = 'application/json'
             connection.headers['Accept'] = 'application/json; api-version=6.0'
           end
+        end
+
+        private
+
+        def handle_denied_by_conditional_access_policy!(exception)
+          raise exception unless exception.message.include?(CONDITIONAL_ACCESS_POLICY_ERROR_CODE)
+
+          cli.abort <<~TXT
+            Access denied by conditional access policy.
+            Try logging into the board using the URL below, then retry the command.
+
+            #{base_url}
+          TXT
         end
       end
     end

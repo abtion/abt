@@ -89,7 +89,8 @@ module Abt
           Abt::Providers::Devops::Api.new(organization_name: organization_name,
                                           project_name: project_name,
                                           username: config.username_for_organization(organization_name),
-                                          access_token: config.access_token_for_organization(organization_name))
+                                          access_token: config.access_token_for_organization(organization_name),
+                                          cli: cli)
         end
       end
     end
