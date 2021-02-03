@@ -36,17 +36,15 @@ module Abt
       set(key, value)
     end
 
-    def full_keys
-      if scope == 'local' && !self.class.local_available?
-        raise StandardError, 'Local configuration is not available outside a git repository'
-      end
-
-      `git config --#{scope} --get-regexp --name-only ^#{namespace}`.lines.map(&:strip)
-    end
-
     def keys
       offset = namespace.length + 1
       full_keys.map { |key| key[offset..-1] }
+    end
+
+    def full_keys
+      ensure_scope_available!
+
+      `git config --#{scope} --get-regexp --name-only ^#{namespace}`.lines.map(&:strip)
     end
 
     def local
@@ -71,23 +69,25 @@ module Abt
 
     private
 
+    def ensure_scope_available!
+      return if scope != 'local' || self.class.local_available?
+
+      raise StandardError, 'Local configuration is not available outside a git repository'
+    end
+
     def key_with_namespace(key)
       namespace.empty? ? key : "#{namespace}.#{key}"
     end
 
     def get(key)
-      if scope == 'local' && !self.class.local_available?
-        raise StandardError, 'Local configuration is not available outside a git repository'
-      end
+      ensure_scope_available!
 
       git_value = `git config --#{scope} --get #{key_with_namespace(key).inspect}`.strip
       git_value.empty? ? nil : git_value
     end
 
     def set(key, value)
-      if scope == 'local' && !self.class.local_available?
-        raise StandardError, 'Local configuration is not available outside a git repository'
-      end
+      ensure_scope_available!
 
       if value.nil? || value.empty?
         `git config --#{scope} --unset #{key_with_namespace(key).inspect}`
