@@ -11,6 +11,8 @@ Dir.glob("#{File.dirname(File.absolute_path(__FILE__))}/abt/*.rb").sort.each do 
 end
 
 module Abt
+  module Providers; end
+
   def self.provider_names
     Providers.constants.sort.map { |constant_name| Helpers.const_to_command(constant_name) }
   end
