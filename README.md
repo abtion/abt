@@ -30,6 +30,7 @@ Sharing configuration:
 | Command | Description |
 | :------ | :---------- |
 | `add asana[:<project-gid>]`                                | Create a new task for the current/specified Asana project |
+| `branch-name asana[:<project-gid>/<task-gid>]`             | Suggest a git branch name for the current/specified task. |
 | `clear asana`                                              | Clear project/task for current git repository |
 | `clear-global asana`                                       | Clear all global configuration |
 | `current asana[:<project-gid>[/<task-gid>]]`               | Get or set project and or task for current git repository |
@@ -46,6 +47,7 @@ Sharing configuration:
 | Command | Description |
 | :------ | :---------- |
 | `boards devops`                                                                                 | List all boards - useful for piping into grep etc |
+| `branch-name devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]`             | Suggest a git branch name for the current/specified work-item. |
 | `clear devops`                                                                                  | Clear DevOps config for current git repository |
 | `clear-global devops`                                                                           | Clear all global configuration |
 | `current devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`               | Get or set DevOps configuration for current git repository |
@@ -54,6 +56,11 @@ Sharing configuration:
 | `pick devops[:<organization-name>/<project-name>/<board-id>]`                                   | Pick work item for current git repository |
 | `share devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`                 | Print DevOps config string |
 | `work-items devops`                                                                             | List all work items on board - useful for piping into grep etc. |
+
+### Git
+| Command | Description |
+| :------ | :---------- |
+| `branch git <provider>` | Switch branch. Uses a compatible provider to generate the branch-name: E.g. `abt branch git asana` |
 
 ### Harvest
 | Command | Description |
