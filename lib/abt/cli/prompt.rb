@@ -69,7 +69,10 @@ module Abt
       end
 
       def read_option_number(options_length, nil_option)
-        output.print "(1-#{options_length}#{nil_option_string(nil_option)}): "
+        output.print '('
+        output.print options_length > 1 ? "1-#{options_length}" : '1'
+        output.print nil_option_string(nil_option)
+        output.print '): '
 
         input = read_user_input
 
