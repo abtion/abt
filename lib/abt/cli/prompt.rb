@@ -34,7 +34,7 @@ module Abt
         output.puts "#{text}:"
 
         if options.length.zero?
-          abort 'No available options' unless nil_option
+          raise AbortError, 'No available options' unless nil_option
 
           output.puts 'No available options'
           return nil
