@@ -37,7 +37,7 @@ module Abt
 
           def select_work_item
             loop do
-              column = cli.prompt_choice 'Which column?', columns
+              column = cli.prompt.choice 'Which column?', columns
               cli.warn 'Fetching work items...'
               work_items = work_items_in_column(column)
 
@@ -46,7 +46,7 @@ module Abt
                 next
               end
 
-              work_item = cli.prompt_choice 'Select a work item', work_items, true
+              work_item = cli.prompt.choice 'Select a work item', work_items, true
               return work_item if work_item
             end
           end

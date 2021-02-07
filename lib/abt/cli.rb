@@ -7,11 +7,9 @@ end
 module Abt
   class Cli
     class AbortError < StandardError; end
-
-    include Dialogs
     include Io
 
-    attr_reader :command, :args, :input, :output, :err_output
+    attr_reader :command, :args, :input, :output, :err_output, :prompt
 
     def initialize(argv: ARGV, input: STDIN, output: STDOUT, err_output: STDERR)
       (@command, *@args) = argv
@@ -19,6 +17,7 @@ module Abt
       @input = input
       @output = output
       @err_output = err_output
+      @prompt = Abt::Cli::Prompt.new(output: err_output)
 
       @args += args_from_input unless input.isatty # Add piped arguments
     end

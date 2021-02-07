@@ -31,14 +31,14 @@ module Abt
             cli.warn 'Select a project'
 
             loop do
-              matches = matches_for_string cli.prompt('Enter search')
+              matches = matches_for_string cli.prompt.text('Enter search')
               if matches.empty?
                 warn 'No matches'
                 next
               end
 
               cli.warn 'Showing the 10 first matches' if matches.size > 10
-              choice = cli.prompt_choice 'Select a project', matches[0...10], true
+              choice = cli.prompt.choice 'Select a project', matches[0...10], true
               break choice['project'] unless choice.nil?
             end
           end

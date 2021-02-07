@@ -45,11 +45,11 @@ module Abt
           end
 
           def name
-            @name ||= cli.prompt 'Enter task description'
+            @name ||= cli.prompt.text 'Enter task description'
           end
 
           def notes
-            @notes ||= cli.prompt 'Enter task notes'
+            @notes ||= cli.prompt.text 'Enter task notes'
           end
 
           def project
@@ -57,7 +57,7 @@ module Abt
           end
 
           def section
-            @section ||= cli.prompt_choice 'Add to section?', sections, ['q', 'Don\'t add to section']
+            @section ||= cli.prompt.choice 'Add to section?', sections, ['q', 'Don\'t add to section']
           end
 
           def sections

@@ -18,7 +18,7 @@ module Abt
             require_project!
 
             cli.warn project['name']
-            task = cli.prompt_choice 'Select a task', tasks
+            task = cli.prompt.choice 'Select a task', tasks
 
             config.project_id = project_id # We might have gotten the project ID as an argument
             config.task_id = task['id']

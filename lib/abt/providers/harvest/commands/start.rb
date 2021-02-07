@@ -44,7 +44,7 @@ module Abt
             return if arg_str.nil?
             return if same_args_as_config?
             return unless config.local_available?
-            return unless cli.prompt_boolean 'Set selected task as current?'
+            return unless cli.prompt.boolean 'Set selected task as current?'
 
             input = StringIO.new("harvest:#{project_id}/#{task_id}")
             output = StringIO.new

@@ -35,7 +35,7 @@ module Abt
 
           def select_task
             loop do
-              section = cli.prompt_choice 'Which section?', sections
+              section = cli.prompt.choice 'Which section?', sections
               cli.warn 'Fetching tasks...'
               tasks = tasks_in_section(section)
 
@@ -44,7 +44,7 @@ module Abt
                 next
               end
 
-              task = cli.prompt_choice 'Select a task', tasks, true
+              task = cli.prompt.choice 'Select a task', tasks, true
               return task if task
             end
           end

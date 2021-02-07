@@ -53,7 +53,7 @@ module Abt
         def access_token
           return git.global['accessToken'] unless git.global['accessToken'].nil?
 
-          git.global['accessToken'] = cli.prompt([
+          git.global['accessToken'] = cli.prompt.text([
             'Please provide your personal access token for Harvest.',
             'If you don\'t have one, create one here: https://id.getharvest.com/developers',
             '',
@@ -64,7 +64,7 @@ module Abt
         def account_id
           return git.global['accountId'] unless git.global['accountId'].nil?
 
-          git.global['accountId'] = cli.prompt([
+          git.global['accountId'] = cli.prompt.text([
             'Please provide harvest account id.',
             'This information is shown next to your generated access token',
             '',

@@ -29,7 +29,7 @@ module Abt
             return if same_args_as_config?
             return unless config.local_available?
 
-            should_override = cli.prompt_boolean 'Set selected task as current?'
+            should_override = cli.prompt.boolean 'Set selected task as current?'
             Current.new(arg_str: arg_str, cli: cli).call if should_override
           end
 
@@ -41,7 +41,7 @@ module Abt
               update_assignee
             elsif current_assignee['gid'] == current_user['gid']
               cli.warn 'You are already assigned to this task'
-            elsif cli.prompt_boolean "Task is assigned to: #{current_assignee['name']}, take over?"
+            elsif cli.prompt.boolean "Task is assigned to: #{current_assignee['name']}, take over?"
               cli.warn "Reassigning task to user: #{current_user['name']}"
               update_assignee
             end

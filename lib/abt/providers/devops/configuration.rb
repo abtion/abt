@@ -78,7 +78,7 @@ module Abt
 
           return git.global[username_key] unless git.global[username_key].nil?
 
-          git.global[username_key] = cli.prompt([
+          git.global[username_key] = cli.prompt.text([
             "Please provide your username for the DevOps organization (#{organization_name}).",
             '',
             'Enter username'
@@ -90,7 +90,7 @@ module Abt
 
           return git.global[access_token_key] unless git.global[access_token_key].nil?
 
-          git.global[access_token_key] = cli.prompt([
+          git.global[access_token_key] = cli.prompt.text([
             "Please provide your personal access token for the DevOps organization (#{organization_name}).",
             'If you don\'t have one, follow the guide here: https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate',
             '',

@@ -22,7 +22,7 @@ module Abt
             @organization_name = config.organization_name = organization_name_from_url
             @project_name = config.project_name = project_name_from_url
 
-            board = cli.prompt_choice 'Select a project work board', boards
+            board = cli.prompt.choice 'Select a project work board', boards
 
             config.board_id = board['id']
 
@@ -52,7 +52,7 @@ module Abt
           def project_url
             @project_url ||= begin
               loop do
-                url = cli.prompt([
+                url = cli.prompt.text([
                   'Please provide the URL for the devops project',
                   'For instance https://{organization}.visualstudio.com/{project} or https://dev.azure.com/{organization}/{project}',
                   '',

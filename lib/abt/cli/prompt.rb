@@ -2,35 +2,41 @@
 
 module Abt
   class Cli
-    module Dialogs
-      def prompt(question)
-        err_output.print "#{question}: "
+    class Prompt
+      attr_reader :output
+
+      def initialize(output:)
+        @output = output
+      end
+
+      def text(question)
+        output.print "#{question}: "
         read_user_input.strip
       end
 
-      def prompt_boolean(text)
-        warn text
+      def boolean(text)
+        output.puts text
 
         loop do
-          err_output.print '(y / n): '
+          output.print '(y / n): '
 
           case read_user_input.strip
           when 'y', 'Y' then return true
           when 'n', 'N' then return false
           else
-            warn 'Invalid choice'
+            output.puts 'Invalid choice'
             next
           end
         end
       end
 
-      def prompt_choice(text, options, nil_option = false)
-        warn "#{text}:"
+      def choice(text, options, nil_option = false)
+        output.puts "#{text}:"
 
         if options.length.zero?
           abort 'No available options' unless nil_option
 
-          warn 'No available options'
+          output.puts 'No available options'
           return nil
         end
 
@@ -42,7 +48,7 @@ module Abt
 
       def print_options(options)
         options.each_with_index do |option, index|
-          warn "(#{index + 1}) #{option['name']}"
+          output.puts "(#{index + 1}) #{option['name']}"
         end
       end
 
@@ -57,13 +63,13 @@ module Abt
 
           option = options[number - 1]
 
-          warn "Selected: (#{number}) #{option['name']}"
+          output.puts "Selected: (#{number}) #{option['name']}"
           return option
         end
       end
 
       def read_option_number(options_length, nil_option)
-        err_output.print "(1-#{options_length}#{nil_option_string(nil_option)}): "
+        output.print "(1-#{options_length}#{nil_option_string(nil_option)}): "
 
         input = read_user_input
 
@@ -71,7 +77,7 @@ module Abt
 
         option_number = input.to_i
         if option_number <= 0 || option_number > options_length
-          warn 'Invalid selection'
+          output.puts 'Invalid selection'
           return nil
         end
 

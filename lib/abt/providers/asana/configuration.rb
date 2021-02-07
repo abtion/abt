@@ -76,7 +76,7 @@ module Abt
         def access_token
           return git.global['accessToken'] unless git.global['accessToken'].nil?
 
-          git.global['accessToken'] = cli.prompt([
+          git.global['accessToken'] = cli.prompt.text([
             'Please provide your personal access token for Asana.',
             'If you don\'t have one, create one here: https://app.asana.com/0/developer-console',
             '',
@@ -103,7 +103,7 @@ module Abt
         def prompt_section(message)
           cli.warn 'Fetching sections...'
           sections = api.get_paged("projects/#{project_gid}/sections")
-          cli.prompt_choice(message, sections)
+          cli.prompt.choice(message, sections)
         end
 
         def prompt_workspace
@@ -115,7 +115,7 @@ module Abt
             workspace = workspaces.first
             cli.warn "Selected Asana workspace #{workspace['name']}"
           else
-            workspace = cli.prompt_choice('Select Asana workspace', workspaces)
+            workspace = cli.prompt.choice('Select Asana workspace', workspaces)
           end
 
           git.global['workspaceGid'] = workspace['gid']

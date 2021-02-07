@@ -36,7 +36,7 @@ module Abt
 
           def create_and_switch
             cli.warn "No such branch: #{branch_name}"
-            cli.abort('Aborting') unless cli.prompt_boolean 'Create branch?'
+            cli.abort('Aborting') unless cli.prompt.boolean 'Create branch?'
 
             Open3.popen3("git switch -c #{branch_name}") do |_i, _o, _e, thread|
               thread.value

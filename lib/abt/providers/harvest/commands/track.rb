@@ -41,7 +41,7 @@ module Abt
               body.merge! external_link_data
             else
               cli.warn 'No external link provided'
-              body[:notes] ||= cli.prompt('Fill in comment (optional)')
+              body[:notes] ||= cli.prompt.text('Fill in comment (optional)')
             end
 
             api.post('time_entries', Oj.dump(body, mode: :json))
