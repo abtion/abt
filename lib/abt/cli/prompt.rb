@@ -11,7 +11,7 @@ module Abt
 
       def text(question)
         output.print "#{question}: "
-        read_user_input.strip
+        read_user_input
       end
 
       def boolean(text)
@@ -20,7 +20,7 @@ module Abt
         loop do
           output.print '(y / n): '
 
-          case read_user_input.strip
+          case read_user_input
           when 'y', 'Y' then return true
           when 'n', 'N' then return false
           else
