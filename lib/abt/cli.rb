@@ -22,7 +22,7 @@ module Abt
     end
 
     def perform
-      handle_global_commands!
+      return if handle_global_commands!
 
       abort('No provider arguments') if args.empty?
 
@@ -58,16 +58,18 @@ module Abt
       when nil
         warn("No command specified\n\n")
         puts(Abt::Docs::Cli.content)
-        exit
+        true
       when '--help', '-h', 'help', 'commands'
         puts(Abt::Docs::Cli.content)
-        exit
+        true
       when 'help-md'
         puts(Abt::Docs::Markdown.content)
-        exit
+        true
       when '--version', '-v', 'version'
         puts(Abt::VERSION)
-        exit
+        true
+      else
+        false
       end
     end
 

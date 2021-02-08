@@ -1,6 +1,72 @@
 # frozen_string_literal: true
 
 RSpec.describe Abt::Cli do
+  context 'when no command given' do
+    it 'writes "no command specified" to err_output' do
+      err_output = StringIO.new
+
+      cli = Abt::Cli.new argv: [], err_output: err_output, output: StringIO.new
+      cli.perform
+
+      expect(err_output.string).to eq("No command specified\n\n")
+    end
+
+    it 'writes cli docs to output' do
+      output = StringIO.new
+
+      allow(Abt::Docs::Cli).to receive(:content).and_return('Help content')
+
+      cli = Abt::Cli.new argv: [], output: output, err_output: StringIO.new
+      cli.perform
+
+      expect(output.string).to eq("Help content\n")
+    end
+  end
+
+  describe 'global commands' do
+    ['--version', '-v', 'version'].each do |command_name|
+      describe command_name do
+        it 'prints the version' do
+          stub_const('Abt::VERSION', '1.1.1')
+
+          output = StringIO.new
+          cli = Abt::Cli.new(argv: [command_name], output: output)
+          cli.perform
+
+          expect(output.string).to eq("1.1.1\n")
+        end
+      end
+    end
+
+    ['--help', '-h', 'help', 'commands'].each do |command_name|
+      describe command_name do
+        it 'writes cli docs to output' do
+          output = StringIO.new
+
+          allow(Abt::Docs::Cli).to receive(:content).and_return('Help content')
+
+          cli = Abt::Cli.new argv: [command_name], output: output
+          cli.perform
+
+          expect(output.string).to eq("Help content\n")
+        end
+      end
+    end
+
+    describe 'help-md' do
+      it 'writes markdown docs to output' do
+        output = StringIO.new
+
+        allow(Abt::Docs::Markdown).to receive(:content).and_return('# Markdown help content')
+
+        cli = Abt::Cli.new argv: ['help-md'], output: output
+        cli.perform
+
+        expect(output.string).to eq("# Markdown help content\n")
+      end
+    end
+  end
+
   describe '#warn' do
     it 'prints a line to err_output' do
       err_output = StringIO.new
