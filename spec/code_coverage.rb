@@ -12,6 +12,7 @@ unless ENV['DISABLE_SIMPLECOV'] == 'true'
     add_group 'DevOps', 'lib/abt/providers/devops'
     add_group 'Asana', 'lib/abt/providers/asana'
     add_group 'Harvest', 'lib/abt/providers/harvest'
+    add_group 'Git', 'lib/abt/providers/git'
 
     minimum_coverage(100)
   end
