@@ -7,7 +7,6 @@ end
 module Abt
   class Cli
     class AbortError < StandardError; end
-    include Io
 
     attr_reader :command, :args, :input, :output, :err_output, :prompt
 
@@ -34,6 +33,22 @@ module Abt
       command = "#{provider}:#{arg_str}"
       command += " # #{description}" unless description.nil?
       output.puts command
+    end
+
+    def warn(*args)
+      err_output.puts(*args)
+    end
+
+    def puts(*args)
+      output.puts(*args)
+    end
+
+    def print(*args)
+      output.print(*args)
+    end
+
+    def abort(message)
+      raise AbortError, message
     end
 
     private
