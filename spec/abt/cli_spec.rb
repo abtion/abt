@@ -67,6 +67,28 @@ RSpec.describe Abt::Cli do
     end
   end
 
+  context 'when no provider argument given' do
+    it 'aborts with "No provider arguments"' do
+      cli = Abt::Cli.new argv: ['command']
+
+      expect do
+        cli.perform
+      end.to raise_error(Abt::Cli::AbortError, 'No provider arguments')
+    end
+  end
+
+  context 'when provider argument given' do
+    context 'when no provider implements the command' do
+      it 'aborts with "No matching providers found for command"' do
+        cli = Abt::Cli.new argv: ['invalid-command', 'asana:test/test']
+
+        expect do
+          cli.perform
+        end.to raise_error(Abt::Cli::AbortError, 'No matching providers found for command')
+      end
+    end
+  end
+
   describe '#warn' do
     it 'prints a line to err_output' do
       err_output = StringIO.new

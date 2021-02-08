@@ -101,7 +101,7 @@ module Abt
         used_providers << provider if process_provider_command(provider, command, arg_str)
       end
 
-      warn 'No matching providers found for command' if used_providers.empty? && output.isatty
+      abort 'No matching providers found for command' if used_providers.empty? && output.isatty
     end
 
     def process_provider_command(provider_name, command_name, arg_str)
