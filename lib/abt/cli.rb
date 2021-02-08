@@ -74,7 +74,7 @@ module Abt
     end
 
     def args_from_input
-      input_string = input.read
+      input_string = input.read.strip
 
       abort 'No input from pipe' if input_string.nil? || input_string.empty?
 
