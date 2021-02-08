@@ -107,7 +107,17 @@ module Abt
       end
 
       def read_user_input
-        open('/dev/tty', &:gets).strip
+        open(tty_path, &:gets).strip # rubocop:disable Security/Open
+      end
+
+      def tty_path
+        @tty_path ||= begin
+          candidates = ['/dev/tty', 'CON:'] # Unix: '/dev/tty', Windows: 'CON:'
+          selected = candidates.find { |candidate| File.exist?(candidate) }
+          raise AbortError, 'Unable to prompt for user input' if selected.nil?
+
+          selected
+        end
       end
     end
   end
