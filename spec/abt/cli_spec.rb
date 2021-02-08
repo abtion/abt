@@ -2,24 +2,17 @@
 
 RSpec.describe Abt::Cli do
   context 'when no command given' do
-    it 'writes "no command specified" to err_output' do
-      err_output = StringIO.new
-
-      cli = Abt::Cli.new argv: [], err_output: err_output, output: StringIO.new
-      cli.perform
-
-      expect(err_output.string).to eq("No command specified\n\n")
-    end
-
-    it 'writes cli docs to output' do
-      output = StringIO.new
-
+    it 'writes "no command specified" to err_output and help to output' do
       allow(Abt::Docs::Cli).to receive(:content).and_return('Help content')
 
-      cli = Abt::Cli.new argv: [], output: output, err_output: StringIO.new
+      output = StringIO.new
+      err_output = StringIO.new
+      cli = Abt::Cli.new argv: [], err_output: err_output, output: output
+
       cli.perform
 
       expect(output.string).to eq("Help content\n")
+      expect(err_output.string).to eq("No command specified\n\n")
     end
   end
 
