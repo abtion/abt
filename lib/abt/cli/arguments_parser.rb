@@ -10,6 +10,16 @@ module Abt
           @uri = uri
           @flags = flags
         end
+
+        def to_s
+          [@uri, *flags].join(' ')
+        end
+      end
+
+      class ProviderArguments < Array
+        def to_s
+          map(&:to_s).join(' -- ')
+        end
       end
 
       attr_reader :arguments
@@ -19,7 +29,7 @@ module Abt
       end
 
       def parse
-        result = []
+        result = ProviderArguments.new
 
         rest = arguments.dup
         @provider_args = []

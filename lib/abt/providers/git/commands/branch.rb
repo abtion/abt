@@ -67,7 +67,7 @@ module Abt
           end
 
           def branch_names_from_providers
-            input = StringIO.new(cli.args.join(' '))
+            input = StringIO.new(cli.provider_arguments.to_s)
             output = StringIO.new
             Abt::Cli.new(argv: ['branch-name'], output: output, input: input).perform
 

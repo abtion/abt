@@ -33,7 +33,7 @@ module Abt
           end
 
           def call_track
-            input = StringIO.new(cli.args.join(' '))
+            input = StringIO.new(cli.provider_arguments.to_s)
             output = StringIO.new
             Abt::Cli.new(argv: ['track'], output: output, input: input).perform
 

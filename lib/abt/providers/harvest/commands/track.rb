@@ -49,7 +49,7 @@ module Abt
 
           def external_link_data
             @external_link_data ||= begin
-              input = StringIO.new(cli.args.join(' '))
+              input = StringIO.new(cli.provider_arguments.to_s)
               output = StringIO.new
               Abt::Cli.new(argv: ['harvest-time-entry-data'], output: output, input: input).perform
 
