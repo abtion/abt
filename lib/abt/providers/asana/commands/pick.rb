@@ -5,8 +5,8 @@ module Abt
     module Asana
       module Commands
         class Pick < BaseCommand
-          def self.command
-            'pick asana[:<project-gid>]'
+          def self.usage
+            'abt pick asana[:<project-gid>]'
           end
 
           def self.description

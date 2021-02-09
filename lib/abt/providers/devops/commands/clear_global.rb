@@ -5,8 +5,8 @@ module Abt
     module Devops
       module Commands
         class ClearGlobal < BaseCommand
-          def self.command
-            'clear-global devops'
+          def self.usage
+            'abt clear-global devops'
           end
 
           def self.description

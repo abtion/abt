@@ -5,8 +5,8 @@ module Abt
     module Asana
       module Commands
         class ClearGlobal < BaseCommand
-          def self.command
-            'clear-global asana'
+          def self.usage
+            'abt clear-global asana'
           end
 
           def self.description

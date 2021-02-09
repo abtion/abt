@@ -5,8 +5,8 @@ module Abt
     module Asana
       module Commands
         class BranchName < BaseCommand
-          def self.command
-            'branch-name asana[:<project-gid>/<task-gid>]'
+          def self.usage
+            'abt branch-name asana[:<project-gid>/<task-gid>]'
           end
 
           def self.description

@@ -3,12 +3,12 @@
 module Abt
   module Providers
     module Harvest
-      class BaseCommand
+      class BaseCommand < Abt::Cli::BaseCommand
         attr_reader :path, :flags, :project_id, :task_id, :cli, :config
 
-        def initialize(path:, flags:, cli:)
-          @path = path
-          @flags = flags
+        def initialize(path:, cli:, **)
+          super
+
           @config = Configuration.new(cli: cli)
 
           if path.nil?
@@ -16,7 +16,6 @@ module Abt
           else
             use_path(path)
           end
-          @cli = cli
         end
 
         private

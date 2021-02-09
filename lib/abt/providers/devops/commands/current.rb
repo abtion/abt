@@ -5,8 +5,8 @@ module Abt
     module Devops
       module Commands
         class Current < BaseCommand
-          def self.command
-            'current devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]'
+          def self.usage
+            'abt current devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]'
           end
 
           def self.description

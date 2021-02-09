@@ -5,8 +5,8 @@ module Abt
     module Harvest
       module Commands
         class Share < BaseCommand
-          def self.command
-            'share harvest[:<project-id>[/<task-id>]]'
+          def self.usage
+            'abt share harvest[:<project-id>[/<task-id>]]'
           end
 
           def self.description

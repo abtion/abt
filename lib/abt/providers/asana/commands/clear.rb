@@ -5,8 +5,8 @@ module Abt
     module Asana
       module Commands
         class Clear < BaseCommand
-          def self.command
-            'clear asana'
+          def self.usage
+            'abt clear asana'
           end
 
           def self.description

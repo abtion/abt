@@ -5,8 +5,8 @@ module Abt
     module Harvest
       module Commands
         class Clear < BaseCommand
-          def self.command
-            'clear harvest'
+          def self.usage
+            'abt clear harvest'
           end
 
           def self.description

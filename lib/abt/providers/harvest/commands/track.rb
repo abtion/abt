@@ -5,8 +5,8 @@ module Abt
     module Harvest
       module Commands
         class Track < BaseCommand
-          def self.command
-            'track harvest[:<project-id>/<task-id>]'
+          def self.usage
+            'abt track harvest[:<project-id>/<task-id>]'
           end
 
           def self.description

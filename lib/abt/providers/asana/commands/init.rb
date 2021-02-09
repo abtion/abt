@@ -5,8 +5,8 @@ module Abt
     module Asana
       module Commands
         class Init < BaseCommand
-          def self.command
-            'init asana'
+          def self.usage
+            'abt init asana'
           end
 
           def self.description

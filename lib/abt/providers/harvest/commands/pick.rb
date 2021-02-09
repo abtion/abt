@@ -5,8 +5,8 @@ module Abt
     module Harvest
       module Commands
         class Pick < BaseCommand
-          def self.command
-            'pick harvest[:<project-id>]'
+          def self.usage
+            'abt pick harvest[:<project-id>]'
           end
 
           def self.description

@@ -5,8 +5,8 @@ module Abt
     module Asana
       module Commands
         class Start < BaseCommand
-          def self.command
-            'start asana[:<project-gid>/<task-gid>]'
+          def self.usage
+            'abt start asana[:<project-gid>/<task-gid>]'
           end
 
           def self.description

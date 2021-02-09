@@ -5,8 +5,8 @@ module Abt
     module Harvest
       module Commands
         class Tasks < BaseCommand
-          def self.command
-            'tasks harvest'
+          def self.usage
+            'abt tasks harvest'
           end
 
           def self.description

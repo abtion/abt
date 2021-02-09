@@ -8,8 +8,8 @@ module Abt
           AZURE_DEV_URL_REGEX = %r{^https://dev\.azure\.com/(?<organization>[^/]+)/(?<project>[^/]+)}.freeze
           VS_URL_REGEX = %r{^https://(?<organization>[^.]+)\.visualstudio\.com/(?<project>[^/]+)}.freeze
 
-          def self.command
-            'init devops'
+          def self.usage
+            'abt init devops'
           end
 
           def self.description

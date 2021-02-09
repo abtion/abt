@@ -5,8 +5,8 @@ module Abt
     module Devops
       module Commands
         class BranchName < BaseCommand
-          def self.command
-            'branch-name devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]'
+          def self.usage
+            'abt branch-name devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]'
           end
 
           def self.description

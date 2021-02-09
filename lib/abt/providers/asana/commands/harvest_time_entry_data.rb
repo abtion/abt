@@ -5,8 +5,8 @@ module Abt
     module Asana
       module Commands
         class HarvestTimeEntryData < BaseCommand
-          def self.command
-            'harvest-time-entry-data asana[:<project-gid>/<task-gid>]'
+          def self.usage
+            'abt harvest-time-entry-data asana[:<project-gid>/<task-gid>]'
           end
 
           def self.description

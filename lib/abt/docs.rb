@@ -51,8 +51,8 @@ module Abt
         provider_module.command_names.each_with_object({}) do |name, definition|
           command_class = provider_module.command_class(name)
 
-          if command_class.respond_to?(:command) && command_class.respond_to?(:description)
-            definition[command_class.command] = command_class.description
+          if command_class.respond_to?(:usage) && command_class.respond_to?(:description)
+            definition[command_class.usage] = command_class.description
           end
         end
       end

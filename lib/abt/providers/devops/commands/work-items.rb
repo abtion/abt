@@ -5,8 +5,8 @@ module Abt
     module Devops
       module Commands
         class WorkItems < BaseCommand
-          def self.command
-            'work-items devops'
+          def self.usage
+            'abt work-items devops'
           end
 
           def self.description

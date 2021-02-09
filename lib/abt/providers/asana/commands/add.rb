@@ -5,8 +5,8 @@ module Abt
     module Asana
       module Commands
         class Add < BaseCommand
-          def self.command
-            'add asana[:<project-gid>]'
+          def self.usage
+            'abt add asana[:<project-gid>]'
           end
 
           def self.description

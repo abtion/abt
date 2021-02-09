@@ -5,8 +5,8 @@ module Abt
     module Harvest
       module Commands
         class Init < BaseCommand
-          def self.command
-            'init harvest'
+          def self.usage
+            'abt init harvest'
           end
 
           def self.description

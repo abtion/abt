@@ -5,8 +5,8 @@ module Abt
     module Devops
       module Commands
         class Share < BaseCommand
-          def self.command
-            'share devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]'
+          def self.usage
+            'abt share devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]'
           end
 
           def self.description

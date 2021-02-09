@@ -4,19 +4,13 @@ module Abt
   module Providers
     module Git
       module Commands
-        class Branch
-          attr_reader :cli
-
-          def self.command
-            'branch git <provider>'
+        class Branch < Abt::Cli::BaseCommand
+          def self.usage
+            'abt branch git <provider>'
           end
 
           def self.description
             'Switch branch. Uses a compatible provider to generate the branch-name: E.g. `abt branch git asana`'
-          end
-
-          def initialize(cli:, **)
-            @cli = cli
           end
 
           def perform

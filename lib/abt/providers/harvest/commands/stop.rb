@@ -5,8 +5,8 @@ module Abt
     module Harvest
       module Commands
         class Stop < BaseCommand
-          def self.command
-            'stop harvest'
+          def self.usage
+            'abt stop harvest'
           end
 
           def self.description

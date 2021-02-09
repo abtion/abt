@@ -3,15 +3,13 @@
 module Abt
   module Providers
     module Devops
-      class BaseCommand
-        attr_reader :path, :flags, :organization_name, :project_name, :board_id, :work_item_id, :cli, :config
+      class BaseCommand < Abt::Cli::BaseCommand
+        attr_reader :organization_name, :project_name, :board_id, :work_item_id, :config
 
-        def initialize(path:, flags:, cli:)
-          @path = path
-          @flags = flags
+        def initialize(path:, cli:, **)
+          super
 
           @config = Configuration.new(cli: cli)
-          @cli = cli
 
           if path.nil?
             use_current_path

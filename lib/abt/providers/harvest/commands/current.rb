@@ -5,8 +5,8 @@ module Abt
     module Harvest
       module Commands
         class Current < BaseCommand
-          def self.command
-            'current harvest[:<project-id>[/<task-id>]]'
+          def self.usage
+            'abt current harvest[:<project-id>[/<task-id>]]'
           end
 
           def self.description

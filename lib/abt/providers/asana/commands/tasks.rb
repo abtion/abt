@@ -5,8 +5,8 @@ module Abt
     module Asana
       module Commands
         class Tasks < BaseCommand
-          def self.command
-            'tasks asana'
+          def self.usage
+            'abt tasks asana'
           end
 
           def self.description

@@ -6,7 +6,7 @@ module Abt
       class << self
         def content
           <<~TXT
-            abt <command> [<provider-URI>][ <flags> --]] [<provider-URI>...]
+            Usage: abt <command> [<provider-URI>] [<flags> --] [<provider-URI>] ...
 
             #{example_commands}
 

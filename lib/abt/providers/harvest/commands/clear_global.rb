@@ -5,8 +5,8 @@ module Abt
     module Harvest
       module Commands
         class ClearGlobal < BaseCommand
-          def self.command
-            'clear-global harvest'
+          def self.usage
+            'abt clear-global harvest'
           end
 
           def self.description

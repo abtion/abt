@@ -5,8 +5,8 @@ module Abt
     module Devops
       module Commands
         class Boards < BaseCommand
-          def self.command
-            'boards devops'
+          def self.usage
+            'abt boards devops'
           end
 
           def self.description

@@ -5,8 +5,8 @@ module Abt
     module Harvest
       module Commands
         class Start < BaseCommand
-          def self.command
-            'start harvest[:<project-id>/<task-id>]'
+          def self.usage
+            'abt start harvest[:<project-id>/<task-id>]'
           end
 
           def self.description

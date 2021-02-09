@@ -5,8 +5,8 @@ module Abt
     module Asana
       module Commands
         class Current < BaseCommand
-          def self.command
-            'current asana[:<project-gid>[/<task-gid>]]'
+          def self.usage
+            'abt current asana[:<project-gid>[/<task-gid>]]'
           end
 
           def self.description

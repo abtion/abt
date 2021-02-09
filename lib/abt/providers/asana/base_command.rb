@@ -3,12 +3,12 @@
 module Abt
   module Providers
     module Asana
-      class BaseCommand
-        attr_reader :path, :flags, :project_gid, :task_gid, :cli, :config
+      class BaseCommand < Abt::Cli::BaseCommand
+        attr_reader :project_gid, :task_gid, :config
 
-        def initialize(path:, flags:, cli:)
-          @path = path
-          @flags = flags
+        def initialize(path:, cli:, **)
+          super
+
           @config = Configuration.new(cli: cli)
 
           if path.nil?
@@ -16,7 +16,6 @@ module Abt
           else
             use_path(path)
           end
-          @cli = cli
         end
 
         private

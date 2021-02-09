@@ -2,7 +2,7 @@
 This readme was generated with `abt help-md > README.md`
 
 ## Usage
-`abt <command> [<provider-URI>][ <flags> --]] [<provider-URI>...]`
+`abt <command> [<provider-URI>] [<flags> --] [<provider-URI>] ...`
 
 Getting started:
 - `abt init asana harvest`: Setup asana and harvest project git repo in working dir
@@ -29,50 +29,50 @@ Sharing configuration:
 ### Asana
 | Command | Description |
 | :------ | :---------- |
-| `add asana[:<project-gid>]`                                | Create a new task for the current/specified Asana project |
-| `branch-name asana[:<project-gid>/<task-gid>]`             | Suggest a git branch name for the current/specified task. |
-| `clear asana`                                              | Clear project/task for current git repository |
-| `clear-global asana`                                       | Clear all global configuration |
-| `current asana[:<project-gid>[/<task-gid>]]`               | Get or set project and or task for current git repository |
-| `finalize asana[:<project-gid>/<task-gid>]`                | Move current/specified task to section (column) for finalized tasks |
-| `harvest-time-entry-data asana[:<project-gid>/<task-gid>]` | Print Harvest time entry data for Asana task as json. Used by harvest start script. |
-| `init asana`                                               | Pick Asana project for current git repository |
-| `pick asana[:<project-gid>]`                               | Pick task for current git repository |
-| `projects asana`                                           | List all available projects - useful for piping into grep etc. |
-| `share asana[:<project-gid>[/<task-gid>]]`                 | Print project/task config string |
-| `start asana[:<project-gid>/<task-gid>]`                   | Set current task and move it to a section (column) of your choice |
-| `tasks asana`                                              | List available tasks on project - useful for piping into grep etc. |
+| `abt add asana[:<project-gid>]`                                | Create a new task for the current/specified Asana project |
+| `abt branch-name asana[:<project-gid>/<task-gid>]`             | Suggest a git branch name for the current/specified task. |
+| `abt clear asana`                                              | Clear project/task for current git repository |
+| `abt clear-global asana`                                       | Clear all global configuration |
+| `abt current asana[:<project-gid>[/<task-gid>]]`               | Get or set project and or task for current git repository |
+| `abt finalize asana[:<project-gid>/<task-gid>]`                | Move current/specified task to section (column) for finalized tasks |
+| `abt harvest-time-entry-data asana[:<project-gid>/<task-gid>]` | Print Harvest time entry data for Asana task as json. Used by harvest start script. |
+| `abt init asana`                                               | Pick Asana project for current git repository |
+| `abt pick asana[:<project-gid>]`                               | Pick task for current git repository |
+| `abt projects asana`                                           | List all available projects - useful for piping into grep etc. |
+| `abt share asana[:<project-gid>[/<task-gid>]]`                 | Print project/task config string |
+| `abt start asana[:<project-gid>/<task-gid>]`                   | Set current task and move it to a section (column) of your choice |
+| `abt tasks asana`                                              | List available tasks on project - useful for piping into grep etc. |
 
 ### Devops
 | Command | Description |
 | :------ | :---------- |
-| `boards devops`                                                                                 | List all boards - useful for piping into grep etc |
-| `branch-name devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]`             | Suggest a git branch name for the current/specified work-item. |
-| `clear devops`                                                                                  | Clear DevOps config for current git repository |
-| `clear-global devops`                                                                           | Clear all global configuration |
-| `current devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`               | Get or set DevOps configuration for current git repository |
-| `harvest-time-entry-data devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]` | Print Harvest time entry data for DevOps work item as json. Used by harvest start script. |
-| `init devops`                                                                                   | Pick DevOps board for current git repository |
-| `pick devops[:<organization-name>/<project-name>/<board-id>]`                                   | Pick work item for current git repository |
-| `share devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`                 | Print DevOps config string |
-| `work-items devops`                                                                             | List all work items on board - useful for piping into grep etc. |
+| `abt boards devops`                                                                                 | List all boards - useful for piping into grep etc |
+| `abt branch-name devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]`             | Suggest a git branch name for the current/specified work-item. |
+| `abt clear devops`                                                                                  | Clear DevOps config for current git repository |
+| `abt clear-global devops`                                                                           | Clear all global configuration |
+| `abt current devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`               | Get or set DevOps configuration for current git repository |
+| `abt harvest-time-entry-data devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]` | Print Harvest time entry data for DevOps work item as json. Used by harvest start script. |
+| `abt init devops`                                                                                   | Pick DevOps board for current git repository |
+| `abt pick devops[:<organization-name>/<project-name>/<board-id>]`                                   | Pick work item for current git repository |
+| `abt share devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`                 | Print DevOps config string |
+| `abt work-items devops`                                                                             | List all work items on board - useful for piping into grep etc. |
 
 ### Git
 | Command | Description |
 | :------ | :---------- |
-| `branch git <provider>` | Switch branch. Uses a compatible provider to generate the branch-name: E.g. `abt branch git asana` |
+| `abt branch git <provider>` | Switch branch. Uses a compatible provider to generate the branch-name: E.g. `abt branch git asana` |
 
 ### Harvest
 | Command | Description |
 | :------ | :---------- |
-| `clear harvest`                              | Clear project/task for current git repository |
-| `clear-global harvest`                       | Clear all global configuration |
-| `current harvest[:<project-id>[/<task-id>]]` | Get or set project and or task for current git repository |
-| `init harvest`                               | Pick Harvest project for current git repository |
-| `pick harvest[:<project-id>]`                | Pick task for current git repository |
-| `projects harvest`                           | List all available projects - useful for piping into grep etc. |
-| `share harvest[:<project-id>[/<task-id>]]`   | Print project/task config string |
-| `start harvest[:<project-id>/<task-id>]`     | As track, but also lets the user override the current task and triggers `start` commands for other providers  |
-| `stop harvest`                               | Stop running harvest tracker |
-| `tasks harvest`                              | List available tasks on project - useful for piping into grep etc. |
-| `track harvest[:<project-id>/<task-id>]`     | Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana` |
+| `abt clear harvest`                                    | Clear project/task for current git repository |
+| `abt clear-global harvest`                             | Clear all global configuration |
+| `abt current harvest[:<project-id>[/<task-id>]]`       | Get or set project and or task for current git repository |
+| `abt init harvest`                                     | Pick Harvest project for current git repository |
+| `abt pick harvest[:<project-id>]`                      | Pick task for current git repository |
+| `abt projects harvest`                                 | List all available projects - useful for piping into grep etc. |
+| `abt share harvest[:<project-id>[/<task-id>]]`         | Print project/task config string |
+| `abt start harvest[:<project-id>/<task-id>]`           | As track, but also lets the user override the current task and triggers `start` commands for other providers  |
+| `abt stop harvest`                                     | Stop running harvest tracker |
+| `abt tasks harvest`                                    | List available tasks on project - useful for piping into grep etc. |
+| `abt track harvest[:<project-id>/<task-id>] [options]` | Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana` |

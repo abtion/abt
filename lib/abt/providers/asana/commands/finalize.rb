@@ -5,8 +5,8 @@ module Abt
     module Asana
       module Commands
         class Finalize < BaseCommand
-          def self.command
-            'finalize asana[:<project-gid>/<task-gid>]'
+          def self.usage
+            'abt finalize asana[:<project-gid>/<task-gid>]'
           end
 
           def self.description
