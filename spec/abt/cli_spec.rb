@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe Abt::Cli do
+  def null_stream
+    StringIO.new
+  end
+
   context 'when no command given' do
     it 'writes "no command specified" to err_output and help to output' do
       allow(Abt::Docs::Cli).to receive(:content).and_return('Help content')
@@ -82,13 +86,12 @@ RSpec.describe Abt::Cli do
 
   context 'when provider argument given' do
     it 'correctly executes the command for the provider' do
+      Command = Class.new do
+        def initialize(arg_str:, cli:); end
+
+        def perform; end
+      end
       Provider = Module.new do
-        class Command
-          def initialize(arg_str:, cli:); end
-
-          def perform; end
-        end
-
         def self.command_class(command_name)
           return Command if command_name == 'command'
         end
@@ -96,13 +99,13 @@ RSpec.describe Abt::Cli do
 
       stub_const('Abt::Providers::Provider', Provider) # Add the provider to Abt for only this spec
 
-      Command = Provider.const_get(:Command) # Provider::Command doesn't work
       command_instance = instance_double(Command)
 
       allow(Command).to receive(:new).and_return(command_instance)
       allow(command_instance).to receive(:perform)
 
-      cli_instance = Abt::Cli.new argv: ['command', 'provider:arg_str']
+      err_output = StringIO.new
+      cli_instance = Abt::Cli.new argv: ['command', 'provider:arg_str'], err_output: err_output
       cli_instance.perform
 
       expect(Command).to have_received(:new) do |arg_str:, cli:|
@@ -110,12 +113,13 @@ RSpec.describe Abt::Cli do
         expect(cli).to eq(cli_instance)
       end
       expect(command_instance).to have_received(:perform)
+      expect(err_output.string).to include('===== COMMAND PROVIDER:ARG_STR =====')
     end
 
     context 'when provider argument given through input IO (pipe)' do
       it 'uses the piped argument' do
         piped_argument = StringIO.new('asana:test/test # Description text from other command')
-        cli = Abt::Cli.new argv: ['share'], input: piped_argument
+        cli = Abt::Cli.new argv: ['share'], input: piped_argument, output: null_stream, err_output: null_stream
 
         allow(Abt::Providers::Asana::Commands::Share).to receive(:new).and_call_original
 
@@ -141,7 +145,8 @@ RSpec.describe Abt::Cli do
       it 'drops subsequent commands and prints a warning' do
         err_output = StringIO.new
         cli = Abt::Cli.new(argv: ['share', 'asana:called', 'asana:not/called'],
-                           err_output: err_output)
+                           err_output: err_output,
+                           output: null_stream)
 
         allow(Abt::Providers::Asana::Commands::Share).to receive(:new).and_call_original
 
@@ -158,7 +163,7 @@ RSpec.describe Abt::Cli do
 
     context 'when at least one provider implements the command' do
       it 'does not abort' do
-        cli = Abt::Cli.new argv: ['share', 'asana:test/test', 'git']
+        cli = Abt::Cli.new argv: ['share', 'asana:test/test', 'git'], output: null_stream, err_output: null_stream
 
         expect do
           cli.perform
