@@ -13,7 +13,7 @@ module Abt
             'Pick work item for current git repository'
           end
 
-          def call
+          def perform
             cli.abort 'Must be run inside a git repository' unless config.local_available?
             require_board!
 

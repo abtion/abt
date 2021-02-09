@@ -13,7 +13,7 @@ module Abt
             'Stop running harvest tracker'
           end
 
-          def call
+          def perform
             cli.abort 'No running time entry' if time_entry.nil?
 
             stop_time_entry

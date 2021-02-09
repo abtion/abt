@@ -13,7 +13,7 @@ module Abt
             'Suggest a git branch name for the current/specified work-item.'
           end
 
-          def call
+          def perform
             require_work_item!
 
             cli.puts name

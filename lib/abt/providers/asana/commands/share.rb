@@ -13,7 +13,7 @@ module Abt
             'Print project/task config string'
           end
 
-          def call
+          def perform
             require_project!
 
             if task_gid.nil?

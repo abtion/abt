@@ -13,8 +13,10 @@ module Abt
             'List all boards - useful for piping into grep etc'
           end
 
-          def call
-            cli.abort 'No organization selected. Did you initialize DevOps?' if organization_name.nil?
+          def perform
+            if organization_name.nil?
+              cli.abort 'No organization selected. Did you initialize DevOps?'
+            end
             cli.abort 'No project selected. Did you initialize DevOps?' if project_name.nil?
 
             boards.map do |board|

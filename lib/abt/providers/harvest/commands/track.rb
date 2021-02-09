@@ -13,7 +13,7 @@ module Abt
             'Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana`' # rubocop:disable Layout/LineLength
           end
 
-          def call
+          def perform
             require_task!
 
             print_task(created_time_entry['project'], created_time_entry['task'])

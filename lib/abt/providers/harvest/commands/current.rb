@@ -13,7 +13,7 @@ module Abt
             'Get or set project and or task for current git repository'
           end
 
-          def call
+          def perform
             require_project!
 
             if same_args_as_config? || !config.local_available?

@@ -113,7 +113,7 @@ module Abt
 
       print_command(command_name, provider_name, arg_str) if output.isatty
 
-      command.new(arg_str: arg_str, cli: self).call
+      command.new(arg_str: arg_str, cli: self).perform
       true
     end
 

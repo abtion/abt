@@ -13,7 +13,7 @@ module Abt
             'Pick Harvest project for current git repository'
           end
 
-          def call
+          def perform
             cli.abort 'Must be run inside a git repository' unless config.local_available?
 
             projects # Load projects up front to make it obvious that searches are instant

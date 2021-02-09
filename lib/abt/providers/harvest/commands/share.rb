@@ -13,7 +13,7 @@ module Abt
             'Print project/task config string'
           end
 
-          def call
+          def perform
             if project_id.nil?
               cli.warn 'No project selected'
             elsif task_id.nil?

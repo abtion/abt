@@ -19,7 +19,7 @@ module Abt
             @cli = cli
           end
 
-          def call
+          def perform
             create_and_switch unless switch
             cli.warn "Switched to #{branch_name}"
           end

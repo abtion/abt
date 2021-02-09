@@ -13,7 +13,7 @@ module Abt
             'Get or set DevOps configuration for current git repository'
           end
 
-          def call
+          def perform
             require_board!
 
             if same_args_as_config? || !config.local_available?

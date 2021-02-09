@@ -86,7 +86,7 @@ RSpec.describe Abt::Cli do
         class Command
           def initialize(arg_str:, cli:); end
 
-          def call; end
+          def perform; end
         end
 
         def self.command_class(command_name)
@@ -100,7 +100,7 @@ RSpec.describe Abt::Cli do
       command_instance = instance_double(Command)
 
       allow(Command).to receive(:new).and_return(command_instance)
-      allow(command_instance).to receive(:call)
+      allow(command_instance).to receive(:perform)
 
       cli_instance = Abt::Cli.new argv: ['command', 'provider:arg_str']
       cli_instance.perform
@@ -109,7 +109,7 @@ RSpec.describe Abt::Cli do
         expect(arg_str).to eq('arg_str')
         expect(cli).to eq(cli_instance)
       end
-      expect(command_instance).to have_received(:call)
+      expect(command_instance).to have_received(:perform)
     end
 
     context 'when provider argument given through input IO (pipe)' do

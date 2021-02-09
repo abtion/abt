@@ -13,7 +13,7 @@ module Abt
             'List all work items on board - useful for piping into grep etc.'
           end
 
-          def call
+          def perform
             require_board!
 
             work_items.each do |work_item|

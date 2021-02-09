@@ -13,7 +13,7 @@ module Abt
             'List available tasks on project - useful for piping into grep etc.'
           end
 
-          def call
+          def perform
             require_project!
 
             tasks.each do |task|

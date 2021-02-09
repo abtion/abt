@@ -13,7 +13,7 @@ module Abt
             'Clear all global configuration'
           end
 
-          def call
+          def perform
             cli.warn 'Clearing Harvest project configuration'
             config.clear_global
           end

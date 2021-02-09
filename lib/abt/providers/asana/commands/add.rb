@@ -13,7 +13,7 @@ module Abt
             'Create a new task for the current/specified Asana project'
           end
 
-          def call
+          def perform
             require_project!
 
             task

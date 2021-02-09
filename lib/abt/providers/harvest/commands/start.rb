@@ -13,7 +13,7 @@ module Abt
             'As track, but also lets the user override the current task and triggers `start` commands for other providers ' # rubocop:disable Layout/LineLength
           end
 
-          def call
+          def perform
             track_output = call_track
             puts track_output
 

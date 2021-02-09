@@ -13,7 +13,7 @@ module Abt
             'Print DevOps config string'
           end
 
-          def call
+          def perform
             require_work_item!
 
             args = [organization_name, project_name, board_id, work_item_id].compact

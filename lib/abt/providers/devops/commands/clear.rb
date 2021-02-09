@@ -13,7 +13,7 @@ module Abt
             'Clear DevOps config for current git repository'
           end
 
-          def call
+          def perform
             cli.warn 'Clearing configuration'
             config.clear_local
           end

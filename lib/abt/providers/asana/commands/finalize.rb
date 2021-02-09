@@ -13,7 +13,7 @@ module Abt
             'Move current/specified task to section (column) for finalized tasks'
           end
 
-          def call
+          def perform
             unless config.local_available?
               cli.abort 'This is a no-op for tasks outside the current project'
             end

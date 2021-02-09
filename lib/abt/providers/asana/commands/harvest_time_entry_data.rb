@@ -13,7 +13,7 @@ module Abt
             'Print Harvest time entry data for Asana task as json. Used by harvest start script.'
           end
 
-          def call
+          def perform
             require_task!
             ensure_current_is_valid!
 

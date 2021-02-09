@@ -13,7 +13,7 @@ module Abt
             'Print Harvest time entry data for DevOps work item as json. Used by harvest start script.'
           end
 
-          def call
+          def perform
             require_work_item!
 
             body = {

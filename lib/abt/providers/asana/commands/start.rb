@@ -13,7 +13,7 @@ module Abt
             'Set current task and move it to a section (column) of your choice'
           end
 
-          def call
+          def perform
             require_task!
 
             maybe_override_current_task

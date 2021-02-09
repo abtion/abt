@@ -16,7 +16,7 @@ module Abt
             'Pick DevOps board for current git repository'
           end
 
-          def call
+          def perform
             cli.abort 'Must be run inside a git repository' unless config.local_available?
 
             @organization_name = config.organization_name = organization_name_from_url

@@ -13,7 +13,7 @@ module Abt
             'Suggest a git branch name for the current/specified task.'
           end
 
-          def call
+          def perform
             require_task!
             ensure_current_is_valid!
 

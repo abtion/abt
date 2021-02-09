@@ -13,7 +13,7 @@ module Abt
             'Clear project/task for current git repository'
           end
 
-          def call
+          def perform
             cli.warn 'Clearing Asana project configuration'
             config.clear_local
           end

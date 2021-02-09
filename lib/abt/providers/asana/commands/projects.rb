@@ -13,7 +13,7 @@ module Abt
             'List all available projects - useful for piping into grep etc.'
           end
 
-          def call
+          def perform
             projects.map do |project|
               print_project(project)
             end
