@@ -68,9 +68,65 @@ RSpec.describe Abt::Cli do
         cli.perform
       end.to raise_error(Abt::Cli::AbortError, 'No provider arguments')
     end
+
+    context 'when no argument given through input IO' do
+      it 'aborts with "No input from pipe"' do
+        piped_argument = StringIO.new('')
+
+        expect do
+          Abt::Cli.new argv: ['share', 'asana:test/test'], input: piped_argument
+        end.to raise_error(Abt::Cli::AbortError, 'No input from pipe')
+      end
+    end
   end
 
   context 'when provider argument given' do
+    it 'correctly executes the command for the provider' do
+      Provider = Module.new do
+        class Command
+          def initialize(arg_str:, cli:); end
+
+          def call; end
+        end
+
+        def self.command_class(command_name)
+          return Command if command_name == 'command'
+        end
+      end
+
+      stub_const('Abt::Providers::Provider', Provider) # Add the provider to Abt for only this spec
+
+      Command = Provider.const_get(:Command) # Provider::Command doesn't work
+      command_instance = instance_double(Command)
+
+      allow(Command).to receive(:new).and_return(command_instance)
+      allow(command_instance).to receive(:call)
+
+      cli_instance = Abt::Cli.new argv: ['command', 'provider:arg_str']
+      cli_instance.perform
+
+      expect(Command).to have_received(:new) do |arg_str:, cli:|
+        expect(arg_str).to eq('arg_str')
+        expect(cli).to eq(cli_instance)
+      end
+      expect(command_instance).to have_received(:call)
+    end
+
+    context 'when provider argument given through input IO (pipe)' do
+      it 'uses the piped argument' do
+        piped_argument = StringIO.new('asana:test/test # Description text from other command')
+        cli = Abt::Cli.new argv: ['share'], input: piped_argument
+
+        allow(Abt::Providers::Asana::Commands::Share).to receive(:new).and_call_original
+
+        cli.perform
+
+        expect(Abt::Providers::Asana::Commands::Share).to have_received(:new).once do |arg_str:, **|
+          expect(arg_str).to eq('test/test')
+        end
+      end
+    end
+
     context 'when no provider implements the command' do
       it 'aborts with "No matching providers found for command"' do
         cli = Abt::Cli.new argv: ['invalid-command', 'asana:test/test']
@@ -78,6 +134,35 @@ RSpec.describe Abt::Cli do
         expect do
           cli.perform
         end.to raise_error(Abt::Cli::AbortError, 'No matching providers found for command')
+      end
+    end
+
+    context 'when there are multiple commands for the same provider' do
+      it 'drops subsequent commands and prints a warning' do
+        err_output = StringIO.new
+        cli = Abt::Cli.new(argv: ['share', 'asana:called', 'asana:not/called'],
+                           err_output: err_output)
+
+        allow(Abt::Providers::Asana::Commands::Share).to receive(:new).and_call_original
+
+        cli.perform
+
+        expect(Abt::Providers::Asana::Commands::Share).to have_received(:new).once do |arg_str:, **|
+          expect(arg_str).to eq('called')
+        end
+        expect(err_output.string).to(
+          include('Dropping command for already used provider: asana:not/called')
+        )
+      end
+    end
+
+    context 'when at least one provider implements the command' do
+      it 'does not abort' do
+        cli = Abt::Cli.new argv: ['share', 'asana:test/test', 'git']
+
+        expect do
+          cli.perform
+        end.not_to raise_error
       end
     end
   end
