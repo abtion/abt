@@ -8,29 +8,28 @@ module Abt
   class Cli
     class AbortError < StandardError; end
 
-    attr_reader :command, :args, :input, :output, :err_output, :prompt
+    attr_reader :command, :provider_arguments, :input, :output, :err_output, :prompt
 
     def initialize(argv: ARGV, input: STDIN, output: STDOUT, err_output: STDERR)
-      (@command, *@args) = argv
-
+      (@command, *remaining_args) = argv
       @input = input
       @output = output
       @err_output = err_output
       @prompt = Abt::Cli::Prompt.new(output: err_output)
 
-      @args += args_from_input unless input.isatty # Add piped arguments
+      @provider_arguments = ArgumentsParser.new(sanitized_piped_args + remaining_args).parse
     end
 
     def perform
       return if handle_global_commands!
 
-      abort('No provider arguments') if args.empty?
+      abort('No provider arguments') if provider_arguments.empty?
 
       process_providers
     end
 
-    def print_provider_command(provider, arg_str, description = nil)
-      command = "#{provider}:#{arg_str}"
+    def print_provider_command(provider, path, description = nil)
+      command = "#{provider}:#{path}"
       command += " # #{description}" unless description.nil?
       output.puts command
     end
@@ -53,7 +52,7 @@ module Abt
 
     private
 
-    def handle_global_commands! # rubocop:disable Metrics/MethodLength
+    def handle_global_commands!
       case command
       when nil
         warn("No command specified\n\n")
@@ -73,52 +72,56 @@ module Abt
       end
     end
 
-    def args_from_input
-      input_string = input.read.strip
+    def sanitized_piped_args
+      return [] if input.isatty
 
-      abort 'No input from pipe' if input_string.nil? || input_string.empty?
+      @sanitized_piped_args ||= begin
+        input_string = input.read.strip
 
-      # Exclude comment part of piped input lines
-      lines_without_comments = input_string.lines.map do |line|
-        line.split(' # ').first
+        abort 'No input from pipe' if input_string.nil? || input_string.empty?
+
+        # Exclude comment part of piped input lines
+        lines_without_comments = input_string.lines.map do |line|
+          line.split(' # ').first
+        end
+
+        # Allow multiple provider arguments on a single piped input line
+        joined_lines = lines_without_comments.join(' ').strip
+        joined_lines.split(/\s+/)
       end
-
-      # Allow multiple provider arguments on a single piped input line
-      joined_lines = lines_without_comments.join(' ').strip
-      joined_lines.split(/\s+/)
     end
 
     def process_providers
-      used_providers = []
-      args.each do |provider_args|
-        (provider, arg_str) = provider_args.split(':')
+      used_schemes = []
+      provider_arguments.each do |provider_argument|
+        (scheme, path) = provider_argument.uri.split(':')
 
-        if used_providers.include?(provider)
-          warn "Dropping command for already used provider: #{provider_args}"
+        if used_schemes.include?(scheme)
+          warn "Dropping command for already used provider: #{provider_argument.uri}"
           next
         end
 
-        used_providers << provider if process_provider_command(provider, command, arg_str)
+        command_class = get_command_class(scheme, command)
+        next if command_class.nil?
+
+        print_command(command, scheme, path) if output.isatty
+        command_class.new(path: path, cli: self, flags: provider_argument.flags).perform
+
+        used_schemes << scheme
       end
 
-      abort 'No matching providers found for command' if used_providers.empty? && output.isatty
+      abort 'No matching providers found for command' if used_schemes.empty? && output.isatty
     end
 
-    def process_provider_command(provider_name, command_name, arg_str)
+    def get_command_class(provider_name, command_name)
       provider = Abt.provider_module(provider_name)
-      return false if provider.nil?
+      return nil if provider.nil?
 
-      command = provider.command_class(command_name)
-      return false if command.nil?
-
-      print_command(command_name, provider_name, arg_str) if output.isatty
-
-      command.new(arg_str: arg_str, cli: self).perform
-      true
+      provider.command_class(command_name)
     end
 
-    def print_command(name, provider, arg_str)
-      warn "===== #{name} #{provider}#{arg_str.nil? ? '' : ":#{arg_str}"} =====".upcase
+    def print_command(name, provider, path)
+      warn "===== #{name} #{provider}#{path.nil? ? '' : ":#{path}"} =====".upcase
     end
   end
 end

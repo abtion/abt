@@ -17,7 +17,7 @@ module Abt
             track_output = call_track
             puts track_output
 
-            use_arg_str(arg_str_from_track_output(track_output))
+            use_path(path_from_track_output(track_output))
 
             maybe_override_current_task
           rescue Abt::HttpError::HttpError => e
@@ -27,7 +27,7 @@ module Abt
 
           private
 
-          def arg_str_from_track_output(output)
+          def path_from_track_output(output)
             output = output.split(' # ').first
             output.split(':')[1]
           end
@@ -41,7 +41,7 @@ module Abt
           end
 
           def maybe_override_current_task
-            return if arg_str.nil?
+            return if path.nil?
             return if same_args_as_config?
             return unless config.local_available?
             return unless cli.prompt.boolean 'Set selected task as current?'

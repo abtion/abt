@@ -84,10 +84,10 @@ RSpec.describe Abt::Cli do
     end
   end
 
-  context 'when provider argument given' do
+  describe 'provider arguments' do
     it 'correctly executes the command for the provider' do
       Command = Class.new do
-        def initialize(arg_str:, cli:); end
+        def initialize(path:, flags:, cli:); end
 
         def perform; end
       end
@@ -105,15 +105,17 @@ RSpec.describe Abt::Cli do
       allow(command_instance).to receive(:perform)
 
       err_output = StringIO.new
-      cli_instance = Abt::Cli.new argv: ['command', 'provider:arg_str'], err_output: err_output
+      cli_instance = Abt::Cli.new(argv: ['command', 'provider:path', '--1', '--2'],
+                                  err_output: err_output)
       cli_instance.perform
 
-      expect(Command).to have_received(:new) do |arg_str:, cli:|
-        expect(arg_str).to eq('arg_str')
+      expect(Command).to have_received(:new) do |path:, flags:, cli:|
+        expect(path).to eq('path')
+        expect(flags).to eq(['--1', '--2'])
         expect(cli).to eq(cli_instance)
       end
       expect(command_instance).to have_received(:perform)
-      expect(err_output.string).to include('===== COMMAND PROVIDER:ARG_STR =====')
+      expect(err_output.string).to include('===== COMMAND PROVIDER:PATH =====')
     end
 
     context 'when provider argument given through input IO (pipe)' do
@@ -125,8 +127,8 @@ RSpec.describe Abt::Cli do
 
         cli.perform
 
-        expect(Abt::Providers::Asana::Commands::Share).to have_received(:new).once do |arg_str:, **|
-          expect(arg_str).to eq('test/test')
+        expect(Abt::Providers::Asana::Commands::Share).to have_received(:new).once do |path:, **|
+          expect(path).to eq('test/test')
         end
       end
     end
@@ -152,8 +154,8 @@ RSpec.describe Abt::Cli do
 
         cli.perform
 
-        expect(Abt::Providers::Asana::Commands::Share).to have_received(:new).once do |arg_str:, **|
-          expect(arg_str).to eq('called')
+        expect(Abt::Providers::Asana::Commands::Share).to have_received(:new).once do |path:, **|
+          expect(path).to eq('called')
         end
         expect(err_output.string).to(
           include('Dropping command for already used provider: asana:not/called')
@@ -168,6 +170,58 @@ RSpec.describe Abt::Cli do
         expect do
           cli.perform
         end.not_to raise_error
+      end
+    end
+
+    context 'when there\'s a provider argument after an argument with flags' do
+      it 'uses -- to separate the two providers' do
+        Provider1Command = Class.new do
+          def initialize(*); end
+
+          def perform; end
+        end
+
+        Provider1 = Module.new do
+          def self.command_class(command_name)
+            return Provider1Command if command_name == 'command'
+          end
+        end
+
+        Provider2Command = Class.new do
+          def initialize(*); end
+
+          def perform; end
+        end
+
+        Provider2 = Module.new do
+          def self.command_class(command_name)
+            return Provider2Command if command_name == 'command'
+          end
+        end
+
+        stub_const('Abt::Providers::Provider1', Provider1)
+        stub_const('Abt::Providers::Provider2', Provider2)
+
+        allow(Provider1Command).to receive(:new).and_call_original
+        allow(Provider2Command).to receive(:new).and_call_original
+
+        err_output = StringIO.new
+        argv = ['command', 'provider1:path1', '--1', '--', 'provider2:path2', '--2']
+
+        cli_instance = Abt::Cli.new argv: argv, err_output: err_output
+        cli_instance.perform
+
+        expect(Provider1Command).to have_received(:new) do |path:, flags:, cli:|
+          expect(path).to eq('path1')
+          expect(flags).to eq(['--1'])
+          expect(cli).to eq(cli_instance)
+        end
+
+        expect(Provider2Command).to have_received(:new) do |path:, flags:, cli:|
+          expect(path).to eq('path2')
+          expect(flags).to eq(['--2'])
+          expect(cli).to eq(cli_instance)
+        end
       end
     end
   end

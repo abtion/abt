@@ -4,18 +4,19 @@ module Abt
   module Providers
     module Devops
       class BaseCommand
-        attr_reader :arg_str, :organization_name, :project_name, :board_id, :work_item_id, :cli, :config
+        attr_reader :path, :flags, :organization_name, :project_name, :board_id, :work_item_id, :cli, :config
 
-        def initialize(arg_str:, cli:)
-          @arg_str = arg_str
+        def initialize(path:, flags:, cli:)
+          @path = path
+          @flags = flags
 
           @config = Configuration.new(cli: cli)
           @cli = cli
 
-          if arg_str.nil?
-            use_current_args
+          if path.nil?
+            use_current_path
           else
-            use_arg_str(arg_str)
+            use_path(path)
           end
         end
 
@@ -55,28 +56,28 @@ module Abt
         end
 
         def print_board(organization_name, project_name, board)
-          arg_str = "#{organization_name}/#{project_name}/#{board['id']}"
+          path = "#{organization_name}/#{project_name}/#{board['id']}"
 
-          cli.print_provider_command('devops', arg_str, board['name'])
+          cli.print_provider_command('devops', path, board['name'])
           # cli.warn board['url'] if board.key?('url') && cli.output.isatty # TODO: Web URL
         end
 
         def print_work_item(organization, project, board, work_item)
-          arg_str = "#{organization}/#{project}/#{board['id']}/#{work_item['id']}"
+          path = "#{organization}/#{project}/#{board['id']}/#{work_item['id']}"
 
-          cli.print_provider_command('devops', arg_str, work_item['name'])
+          cli.print_provider_command('devops', path, work_item['name'])
           cli.warn work_item['url'] if work_item.key?('url') && cli.output.isatty
         end
 
-        def use_current_args
+        def use_current_path
           @organization_name = config.organization_name
           @project_name = config.project_name
           @board_id = config.board_id
           @work_item_id = config.work_item_id
         end
 
-        def use_arg_str(arg_str)
-          args = arg_str.to_s.split('/')
+        def use_path(path)
+          args = path.to_s.split('/')
 
           if args.length < 3
             cli.abort 'Argument format is <organization>/<project>/<board-id>[/<work-item-id>]'

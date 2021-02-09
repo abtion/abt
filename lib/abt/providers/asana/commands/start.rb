@@ -25,12 +25,12 @@ module Abt
           private
 
           def maybe_override_current_task
-            return if arg_str.nil?
+            return if path.nil?
             return if same_args_as_config?
             return unless config.local_available?
 
             should_override = cli.prompt.boolean 'Set selected task as current?'
-            Current.new(arg_str: arg_str, cli: cli).call if should_override
+            Current.new(path: path, cli: cli).call if should_override
           end
 
           def update_assignee_if_needed

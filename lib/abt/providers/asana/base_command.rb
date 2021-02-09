@@ -4,16 +4,17 @@ module Abt
   module Providers
     module Asana
       class BaseCommand
-        attr_reader :arg_str, :project_gid, :task_gid, :cli, :config
+        attr_reader :path, :flags, :project_gid, :task_gid, :cli, :config
 
-        def initialize(arg_str:, cli:)
-          @arg_str = arg_str
+        def initialize(path:, flags:, cli:)
+          @path = path
+          @flags = flags
           @config = Configuration.new(cli: cli)
 
-          if arg_str.nil?
-            use_current_args
+          if path.nil?
+            use_current_path
           else
-            use_arg_str(arg_str)
+            use_path(path)
           end
           @cli = cli
         end
@@ -46,13 +47,13 @@ module Abt
           cli.warn task['permalink_url'] if task.key?('permalink_url') && cli.output.isatty
         end
 
-        def use_current_args
+        def use_current_path
           @project_gid = config.project_gid
           @task_gid = config.task_gid
         end
 
-        def use_arg_str(arg_str)
-          args = arg_str.to_s.split('/')
+        def use_path(path)
+          args = path.to_s.split('/')
           @project_gid = args[0].to_s
           @project_gid = nil if project_gid.empty?
 

@@ -4,16 +4,17 @@ module Abt
   module Providers
     module Harvest
       class BaseCommand
-        attr_reader :arg_str, :project_id, :task_id, :cli, :config
+        attr_reader :path, :flags, :project_id, :task_id, :cli, :config
 
-        def initialize(arg_str:, cli:)
-          @arg_str = arg_str
+        def initialize(path:, flags:, cli:)
+          @path = path
+          @flags = flags
           @config = Configuration.new(cli: cli)
 
-          if arg_str.nil?
-            use_current_args
+          if path.nil?
+            use_current_path
           else
-            use_arg_str(arg_str)
+            use_path(path)
           end
           @cli = cli
         end
@@ -51,13 +52,13 @@ module Abt
           )
         end
 
-        def use_current_args
+        def use_current_path
           @project_id = config.project_id
           @task_id = config.task_id
         end
 
-        def use_arg_str(arg_str)
-          args = arg_str.to_s.split('/')
+        def use_path(path)
+          args = path.to_s.split('/')
           @project_id = args[0].to_s
           @project_id = nil if project_id.empty?
 
