@@ -6,11 +6,17 @@ module Abt
       module Commands
         class Track < BaseCommand
           def self.usage
-            'abt track harvest[:<project-id>/<task-id>]'
+            'abt track harvest[:<project-id>/<task-id>] [options]'
           end
 
           def self.description
             'Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana`' # rubocop:disable Layout/LineLength
+          end
+
+          def self.flags
+            [
+              ['-c', '--comment COMMENT', 'Override comment']
+            ]
           end
 
           def perform
@@ -41,8 +47,10 @@ module Abt
               body.merge! external_link_data
             else
               cli.warn 'No external link provided'
-              body[:notes] ||= cli.prompt.text('Fill in comment (optional)')
             end
+
+            body[:notes] = flags[:comment] if flags.key?(:comment)
+            body[:notes] ||= cli.prompt.text('Fill in comment (optional)')
 
             api.post('time_entries', Oj.dump(body, mode: :json))
           end
@@ -62,7 +70,7 @@ module Abt
                 cli.abort('Multiple providers had harvest reference data, only one is supported at a time') # rubocop:disable Layout/LineLength
               end
 
-              Oj.load(lines.first)
+              Oj.load(lines.first, symbol_keys: true)
             end
           end
         end
