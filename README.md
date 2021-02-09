@@ -2,7 +2,7 @@
 This readme was generated with `abt help-md > README.md`
 
 ## Usage
-`abt <command> [<provider[:<arguments>]>...]`
+`abt <command> [<provider-URI>][ <flags> --]] [<provider-URI>...]`
 
 Getting started:
 - `abt init asana harvest`: Setup asana and harvest project git repo in working dir
