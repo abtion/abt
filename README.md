@@ -1,5 +1,5 @@
 # Abt
-This readme was generated with `abt help-md > README.md`
+This readme was generated with `abt readme > README.md`
 
 ## Usage
 `abt <command> [<provider-URI>] [<flags> --] [<provider-URI>] ...`
@@ -25,7 +25,14 @@ Sharing configuration:
 - `abt share asana harvest | tr "\n" " " | pbcopy`: Copy configuration (mac only)
 - `abt start <shared configuration>`: Start a shared configuration
 
+Flags:
+- `abt start harvest -c "comment"`: Command flags are added directly after provider URIs
+- `abt start harvest -c "comment" -- asana`: Use -- to mark the end of a flag list if it's to be followed by a provider URI
+- `abt pick harvest | abt start -c "comment"`: Flags placed directly after a command applies to piped in URIs
+
 ## Available commands:
+Some commands have `[options]`. Run such a command with `--help` flag to view supported flags, e.g: `abt track harvest -h`
+
 ### Asana
 | Command | Description |
 | :------ | :---------- |

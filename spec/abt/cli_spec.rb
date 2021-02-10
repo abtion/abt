@@ -7,7 +7,7 @@ RSpec.describe Abt::Cli do
 
   context 'when no command given' do
     it 'writes "no command specified" to err_output and help to output' do
-      allow(Abt::Docs::Cli).to receive(:content).and_return('Help content')
+      allow(Abt::Docs::Cli).to receive(:help).and_return('Help content')
 
       output = StringIO.new
       err_output = StringIO.new
@@ -35,12 +35,12 @@ RSpec.describe Abt::Cli do
       end
     end
 
-    ['--help', '-h', 'help', 'commands'].each do |command_name|
+    ['--help', '-h', 'help'].each do |command_name|
       describe command_name do
-        it 'writes cli docs to output' do
+        it 'writes cli help to output' do
           output = StringIO.new
 
-          allow(Abt::Docs::Cli).to receive(:content).and_return('Help content')
+          allow(Abt::Docs::Cli).to receive(:help).and_return('Help content')
 
           cli = Abt::Cli.new argv: [command_name], output: output
           cli.perform
@@ -50,16 +50,42 @@ RSpec.describe Abt::Cli do
       end
     end
 
-    describe 'help-md' do
-      it 'writes markdown docs to output' do
+    describe 'examples' do
+      it 'writes cli examples to output' do
         output = StringIO.new
 
-        allow(Abt::Docs::Markdown).to receive(:content).and_return('# Markdown help content')
+        allow(Abt::Docs::Cli).to receive(:examples).and_return('Examples content')
 
-        cli = Abt::Cli.new argv: ['help-md'], output: output
+        cli = Abt::Cli.new argv: ['examples'], output: output
         cli.perform
 
-        expect(output.string).to eq("# Markdown help content\n")
+        expect(output.string).to eq("Examples content\n")
+      end
+    end
+
+    describe 'commands' do
+      it 'writes cli commands to output' do
+        output = StringIO.new
+
+        allow(Abt::Docs::Cli).to receive(:commands).and_return('Commands content')
+
+        cli = Abt::Cli.new argv: ['commands'], output: output
+        cli.perform
+
+        expect(output.string).to eq("Commands content\n")
+      end
+    end
+
+    describe 'readme' do
+      it 'writes markdown readme to output' do
+        output = StringIO.new
+
+        allow(Abt::Docs::Markdown).to receive(:readme).and_return('# Readme')
+
+        cli = Abt::Cli.new argv: ['readme'], output: output
+        cli.perform
+
+        expect(output.string).to eq("# Readme\n")
       end
     end
   end

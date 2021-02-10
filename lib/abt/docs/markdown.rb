@@ -4,10 +4,10 @@ module Abt
   module Docs
     module Markdown
       class << self
-        def content
+        def readme
           <<~MD
             # Abt
-            This readme was generated with `abt help-md > README.md`
+            This readme was generated with `abt readme > README.md`
 
             ## Usage
             `abt <command> [<provider-URI>] [<flags> --] [<provider-URI>] ...`
@@ -15,6 +15,8 @@ module Abt
             #{example_commands}
 
             ## Available commands:
+            Some commands have `[options]`. Run such a command with `--help` flag to view supported flags, e.g: `abt track harvest -h`
+
             #{provider_commands}
           MD
         end
@@ -24,7 +26,8 @@ module Abt
         def example_commands
           lines = []
 
-          Docs.examples.each_with_index do |(title, commands), index|
+          examples = Docs.basic_examples.merge(Docs.extended_examples)
+          examples.each_with_index do |(title, commands), index|
             lines << '' unless index.zero?
             lines << title
 
@@ -46,11 +49,11 @@ module Abt
             lines << '| Command | Description |'
             lines << '| :------ | :---------- |'
 
-            max_length = commands.keys.map(&:length).max
+            max_length = commands.values.map(&:first).map(&:length).max
 
-            commands.each do |(command, description)|
-              adjusted_command = "`#{command}`".ljust(max_length + 2)
-              lines << "| #{adjusted_command} | #{description} |"
+            commands.each do |(_command, (usage, description))|
+              adjusted_usage = "`#{usage}`".ljust(max_length + 2)
+              lines << "| #{adjusted_usage} | #{description} |"
             end
           end
 

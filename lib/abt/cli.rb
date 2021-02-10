@@ -61,16 +61,22 @@ module Abt
       case command
       when nil
         warn("No command specified\n\n")
-        puts(Abt::Docs::Cli.content)
-        true
-      when '--help', '-h', 'help', 'commands'
-        puts(Abt::Docs::Cli.content)
-        true
-      when 'help-md'
-        puts(Abt::Docs::Markdown.content)
+        puts(Abt::Docs::Cli.help)
         true
       when '--version', '-v', 'version'
         puts(Abt::VERSION)
+        true
+      when '--help', '-h', 'help'
+        puts(Abt::Docs::Cli.help)
+        true
+      when 'commands'
+        puts(Abt::Docs::Cli.commands)
+        true
+      when 'examples'
+        puts(Abt::Docs::Cli.examples)
+        true
+      when 'readme'
+        puts(Abt::Docs::Markdown.readme)
         true
       else
         false
