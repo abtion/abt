@@ -10,7 +10,13 @@ module Abt
           end
 
           def self.description
-            'Set current task and move it to a section (column) of your choice'
+            'Move current or specified task to WIP section (column) and assign it to you'
+          end
+
+          def self.flags
+            [
+              ['-s', '--set', 'Set specified task as current']
+            ]
           end
 
           def perform
@@ -25,12 +31,12 @@ module Abt
           private
 
           def maybe_override_current_task
+            return unless flags[:set]
             return if path.nil?
             return if same_args_as_config?
             return unless config.local_available?
 
-            should_override = cli.prompt.boolean 'Set selected task as current?'
-            Current.new(path: path, cli: cli).call if should_override
+            Current.new(path: path, cli: cli).call
           end
 
           def update_assignee_if_needed
