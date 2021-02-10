@@ -57,6 +57,11 @@ module Abt
             }
 
             if external_link_data
+              cli.warn <<~TXT
+                Linking to:
+                  #{external_link_data[:notes]}
+                  #{external_link_data[:external_reference][:permalink]}
+              TXT
               body.merge! external_link_data
             else
               cli.warn 'No external link provided'
