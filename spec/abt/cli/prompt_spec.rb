@@ -109,7 +109,7 @@ RSpec.describe Abt::Cli::Prompt do
         prompt = Abt::Cli::Prompt.new(output: StringIO.new)
         expect do
           prompt.choice('Pick an option', [])
-        end.to raise_error(Abt::Cli::AbortError, 'No available options')
+        end.to raise_error(Abt::Cli::Abort, 'No available options')
       end
     end
 

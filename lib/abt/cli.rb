@@ -6,7 +6,7 @@ end
 
 module Abt
   class Cli
-    class AbortError < StandardError; end
+    class Abort < StandardError; end
     class Exit < StandardError; end
 
     attr_reader :command, :provider_arguments, :input, :output, :err_output, :prompt
@@ -48,7 +48,7 @@ module Abt
     end
 
     def abort(message)
-      raise AbortError, message
+      raise Abort, message
     end
 
     def exit_with_message(message)

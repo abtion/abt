@@ -34,7 +34,7 @@ module Abt
         output.puts "#{text}:"
 
         if options.length.zero?
-          raise AbortError, 'No available options' unless nil_option
+          raise Abort, 'No available options' unless nil_option
 
           output.puts 'No available options'
           return nil
@@ -114,7 +114,7 @@ module Abt
         @tty_path ||= begin
           candidates = ['/dev/tty', 'CON:'] # Unix: '/dev/tty', Windows: 'CON:'
           selected = candidates.find { |candidate| File.exist?(candidate) }
-          raise AbortError, 'Unable to prompt for user input' if selected.nil?
+          raise Abort, 'Unable to prompt for user input' if selected.nil?
 
           selected
         end

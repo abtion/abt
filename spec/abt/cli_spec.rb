@@ -70,7 +70,7 @@ RSpec.describe Abt::Cli do
 
       expect do
         cli.perform
-      end.to raise_error(Abt::Cli::AbortError, 'No provider arguments')
+      end.to raise_error(Abt::Cli::Abort, 'No provider arguments')
     end
 
     context 'when no argument given through input IO' do
@@ -79,7 +79,7 @@ RSpec.describe Abt::Cli do
 
         expect do
           Abt::Cli.new argv: ['share', 'asana:test/test'], input: piped_argument
-        end.to raise_error(Abt::Cli::AbortError, 'No input from pipe')
+        end.to raise_error(Abt::Cli::Abort, 'No input from pipe')
       end
     end
   end
@@ -139,7 +139,7 @@ RSpec.describe Abt::Cli do
 
         expect do
           cli.perform
-        end.to raise_error(Abt::Cli::AbortError, 'No matching providers found for command')
+        end.to raise_error(Abt::Cli::Abort, 'No matching providers found for command')
       end
     end
 
@@ -260,12 +260,12 @@ RSpec.describe Abt::Cli do
   end
 
   describe '#abort' do
-    it 'raises an Abt::Cli::AbortError with the given message' do
+    it 'raises an Abt::Cli::Abort with the given message' do
       cli = Abt::Cli.new
 
       expect do
         cli.abort('Error!')
-      end.to raise_error(Abt::Cli::AbortError, 'Error!')
+      end.to raise_error(Abt::Cli::Abort, 'Error!')
     end
   end
 end

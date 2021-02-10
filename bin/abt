@@ -5,7 +5,7 @@ require_relative '../lib/abt.rb'
 
 begin
   Abt::Cli.new.perform
-rescue Abt::Cli::AbortError => e
+rescue Abt::Cli::Abort => e
   abort e.message
 rescue Interrupt
   abort 'Aborted'
