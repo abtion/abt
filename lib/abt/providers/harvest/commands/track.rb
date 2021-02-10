@@ -15,7 +15,9 @@ module Abt
 
           def self.flags
             [
-              ['-c', '--comment COMMENT', 'Override comment']
+              ['-c', '--comment COMMENT', 'Override comment'],
+              ['-t', '--time HOURS', 'Set hours. Creates a stopped entry unless used with --running'],
+              ['-r', '--running', 'Used with --time, starts the created time entry']
             ]
           end
 
@@ -23,8 +25,6 @@ module Abt
             require_task!
 
             print_task(created_time_entry['project'], created_time_entry['task'])
-
-            cli.warn 'Tracker successfully started'
           rescue Abt::HttpError::HttpError => e
             cli.abort 'Invalid task'
           end
@@ -36,6 +36,19 @@ module Abt
           end
 
           def create_time_entry
+            body = time_entry_base_data
+            body.merge!(hours: flags[:time]) if flags.key? :time
+
+            result = api.post('time_entries', Oj.dump(body, mode: :json))
+
+            if flags.key?(:time) && flags[:running]
+              api.patch("time_entries/#{result['id']}/restart")
+            end
+
+            result
+          end
+
+          def time_entry_base_data
             body = {
               project_id: project_id,
               task_id: task_id,
@@ -51,8 +64,7 @@ module Abt
 
             body[:notes] = flags[:comment] if flags.key?(:comment)
             body[:notes] ||= cli.prompt.text('Fill in comment (optional)')
-
-            api.post('time_entries', Oj.dump(body, mode: :json))
+            body
           end
 
           def external_link_data
