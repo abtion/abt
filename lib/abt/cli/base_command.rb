@@ -37,7 +37,7 @@ module Abt
             opts.on(*flag)
           end
         end
-        opts.parse!(flags, into: result)
+        opts.parse!(flags.dup, into: result)
 
         cli.exit_with_message(opts.help) if result[:help]
 
