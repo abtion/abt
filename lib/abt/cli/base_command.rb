@@ -27,13 +27,19 @@ module Abt
 
       def parse_flags(flags)
         result = {}
-        OptionParser.new do |opts|
+
+        opts = OptionParser.new do |opts|
           opts.banner = banner
+
+          opts.on('-h', '--help')
 
           self.class.flags.each do |(*flag)|
             opts.on(*flag)
           end
-        end.parse!(flags, into: result)
+        end
+        opts.parse!(flags, into: result)
+
+        cli.exit_with_message(opts.help) if result[:help]
 
         result
       rescue OptionParser::InvalidOption => e

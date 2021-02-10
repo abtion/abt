@@ -7,6 +7,7 @@ end
 module Abt
   class Cli
     class AbortError < StandardError; end
+    class Exit < StandardError; end
 
     attr_reader :command, :provider_arguments, :input, :output, :err_output, :prompt
 
@@ -48,6 +49,10 @@ module Abt
 
     def abort(message)
       raise AbortError, message
+    end
+
+    def exit_with_message(message)
+      raise Exit, message
     end
 
     private
@@ -105,7 +110,11 @@ module Abt
         next if command_class.nil?
 
         print_command(command, scheme, path) if output.isatty
-        command_class.new(path: path, cli: self, flags: provider_argument.flags).perform
+        begin
+          command_class.new(path: path, cli: self, flags: provider_argument.flags).perform
+        rescue Exit => e
+          puts e.message
+        end
 
         used_schemes << scheme
       end
