@@ -79,7 +79,7 @@ Some commands have `[options]`. Run such a command with `--help` flag to view su
 | `abt pick harvest[:<project-id>]`                      | Pick task for current git repository |
 | `abt projects harvest`                                 | List all available projects - useful for piping into grep etc. |
 | `abt share harvest[:<project-id>[/<task-id>]]`         | Print project/task config string |
-| `abt start harvest[:<project-id>/<task-id>]`           | As track, but also lets the user override the current task and triggers `start` commands for other providers  |
+| `abt start harvest[:<project-id>/<task-id>] [options]` | Alias for: `abt track harvest`. Meant to used in combination other provider start commands, e.g. `abt start harvest asana` |
 | `abt stop harvest`                                     | Stop running harvest tracker |
 | `abt tasks harvest`                                    | List available tasks on project - useful for piping into grep etc. |
-| `abt track harvest[:<project-id>/<task-id>] [options]` | Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana` |
+| `abt track harvest[:<project-id>/<task-id>] [options]` | Start tracker for current or specified task. Add a relevant provider to link the time entry, e.g. `abt track harvest asana` |

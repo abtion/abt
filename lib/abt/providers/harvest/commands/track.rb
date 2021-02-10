@@ -10,11 +10,12 @@ module Abt
           end
 
           def self.description
-            'Start tracker for current or specified task. Add a relevant provider to link the time entry: E.g. `abt start harvest asana`' # rubocop:disable Layout/LineLength
+            'Start tracker for current or specified task. Add a relevant provider to link the time entry, e.g. `abt track harvest asana`'
           end
 
           def self.flags
             [
+              ['-s', '--set', 'Task as current'],
               ['-c', '--comment COMMENT', 'Override comment'],
               ['-t', '--time HOURS', 'Set hours. Creates a stopped entry unless used with --running'],
               ['-r', '--running', 'Used with --time, starts the created time entry']
@@ -25,7 +26,9 @@ module Abt
             require_task!
 
             print_task(created_time_entry['project'], created_time_entry['task'])
-          rescue Abt::HttpError::HttpError => e
+
+            maybe_override_current_task
+          rescue Abt::HttpError::HttpError => _e
             cli.abort 'Invalid task'
           end
 
@@ -84,11 +87,21 @@ module Abt
 
               # TODO: Make user choose which reference to use by printing the urls
               if lines.length > 1
-                cli.abort('Multiple providers had harvest reference data, only one is supported at a time') # rubocop:disable Layout/LineLength
+                cli.abort('Multiple providers had harvest reference data, only one is supported at a time')
               end
 
               Oj.load(lines.first, symbol_keys: true)
             end
+          end
+
+          def maybe_override_current_task
+            return unless flags[:set]
+            return if same_args_as_config?
+            return unless config.local_available?
+
+            input = StringIO.new("harvest:#{project_id}/#{task_id}")
+            output = StringIO.new
+            Abt::Cli.new(argv: ['current'], output: output, input: input).perform
           end
         end
       end
