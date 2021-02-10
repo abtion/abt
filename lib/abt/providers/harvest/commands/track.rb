@@ -15,7 +15,7 @@ module Abt
 
           def self.flags
             [
-              ['-s', '--set', 'Task as current'],
+              ['-s', '--set', 'Set specified task as current'],
               ['-c', '--comment COMMENT', 'Override comment'],
               ['-t', '--time HOURS', 'Set hours. Creates a stopped entry unless used with --running'],
               ['-r', '--running', 'Used with --time, starts the created time entry']
