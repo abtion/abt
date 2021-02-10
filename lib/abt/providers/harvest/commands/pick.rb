@@ -13,6 +13,12 @@ module Abt
             'Pick task for current git repository'
           end
 
+          def self.flags
+            [
+              ['-d', '--dry-run', 'Keep existing configuration']
+            ]
+          end
+
           def perform
             cli.abort 'Must be run inside a git repository' unless config.local_available?
             require_project!
@@ -20,10 +26,12 @@ module Abt
             cli.warn project['name']
             task = cli.prompt.choice 'Select a task', tasks
 
+            print_task(project, task)
+
+            return if flags[:"dry-run"]
+
             config.project_id = project_id # We might have gotten the project ID as an argument
             config.task_id = task['id']
-
-            print_task(project, task)
           end
 
           private

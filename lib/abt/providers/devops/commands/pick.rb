@@ -13,6 +13,12 @@ module Abt
             'Pick work item for current git repository'
           end
 
+          def self.flags
+            [
+              ['-d', '--dry-run', 'Keep existing configuration']
+            ]
+          end
+
           def perform
             cli.abort 'Must be run inside a git repository' unless config.local_available?
             require_board!
@@ -20,10 +26,11 @@ module Abt
             cli.warn "#{project_name} - #{board['name']}"
 
             work_item = select_work_item
+            print_work_item(organization_name, project_name, board, work_item)
+
+            return if flags[:"dry-run"]
 
             update_config!(work_item)
-
-            print_work_item(organization_name, project_name, board, work_item)
           end
 
           private
