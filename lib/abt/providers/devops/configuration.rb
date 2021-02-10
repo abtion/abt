@@ -34,7 +34,7 @@ module Abt
         def organization_name=(value)
           return if organization_name == value
 
-          clear_local
+          clear_local(verbose: false)
           git['organizationName'] = value unless value.nil?
         end
 
@@ -57,20 +57,12 @@ module Abt
           git['workItemId'] = value
         end
 
-        def clear_local
-          cli.abort 'No local configuration was found' unless local_available?
-
-          git['organizationName'] = nil
-          git['projectName'] = nil
-          git['boardId'] = nil
-          git['workItemId'] = nil
+        def clear_local(verbose: true)
+          git.clear(output: verbose ? cli.err_output : nil)
         end
 
-        def clear_global
-          git.global.keys.each do |key|
-            cli.puts 'Deleting configuration: ' + key
-            git.global[key] = nil
-          end
+        def clear_global(verbose: true)
+          git.global.clear(output: verbose ? cli.err_output : nil)
         end
 
         def username_for_organization(organization_name)

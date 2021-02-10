@@ -67,6 +67,18 @@ module Abt
       end
     end
 
+    def clear(output: nil)
+      if namespace.empty?
+        output&.puts('Keys can only be cleared within a namespace')
+        return
+      end
+
+      keys.each do |key|
+        output&.puts "Clearing #{scope}: #{key_with_namespace(key)}"
+        self[key] = nil
+      end
+    end
+
     private
 
     def ensure_scope_available!

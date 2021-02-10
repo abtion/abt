@@ -38,8 +38,7 @@ Some commands have `[options]`. Run such a command with `--help` flag to view su
 | :------ | :---------- |
 | `abt add asana[:<project-gid>]`                                | Create a new task for the current/specified Asana project |
 | `abt branch-name asana[:<project-gid>/<task-gid>]`             | Suggest a git branch name for the current/specified task. |
-| `abt clear asana`                                              | Clear project/task for current git repository |
-| `abt clear-global asana`                                       | Clear all global configuration |
+| `abt clear asana`                                              | Clear asana configuration |
 | `abt current asana[:<project-gid>[/<task-gid>]]`               | Get or set project and or task for current git repository |
 | `abt finalize asana[:<project-gid>/<task-gid>]`                | Move current/specified task to section (column) for finalized tasks |
 | `abt harvest-time-entry-data asana[:<project-gid>/<task-gid>]` | Print Harvest time entry data for Asana task as json. Used by harvest start script. |
@@ -55,8 +54,7 @@ Some commands have `[options]`. Run such a command with `--help` flag to view su
 | :------ | :---------- |
 | `abt boards devops`                                                                                 | List all boards - useful for piping into grep etc |
 | `abt branch-name devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]`             | Suggest a git branch name for the current/specified work-item. |
-| `abt clear devops`                                                                                  | Clear DevOps config for current git repository |
-| `abt clear-global devops`                                                                           | Clear all global configuration |
+| `abt clear devops`                                                                                  | Clear DevOps configuration |
 | `abt current devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`               | Get or set DevOps configuration for current git repository |
 | `abt harvest-time-entry-data devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]` | Print Harvest time entry data for DevOps work item as json. Used by harvest start script. |
 | `abt init devops`                                                                                   | Pick DevOps board for current git repository |
@@ -72,8 +70,7 @@ Some commands have `[options]`. Run such a command with `--help` flag to view su
 ### Harvest
 | Command | Description |
 | :------ | :---------- |
-| `abt clear harvest`                                    | Clear project/task for current git repository |
-| `abt clear-global harvest`                             | Clear all global configuration |
+| `abt clear harvest`                                    | Clear harvest configuration |
 | `abt current harvest[:<project-id>[/<task-id>]]`       | Get or set project and or task for current git repository |
 | `abt init harvest`                                     | Pick Harvest project for current git repository |
 | `abt pick harvest[:<project-id>]`                      | Pick task for current git repository |

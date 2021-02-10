@@ -27,7 +27,7 @@ module Abt
           value = value.to_s unless value.nil?
           return if project_id == value
 
-          clear_local
+          clear_local(verbose: false)
           git['projectId'] = value
         end
 
@@ -36,18 +36,12 @@ module Abt
           git['taskId'] = value
         end
 
-        def clear_local
-          cli.abort 'No local configuration was found' unless local_available?
-
-          git['projectId'] = nil
-          git['taskId'] = nil
+        def clear_local(verbose: true)
+          git.clear(output: verbose ? cli.err_output : nil)
         end
 
-        def clear_global
-          git.global.keys.each do |key|
-            cli.puts 'Deleting configuration: ' + key
-            git.global[key] = nil
-          end
+        def clear_global(verbose: true)
+          git.global.clear(output: verbose ? cli.err_output : nil)
         end
 
         def access_token

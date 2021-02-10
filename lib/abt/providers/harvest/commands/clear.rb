@@ -10,12 +10,23 @@ module Abt
           end
 
           def self.description
-            'Clear project/task for current git repository'
+            'Clear harvest configuration'
+          end
+
+          def self.flags
+            [
+              ['-g', '--global', 'Clear global instead of local harvest configuration (credentials etc.)'],
+              ['-a', '--all', 'Clear all harvest configuration']
+            ]
           end
 
           def perform
-            cli.warn 'Clearing Harvest project configuration'
-            config.clear_local
+            if flags[:global] && flags[:all]
+              abort('Flags --global and --all cannot be used at the same time')
+            end
+
+            config.clear_local unless flags[:global]
+            config.clear_global if flags[:global] || flags[:all]
           end
         end
       end
