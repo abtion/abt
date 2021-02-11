@@ -10,7 +10,7 @@ module Abt
           end
 
           def self.description
-            'Start tracker for current or specified task. Add a relevant provider to link the time entry, e.g. `abt track harvest asana`'
+            'Start tracker for current or specified task. Add a relevant scheme argument to link the time entry, e.g. `abt track harvest asana`'
           end
 
           def self.flags
@@ -77,7 +77,7 @@ module Abt
 
           def external_link_data
             @external_link_data ||= begin
-              input = StringIO.new(cli.provider_arguments.to_s)
+              input = StringIO.new(cli.scheme_arguments.to_s)
               output = StringIO.new
               Abt::Cli.new(argv: ['harvest-time-entry-data'], output: output, input: input).perform
 
@@ -87,7 +87,7 @@ module Abt
 
               # TODO: Make user choose which reference to use by printing the urls
               if lines.length > 1
-                cli.abort('Multiple providers had harvest reference data, only one is supported at a time')
+                cli.abort('Got reference data from multiple scheme providers, only one is supported at a time')
               end
 
               Oj.load(lines.first, symbol_keys: true)

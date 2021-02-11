@@ -17,9 +17,9 @@ module Abt
             if project_id.nil?
               cli.warn 'No project selected'
             elsif task_id.nil?
-              cli.print_provider_command('harvest', project_id)
+              cli.print_scheme_argument('harvest', project_id)
             else
-              cli.print_provider_command('harvest', "#{project_id}/#{task_id}")
+              cli.print_scheme_argument('harvest', "#{project_id}/#{task_id}")
             end
           end
         end

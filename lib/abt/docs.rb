@@ -23,8 +23,8 @@ module Abt
       def extended_examples
         {
           'Tracking meetings (without changing the config):' => {
-            'abt tasks asana | grep -i standup | abt track harvest' => 'Track on asana meeting task without changing any configuration',
-            'abt tasks harvest | grep -i comment | abt track harvest' => 'Track on harvest "Comment"-task (will prompt for a comment)'
+            'abt pick asana -d | abt track harvest' => 'Track on asana meeting task',
+            'abt pick harvest -d | abt track harvest -c "Name of meeting"' => 'Track on separate harvest-task'
           },
           'Command output can be piped, e.g.:' => {
             'abt tasks asana | grep -i <name of task>' => nil,
@@ -36,30 +36,26 @@ module Abt
             'abt start <shared configuration>' => 'Start a shared configuration'
           },
           'Flags:' => {
-            'abt start harvest -c "comment"' => 'Command flags are added directly after provider URIs',
-            'abt start harvest -c "comment" -- asana' => 'Use -- to mark the end of a flag list if it\'s to be followed by a provider URI',
-            'abt pick harvest | abt start -c "comment"' => 'Flags placed directly after a command applies to piped in URIs'
+            'abt start harvest -c "comment"' => 'Add command flags after <scheme>:<path>',
+            'abt start harvest -c "comment" -- asana' => 'Use -- to mark the end of a flag list if it\'s to be followed by a <scheme-argument>',
+            'abt pick harvest | abt start -c "comment"' => 'Flags placed directly after a command applies to piped in <scheme-argument>'
           }
         }
       end
 
       def providers
-        provider_definitions
+        @providers ||= Abt.schemes.sort.each_with_object({}) do |scheme, definition|
+          definition[scheme] = command_definitions(scheme)
+        end
       end
 
       private
 
-      def provider_definitions
-        Abt.provider_names.sort.each_with_object({}) do |name, definition|
-          definition[name] = command_definitions(name)
-        end
-      end
-
-      def command_definitions(module_name)
-        provider_module = Abt.provider_module(module_name)
-        provider_module.command_names.each_with_object({}) do |name, definition|
-          command_class = provider_module.command_class(name)
-          full_name = "abt #{name} #{module_name}"
+      def command_definitions(scheme)
+        provider = Abt.scheme_provider(scheme)
+        provider.command_names.each_with_object({}) do |name, definition|
+          command_class = provider.command_class(name)
+          full_name = "abt #{name} #{scheme}"
 
           if command_class.respond_to?(:usage) && command_class.respond_to?(:description)
             definition[full_name] = [command_class.usage, command_class.description]

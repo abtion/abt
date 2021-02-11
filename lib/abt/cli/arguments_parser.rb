@@ -3,20 +3,23 @@
 module Abt
   class Cli
     class ArgumentsParser
-      class ProviderArgument
-        attr_reader :uri, :flags
+      class SchemeArgument
+        attr_reader :scheme, :path, :flags
 
-        def initialize(uri:, flags:)
-          @uri = uri
+        def initialize(scheme:, path:, flags:)
+          @scheme = scheme
+          @path = path
           @flags = flags
         end
 
         def to_s
-          [@uri, *flags].join(' ')
+          str = scheme
+          str += ":#{path}" if path
+
+          [str, *flags].join(' ')
         end
       end
-
-      class ProviderArguments < Array
+      class SchemeArguments < Array
         def to_s
           map(&:to_s).join(' -- ')
         end
@@ -29,16 +32,14 @@ module Abt
       end
 
       def parse
-        result = ProviderArguments.new
-
+        result = SchemeArguments.new
         rest = arguments.dup
-        @provider_args = []
 
         until rest.empty?
-          uri = rest.shift
+          (scheme, path) = rest.shift.split(':')
           flags = take_flags(rest)
 
-          result << ProviderArgument.new(uri: uri, flags: flags)
+          result << SchemeArgument.new(scheme: scheme, path: path, flags: flags)
         end
 
         result

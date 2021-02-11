@@ -17,9 +17,9 @@ module Abt
             require_project!
 
             if task_gid.nil?
-              cli.print_provider_command('asana', project_gid)
+              cli.print_scheme_argument('asana', project_gid)
             else
-              cli.print_provider_command('asana', "#{project_gid}/#{task_gid}")
+              cli.print_scheme_argument('asana', "#{project_gid}/#{task_gid}")
             end
           end
         end

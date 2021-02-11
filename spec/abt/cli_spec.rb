@@ -90,13 +90,13 @@ RSpec.describe Abt::Cli do
     end
   end
 
-  context 'when no provider argument given' do
-    it 'aborts with "No provider arguments"' do
+  context 'when no scheme argument given' do
+    it 'aborts with "No scheme arguments"' do
       cli = Abt::Cli.new argv: ['command']
 
       expect do
         cli.perform
-      end.to raise_error(Abt::Cli::Abort, 'No provider arguments')
+      end.to raise_error(Abt::Cli::Abort, 'No scheme arguments')
     end
 
     context 'when no argument given through input IO' do
@@ -110,8 +110,8 @@ RSpec.describe Abt::Cli do
     end
   end
 
-  describe 'provider arguments' do
-    it 'correctly executes the command for the provider' do
+  describe 'scheme arguments' do
+    it 'correctly executes the matching provider command' do
       Command = Class.new do
         def initialize(path:, flags:, cli:); end
 
@@ -141,10 +141,10 @@ RSpec.describe Abt::Cli do
         expect(cli).to eq(cli_instance)
       end
       expect(command_instance).to have_received(:perform)
-      expect(err_output.string).to include('===== COMMAND PROVIDER:PATH =====')
+      expect(err_output.string).to include('===== COMMAND PROVIDER:PATH --1 --2 =====')
     end
 
-    context 'when provider argument given through input IO (pipe)' do
+    context 'when scheme argument given through input IO (pipe)' do
       it 'uses the piped argument' do
         piped_argument = StringIO.new('asana:test/test # Description text from other command')
         cli = Abt::Cli.new argv: ['share'], input: piped_argument, output: null_stream, err_output: null_stream
@@ -160,12 +160,12 @@ RSpec.describe Abt::Cli do
     end
 
     context 'when no provider implements the command' do
-      it 'aborts with "No matching providers found for command"' do
+      it 'aborts with "No providers found for command and scheme argument(s)"' do
         cli = Abt::Cli.new argv: ['invalid-command', 'asana:test/test']
 
         expect do
           cli.perform
-        end.to raise_error(Abt::Cli::Abort, 'No matching providers found for command')
+        end.to raise_error(Abt::Cli::Abort, 'No providers found for command and scheme argument(s)')
       end
     end
 
@@ -184,7 +184,7 @@ RSpec.describe Abt::Cli do
           expect(path).to eq('called')
         end
         expect(err_output.string).to(
-          include('Dropping command for already used provider: asana:not/called')
+          include('Dropping command for already used scheme: asana:not/called')
         )
       end
     end
@@ -199,8 +199,8 @@ RSpec.describe Abt::Cli do
       end
     end
 
-    context 'when there\'s a provider argument after an argument with flags' do
-      it 'uses -- to separate the two providers' do
+    context 'when there\'s a scheme argument after an argument with flags' do
+      it 'uses -- to separate the two scheme arguments' do
         Provider1Command = Class.new do
           def initialize(*); end
 

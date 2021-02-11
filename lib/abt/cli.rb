@@ -9,7 +9,7 @@ module Abt
     class Abort < StandardError; end
     class Exit < StandardError; end
 
-    attr_reader :command, :provider_arguments, :input, :output, :err_output, :prompt
+    attr_reader :command, :scheme_arguments, :input, :output, :err_output, :prompt
 
     def initialize(argv: ARGV, input: STDIN, output: STDOUT, err_output: STDERR)
       (@command, *remaining_args) = argv
@@ -18,19 +18,19 @@ module Abt
       @err_output = err_output
       @prompt = Abt::Cli::Prompt.new(output: err_output)
 
-      @provider_arguments = ArgumentsParser.new(sanitized_piped_args + remaining_args).parse
+      @scheme_arguments = ArgumentsParser.new(sanitized_piped_args + remaining_args).parse
     end
 
     def perform
       return if handle_global_commands!
 
-      abort('No provider arguments') if provider_arguments.empty?
+      abort('No scheme arguments') if scheme_arguments.empty?
 
-      process_providers
+      process_scheme_arguments
     end
 
-    def print_provider_command(provider, path, description = nil)
-      command = "#{provider}:#{path}"
+    def print_scheme_argument(scheme, path, description = nil)
+      command = "#{scheme}:#{path}"
       command += " # #{description}" unless description.nil?
       output.puts command
     end
@@ -96,28 +96,30 @@ module Abt
           line.split(' # ').first
         end
 
-        # Allow multiple provider arguments on a single piped input line
+        # Allow multiple scheme arguments on a single piped input line
+        # TODO: Force the user to pick a single scheme argument
         joined_lines = lines_without_comments.join(' ').strip
         joined_lines.split(/\s+/)
       end
     end
 
-    def process_providers
+    def process_scheme_arguments
       used_schemes = []
-      provider_arguments.each do |provider_argument|
-        (scheme, path) = provider_argument.uri.split(':')
+      scheme_arguments.each do |scheme_argument|
+        scheme = scheme_argument.scheme
+        path = scheme_argument.path
 
         if used_schemes.include?(scheme)
-          warn "Dropping command for already used provider: #{provider_argument.uri}"
+          warn "Dropping command for already used scheme: #{scheme_argument}"
           next
         end
 
-        command_class = get_command_class(scheme, command)
+        command_class = get_command_class(scheme)
         next if command_class.nil?
 
-        print_command(command, scheme, path) if output.isatty
+        print_command(command, scheme_argument) if output.isatty
         begin
-          command_class.new(path: path, cli: self, flags: provider_argument.flags).perform
+          command_class.new(path: path, cli: self, flags: scheme_argument.flags).perform
         rescue Exit => e
           puts e.message
         end
@@ -125,18 +127,20 @@ module Abt
         used_schemes << scheme
       end
 
-      abort 'No matching providers found for command' if used_schemes.empty? && output.isatty
+      return unless used_schemes.empty? && output.isatty
+
+      abort 'No providers found for command and scheme argument(s)'
     end
 
-    def get_command_class(provider_name, command_name)
-      provider = Abt.provider_module(provider_name)
+    def get_command_class(scheme)
+      provider = Abt.scheme_provider(scheme)
       return nil if provider.nil?
 
-      provider.command_class(command_name)
+      provider.command_class(command)
     end
 
-    def print_command(name, provider, path)
-      warn "===== #{name} #{provider}#{path.nil? ? '' : ":#{path}"} =====".upcase
+    def print_command(name, scheme_argument)
+      warn "===== #{name} #{scheme_argument} =====".upcase
     end
   end
 end

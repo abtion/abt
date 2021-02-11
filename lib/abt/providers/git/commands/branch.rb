@@ -6,11 +6,11 @@ module Abt
       module Commands
         class Branch < Abt::Cli::BaseCommand
           def self.usage
-            'abt branch git <provider>'
+            'abt branch git <scheme>[:<path>]'
           end
 
           def self.description
-            'Switch branch. Uses a compatible provider to generate the branch-name: E.g. `abt branch git asana`'
+            'Switch branch. Uses a compatible scheme to generate the branch-name: E.g. `abt branch git asana`'
           end
 
           def perform
@@ -39,29 +39,29 @@ module Abt
 
           def branch_name # rubocop:disable Metrics/MethodLength
             @branch_name ||= begin
-              if branch_names_from_providers.empty?
+              if branch_names_from_scheme_arguments.empty?
                 cli.abort [
-                  'None of the specified providers responded to `branch-name`.',
-                  'Did you add compatible provider? e.g.:',
+                  'None of the specified scheme arguments responded to `branch-name`.',
+                  'Did you add compatible scheme? e.g.:',
                   '   abt branch git asana',
                   '   abt branch git devops'
                 ].join("\n")
               end
 
-              if branch_names_from_providers.length > 1
+              if branch_names_from_scheme_arguments.length > 1
                 cli.abort [
-                  'Got branch names from multiple providers, only one is supported',
-                  'Branch names where:',
-                  *branch_names_from_providers.map { |name| "   #{name}" }
+                  'Got branch names from multiple scheme arguments, only one is supported',
+                  'Branch names were:',
+                  *branch_names_from_scheme_arguments.map { |name| "   #{name}" }
                 ].join("\n")
               end
 
-              branch_names_from_providers.first
+              branch_names_from_scheme_arguments.first
             end
           end
 
-          def branch_names_from_providers
-            input = StringIO.new(cli.provider_arguments.to_s)
+          def branch_names_from_scheme_arguments
+            input = StringIO.new(cli.scheme_arguments.to_s)
             output = StringIO.new
             Abt::Cli.new(argv: ['branch-name'], output: output, input: input).perform
 

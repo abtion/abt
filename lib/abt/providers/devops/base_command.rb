@@ -56,14 +56,14 @@ module Abt
         def print_board(organization_name, project_name, board)
           path = "#{organization_name}/#{project_name}/#{board['id']}"
 
-          cli.print_provider_command('devops', path, board['name'])
+          cli.print_scheme_argument('devops', path, board['name'])
           # cli.warn board['url'] if board.key?('url') && cli.output.isatty # TODO: Web URL
         end
 
         def print_work_item(organization, project, board, work_item)
           path = "#{organization}/#{project}/#{board['id']}/#{work_item['id']}"
 
-          cli.print_provider_command('devops', path, work_item['name'])
+          cli.print_scheme_argument('devops', path, work_item['name'])
           cli.warn work_item['url'] if work_item.key?('url') && cli.output.isatty
         end
 

@@ -8,6 +8,11 @@ module Abt
           <<~TXT
             Usage: #{usage_line}
 
+            <command>           Name of command to execute, e.g. start, finalize etc.
+            <scheme-argument>   A URI-like identifier; scheme:path
+                                Points to a project/task etc. within a system.
+            <options>           Optional flags for the command and scheme argument
+
             #{formatted_examples(Docs.basic_examples)}
 
             For detailed examples/commands try:
@@ -33,14 +38,14 @@ module Abt
             Run commands with --help flag to see detailed usage and flags, e.g.:
                abt track harvest -h
 
-            #{providers_commands}
+            #{commands_per_provider}
           TXT
         end
 
         private
 
         def usage_line
-          'abt <command> [<provider-URI>] [<flags> --] [<provider-URI>] ...'
+          'abt <command> [<scheme-argument>] [<options> --] [<scheme-argument>] ...'
         end
 
         def formatted_examples(example_groups)
@@ -59,12 +64,12 @@ module Abt
           lines.join("\n")
         end
 
-        def providers_commands
+        def commands_per_provider
           lines = []
 
-          Docs.providers.each_with_index do |(provider_name, commands_definition), index|
+          Docs.providers.each_with_index do |(scheme, commands_definition), index|
             lines << '' unless index.zero?
-            lines << "#{inflector.humanize(provider_name)}:"
+            lines << "#{inflector.humanize(scheme)}:"
 
             max_length = commands_definition.keys.map(&:length).max
 

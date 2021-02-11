@@ -14,12 +14,12 @@ end
 module Abt
   module Providers; end
 
-  def self.provider_names
+  def self.schemes
     Providers.constants.sort.map { |constant_name| Helpers.const_to_command(constant_name) }
   end
 
-  def self.provider_module(name)
-    const_name = Helpers.command_to_const(name)
+  def self.scheme_provider(scheme)
+    const_name = Helpers.command_to_const(scheme)
     Providers.const_get(const_name) if Providers.const_defined?(const_name)
   end
 end

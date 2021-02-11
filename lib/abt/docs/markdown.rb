@@ -7,10 +7,31 @@ module Abt
         def readme
           <<~MD
             # Abt
-            This readme was generated with `abt readme > README.md`
+
+            Abt makes re-occuring tasks easily accessible from the terminal:
+            - Moving asana tasks around
+            - Tracking work/meetings in harvest
+            - Consistently naming branches
+
+            ## How does abt work?
+
+            Abt uses a hybrid approach between having small scripts each doing one thing:
+            - `start-asana --project-gid xxxx --task-gid yyyy`
+            - `start-harvest --project-id aaaa --task-id bbbb`
+
+            And having a single highly advanced script that does everything:
+            - `start xxxx/yyyy aaaa/bbbb`
+
+            Abt looks like one script, but works like a bunch of light independent scripts:
+            - `abt start asana:xxxx/yyyy harvest:aaaa/bbbb`
 
             ## Usage
-            `abt <command> [<provider-URI>] [<flags> --] [<provider-URI>] ...`
+            `abt <command> [<scheme-argument>] [<options> --] [<scheme-argument>] ...`
+
+            Definitions:
+            - `<command>`: Name of command to execute, e.g. `start`, `finalize` etc.
+            - `<scheme-argument>`: A URI-like identifier, `scheme:path`, pointing to a project/task etc. within a system.
+            - `<options>`: Optional flags for the command and scheme argument
 
             #{example_commands}
 
@@ -18,6 +39,8 @@ module Abt
             Some commands have `[options]`. Run such a command with `--help` flag to view supported flags, e.g: `abt track harvest -h`
 
             #{provider_commands}
+
+            #### This readme was generated with `abt readme > README.md`
           MD
         end
 
@@ -43,9 +66,9 @@ module Abt
         def provider_commands # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
           lines = []
 
-          Docs.providers.each_with_index do |(provider_name, commands), index|
+          Docs.providers.each_with_index do |(scheme, commands), index|
             lines << '' unless index.zero?
-            lines << "### #{inflector.humanize(provider_name)}"
+            lines << "### #{inflector.humanize(scheme)}"
             lines << '| Command | Description |'
             lines << '| :------ | :---------- |'
 
