@@ -4,6 +4,8 @@ module Abt
   class GitConfig
     attr_reader :namespace, :scope
 
+    class UnsafeNamespaceError < StandardError; end
+
     LOCAL_CONFIG_AVAILABLE_CHECK_COMMAND = 'git config --local -l'
 
     def self.local_available?
@@ -68,10 +70,7 @@ module Abt
     end
 
     def clear(output: nil)
-      if namespace.empty?
-        output&.puts('Keys can only be cleared within a namespace')
-        return
-      end
+      raise UnsafeNamespaceError, 'Keys can only be cleared within a namespace' if namespace.empty?
 
       keys.each do |key|
         output&.puts "Clearing #{scope}: #{key_with_namespace(key)}"

@@ -213,5 +213,46 @@ RSpec.describe Abt::GitConfig do
         end
       end
     end
+
+    describe '#clear' do
+      it 'sets all keys to nil' do
+        config = Abt::GitConfig.new(namespace: 'namespace')
+
+        allow(config).to receive(:keys).and_return(%w[key1 key2])
+        allow(config).to receive(:[]=)
+
+        config.clear
+
+        expect(config).to have_received(:[]=).ordered.with('key1', nil)
+        expect(config).to have_received(:[]=).ordered.with('key2', nil)
+      end
+
+      context 'when an output is specified' do
+        it 'logs the deleted keys' do
+          output = StringIO.new
+          config = Abt::GitConfig.new(namespace: 'namespace', scope: 'local')
+
+          allow(config).to receive(:keys).and_return(%w[key1 key2])
+          allow(config).to receive(:[]=)
+
+          config.clear(output: output)
+
+          expect(output.string).to eq(
+            <<~TXT
+              Clearing local: namespace.key1
+              Clearing local: namespace.key2
+            TXT
+          )
+        end
+      end
+
+      context 'when namespace is empty' do
+        it 'raises an UnsafeNamespaceError' do
+          config = Abt::GitConfig.new(namespace: '')
+
+          expect { config.clear }.to raise_error(Abt::GitConfig::UnsafeNamespaceError)
+        end
+      end
+    end
   end
 end
