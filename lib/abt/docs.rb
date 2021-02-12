@@ -10,11 +10,11 @@ module Abt
       def basic_examples
         {
           'Getting started:' => {
-            'abt init asana harvest' => 'Setup asana and harvest project git repo in working dir',
-            'abt pick harvest' => 'Pick harvest tasks, for most projects this will stay the same',
-            'abt pick asana | abt start harvest' => 'Pick asana task and start working',
+            'abt init asana harvest' => 'Setup asana and harvest project for local git repo',
+            'abt pick harvest' => 'Pick harvest task. This will likely stay the same throughout the project',
+            'abt pick asana | abt start harvest' => 'Pick asana task and start tracking time',
             'abt stop harvest' => 'Stop time tracker',
-            'abt start asana harvest' => 'Continue working, e.g. after a break',
+            'abt start asana harvest' => 'Continue working, e.g., after a break',
             'abt finalize asana' => 'Finalize the selected asana task'
           }
         }
@@ -22,11 +22,11 @@ module Abt
 
       def extended_examples
         {
-          'Tracking meetings (without changing the config):' => {
+          'Tracking meetings (without switching current task setting):' => {
             'abt pick asana -d | abt track harvest' => 'Track on asana meeting task',
             'abt pick harvest -d | abt track harvest -c "Name of meeting"' => 'Track on separate harvest-task'
           },
-          'Command output can be piped, e.g.:' => {
+          'Command output can be piped:' => {
             'abt tasks asana | grep -i <name of task>' => nil,
             'abt tasks asana | grep -i <name of task> | abt start' => nil
           },
@@ -36,9 +36,9 @@ module Abt
             'abt start <shared configuration>' => 'Start a shared configuration'
           },
           'Flags:' => {
-            'abt start harvest -c "comment"' => 'Add command flags after <scheme>:<path>',
-            'abt start harvest -c "comment" -- asana' => 'Use -- to mark the end of a flag list if it\'s to be followed by a <scheme-argument>',
-            'abt pick harvest | abt start -c "comment"' => 'Flags placed directly after a command applies to piped in <scheme-argument>'
+            'abt start harvest -c "comment"' => 'Add command flags after ARIs',
+            'abt start harvest -c "comment" -- asana' => 'Use -- to end a list of flags, so that it can be followed by another ARI',
+            'abt pick harvest | abt start -c "comment"' => 'Flags placed directly after a command applies to the piped in ARI'
           }
         }
       end

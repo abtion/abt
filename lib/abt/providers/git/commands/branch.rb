@@ -39,29 +39,29 @@ module Abt
 
           def branch_name # rubocop:disable Metrics/MethodLength
             @branch_name ||= begin
-              if branch_names_from_scheme_arguments.empty?
+              if branch_names_from_aris.empty?
                 cli.abort [
-                  'None of the specified scheme arguments responded to `branch-name`.',
+                  'None of the specified ARIs responded to `branch-name`.',
                   'Did you add compatible scheme? e.g.:',
                   '   abt branch git asana',
                   '   abt branch git devops'
                 ].join("\n")
               end
 
-              if branch_names_from_scheme_arguments.length > 1
+              if branch_names_from_aris.length > 1
                 cli.abort [
-                  'Got branch names from multiple scheme arguments, only one is supported',
+                  'Got branch names from multiple ARIs, only one is supported',
                   'Branch names were:',
-                  *branch_names_from_scheme_arguments.map { |name| "   #{name}" }
+                  *branch_names_from_aris.map { |name| "   #{name}" }
                 ].join("\n")
               end
 
-              branch_names_from_scheme_arguments.first
+              branch_names_from_aris.first
             end
           end
 
-          def branch_names_from_scheme_arguments
-            input = StringIO.new(cli.scheme_arguments.to_s)
+          def branch_names_from_aris
+            input = StringIO.new(cli.aris.to_s)
             output = StringIO.new
             Abt::Cli.new(argv: ['branch-name'], output: output, input: input).perform
 

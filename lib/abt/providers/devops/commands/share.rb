@@ -17,7 +17,7 @@ module Abt
             require_work_item!
 
             args = [organization_name, project_name, board_id, work_item_id].compact
-            cli.print_scheme_argument('devops', args.join('/'))
+            cli.print_ari('devops', args.join('/'))
           end
         end
       end

@@ -36,7 +36,7 @@ module Abt
         end
 
         def print_project(project)
-          cli.print_scheme_argument(
+          cli.print_ari(
             'harvest',
             project['id'],
             "#{project['client']['name']} > #{project['name']}"
@@ -44,7 +44,7 @@ module Abt
         end
 
         def print_task(project, task)
-          cli.print_scheme_argument(
+          cli.print_ari(
             'harvest',
             "#{project['id']}/#{task['id']}",
             "#{project['name']} > #{task['name']}"

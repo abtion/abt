@@ -31,7 +31,7 @@ module Abt
 
             return if flags[:"dry-run"]
 
-            config.project_gid = project_gid # We might have gotten the project ID as an argument
+            config.project_gid = project_gid # We might have gotten the project ID from a path
             config.task_gid = task['gid']
           end
 

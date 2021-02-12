@@ -15,27 +15,28 @@ module Abt
 
             ## How does abt work?
 
-            Abt uses a hybrid approach between having small scripts each doing one thing:
+            Abt is a hybrid af having small scripts each doing one thing:
             - `start-asana --project-gid xxxx --task-gid yyyy`
             - `start-harvest --project-id aaaa --task-id bbbb`
 
-            And having a single highly advanced script that does everything:
+            And having a single highly advanced script that does everything with a single command:
             - `start xxxx/yyyy aaaa/bbbb`
 
-            Abt looks like one script, but works like a bunch of light independent scripts:
+            Abt looks like one command, but works like a bunch of light scripts:
             - `abt start asana:xxxx/yyyy harvest:aaaa/bbbb`
 
             ## Usage
-            `abt <command> [<scheme-argument>] [<options> --] [<scheme-argument>] ...`
+            `abt <command> [<ARI>] [<options> --] [<ARI>] ...`
 
             Definitions:
             - `<command>`: Name of command to execute, e.g. `start`, `finalize` etc.
-            - `<scheme-argument>`: A URI-like identifier, `scheme:path`, pointing to a project/task etc. within a system.
-            - `<options>`: Optional flags for the command and scheme argument
+            - `<ARI>`: A URI-like resource identifier with a scheme and an optional path in the format: `<scheme>[:<path>]`. E.g., `harvest:11111111/22222222`
+            - `<options>`: Optional flags for the command and ARI
 
             #{example_commands}
 
-            ## Available commands:
+            ## Commands:
+
             Some commands have `[options]`. Run such a command with `--help` flag to view supported flags, e.g: `abt track harvest -h`
 
             #{provider_commands}

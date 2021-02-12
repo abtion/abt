@@ -36,13 +36,13 @@ module Abt
         end
 
         def print_project(project)
-          cli.print_scheme_argument('asana', project['gid'], project['name'])
+          cli.print_ari('asana', project['gid'], project['name'])
           cli.warn project['permalink_url'] if project.key?('permalink_url') && cli.output.isatty
         end
 
         def print_task(project, task)
           project = { 'gid' => project } if project.is_a?(String)
-          cli.print_scheme_argument('asana', "#{project['gid']}/#{task['gid']}", task['name'])
+          cli.print_ari('asana', "#{project['gid']}/#{task['gid']}", task['name'])
           cli.warn task['permalink_url'] if task.key?('permalink_url') && cli.output.isatty
         end
 

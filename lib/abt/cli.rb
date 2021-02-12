@@ -9,7 +9,7 @@ module Abt
     class Abort < StandardError; end
     class Exit < StandardError; end
 
-    attr_reader :command, :scheme_arguments, :input, :output, :err_output, :prompt
+    attr_reader :command, :aris, :input, :output, :err_output, :prompt
 
     def initialize(argv: ARGV, input: STDIN, output: STDOUT, err_output: STDERR)
       (@command, *remaining_args) = argv
@@ -18,18 +18,18 @@ module Abt
       @err_output = err_output
       @prompt = Abt::Cli::Prompt.new(output: err_output)
 
-      @scheme_arguments = ArgumentsParser.new(sanitized_piped_args + remaining_args).parse
+      @aris = ArgumentsParser.new(sanitized_piped_args + remaining_args).parse
     end
 
     def perform
       return if handle_global_commands!
 
-      abort('No scheme arguments') if scheme_arguments.empty?
+      abort('No ARIs') if aris.empty?
 
-      process_scheme_arguments
+      process_aris
     end
 
-    def print_scheme_argument(scheme, path, description = nil)
+    def print_ari(scheme, path, description = nil)
       command = "#{scheme}:#{path}"
       command += " # #{description}" unless description.nil?
       output.puts command
@@ -96,30 +96,30 @@ module Abt
           line.split(' # ').first
         end
 
-        # Allow multiple scheme arguments on a single piped input line
-        # TODO: Force the user to pick a single scheme argument
+        # Allow multiple ARIs on a single piped input line
+        # TODO: Force the user to pick a single ARI
         joined_lines = lines_without_comments.join(' ').strip
         joined_lines.split(/\s+/)
       end
     end
 
-    def process_scheme_arguments
+    def process_aris
       used_schemes = []
-      scheme_arguments.each do |scheme_argument|
-        scheme = scheme_argument.scheme
-        path = scheme_argument.path
+      aris.each do |ari|
+        scheme = ari.scheme
+        path = ari.path
 
         if used_schemes.include?(scheme)
-          warn "Dropping command for already used scheme: #{scheme_argument}"
+          warn "Dropping command for already used scheme: #{ari}"
           next
         end
 
         command_class = get_command_class(scheme)
         next if command_class.nil?
 
-        print_command(command, scheme_argument) if output.isatty
+        print_command(command, ari) if output.isatty
         begin
-          command_class.new(path: path, cli: self, flags: scheme_argument.flags).perform
+          command_class.new(path: path, cli: self, flags: ari.flags).perform
         rescue Exit => e
           puts e.message
         end
@@ -129,7 +129,7 @@ module Abt
 
       return unless used_schemes.empty? && output.isatty
 
-      abort 'No providers found for command and scheme argument(s)'
+      abort 'No providers found for command and ARI(s)'
     end
 
     def get_command_class(scheme)
@@ -139,8 +139,8 @@ module Abt
       provider.command_class(command)
     end
 
-    def print_command(name, scheme_argument)
-      warn "===== #{name} #{scheme_argument} =====".upcase
+    def print_command(name, ari)
+      warn "===== #{name} #{ari} =====".upcase
     end
   end
 end

@@ -90,13 +90,13 @@ RSpec.describe Abt::Cli do
     end
   end
 
-  context 'when no scheme argument given' do
-    it 'aborts with "No scheme arguments"' do
+  context 'when no ARI given' do
+    it 'aborts with "No ARIs"' do
       cli = Abt::Cli.new argv: ['command']
 
       expect do
         cli.perform
-      end.to raise_error(Abt::Cli::Abort, 'No scheme arguments')
+      end.to raise_error(Abt::Cli::Abort, 'No ARIs')
     end
 
     context 'when no argument given through input IO' do
@@ -110,7 +110,7 @@ RSpec.describe Abt::Cli do
     end
   end
 
-  describe 'scheme arguments' do
+  describe 'ARIs' do
     it 'correctly executes the matching provider command' do
       Command = Class.new do
         def initialize(path:, flags:, cli:); end
@@ -144,10 +144,10 @@ RSpec.describe Abt::Cli do
       expect(err_output.string).to include('===== COMMAND PROVIDER:PATH --1 --2 =====')
     end
 
-    context 'when scheme argument given through input IO (pipe)' do
-      it 'uses the piped argument' do
-        piped_argument = StringIO.new('asana:test/test # Description text from other command')
-        cli = Abt::Cli.new argv: ['share'], input: piped_argument, output: null_stream, err_output: null_stream
+    context 'when ARI given through input IO (pipe)' do
+      it 'uses the piped ARI' do
+        piped_ari = StringIO.new('asana:test/test # Description text')
+        cli = Abt::Cli.new argv: ['share'], input: piped_ari, output: null_stream, err_output: null_stream
 
         allow(Abt::Providers::Asana::Commands::Share).to receive(:new).and_call_original
 
@@ -160,12 +160,12 @@ RSpec.describe Abt::Cli do
     end
 
     context 'when no provider implements the command' do
-      it 'aborts with "No providers found for command and scheme argument(s)"' do
+      it 'aborts with "No providers found for command and ARI(s)"' do
         cli = Abt::Cli.new argv: ['invalid-command', 'asana:test/test']
 
         expect do
           cli.perform
-        end.to raise_error(Abt::Cli::Abort, 'No providers found for command and scheme argument(s)')
+        end.to raise_error(Abt::Cli::Abort, 'No providers found for command and ARI(s)')
       end
     end
 
@@ -199,8 +199,8 @@ RSpec.describe Abt::Cli do
       end
     end
 
-    context 'when there\'s a scheme argument after an argument with flags' do
-      it 'uses -- to separate the two scheme arguments' do
+    context 'when an ARI with flags is followed by another ARI' do
+      it 'uses -- to separate the two ARIs' do
         Provider1Command = Class.new do
           def initialize(*); end
 

@@ -10,7 +10,7 @@ module Abt
           end
 
           def self.description
-            'Start tracker for current or specified task. Add a relevant scheme argument to link the time entry, e.g. `abt track harvest asana`'
+            'Start tracker for current or specified task. Add a relevant ARI to link the time entry, e.g. `abt track harvest asana`'
           end
 
           def self.flags
@@ -77,7 +77,7 @@ module Abt
 
           def external_link_data
             @external_link_data ||= begin
-              input = StringIO.new(cli.scheme_arguments.to_s)
+              input = StringIO.new(cli.aris.to_s)
               output = StringIO.new
               Abt::Cli.new(argv: ['harvest-time-entry-data'], output: output, input: input).perform
 

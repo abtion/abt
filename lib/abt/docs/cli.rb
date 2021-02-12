@@ -8,10 +8,10 @@ module Abt
           <<~TXT
             Usage: #{usage_line}
 
-            <command>           Name of command to execute, e.g. start, finalize etc.
-            <scheme-argument>   A URI-like identifier; scheme:path
-                                Points to a project/task etc. within a system.
-            <options>           Optional flags for the command and scheme argument
+            <command>   Name of command to execute, e.g. start, finalize etc.
+            <ARI>       A URI-like resource identifier with a scheme and an optional path
+                        in the format: <scheme>[:<path>]. E.g., harvest:11111111/22222222
+            <options>   Optional flags for the command and ARI
 
             #{formatted_examples(Docs.basic_examples)}
 
@@ -45,7 +45,7 @@ module Abt
         private
 
         def usage_line
-          'abt <command> [<scheme-argument>] [<options> --] [<scheme-argument>] ...'
+          'abt <command> [<ARI>] [<options> --] [<ARI>] ...'
         end
 
         def formatted_examples(example_groups)
