@@ -69,6 +69,10 @@ module Abt
           "#{base_url}/_workitems/edit/#{work_item['id']}"
         end
 
+        def url_for_board(board)
+          "#{base_url}/_boards/board/#{URI.escape(board['name'])}"
+        end
+
         def connection
           @connection ||= Faraday.new(api_endpoint) do |connection|
             connection.basic_auth username, access_token

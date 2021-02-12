@@ -57,7 +57,7 @@ module Abt
           path = "#{organization_name}/#{project_name}/#{board['id']}"
 
           cli.print_ari('devops', path, board['name'])
-          # cli.warn board['url'] if board.key?('url') && cli.output.isatty # TODO: Web URL
+          cli.warn api.url_for_board(board) if cli.output.isatty
         end
 
         def print_work_item(organization, project, board, work_item)
