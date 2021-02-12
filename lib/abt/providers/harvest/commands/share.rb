@@ -10,7 +10,7 @@ module Abt
           end
 
           def self.description
-            'Print project/task config string'
+            'Print project/task ARI'
           end
 
           def perform

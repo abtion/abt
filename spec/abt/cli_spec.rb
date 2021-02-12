@@ -113,7 +113,7 @@ RSpec.describe Abt::Cli do
   describe 'ARIs' do
     it 'correctly executes the matching provider command' do
       Command = Class.new do
-        def initialize(path:, flags:, cli:); end
+        def initialize(ari:, cli:); end
 
         def perform; end
       end
@@ -135,9 +135,9 @@ RSpec.describe Abt::Cli do
                                   err_output: err_output)
       cli_instance.perform
 
-      expect(Command).to have_received(:new) do |path:, flags:, cli:|
-        expect(path).to eq('path')
-        expect(flags).to eq(['--1', '--2'])
+      expect(Command).to have_received(:new) do |ari:, cli:|
+        expect(ari.path).to eq('path')
+        expect(ari.flags).to eq(['--1', '--2'])
         expect(cli).to eq(cli_instance)
       end
       expect(command_instance).to have_received(:perform)
@@ -153,8 +153,8 @@ RSpec.describe Abt::Cli do
 
         cli.perform
 
-        expect(Abt::Providers::Asana::Commands::Share).to have_received(:new).once do |path:, **|
-          expect(path).to eq('test/test')
+        expect(Abt::Providers::Asana::Commands::Share).to have_received(:new).once do |ari:, **|
+          expect(ari.path).to eq('test/test')
         end
       end
     end
@@ -180,8 +180,8 @@ RSpec.describe Abt::Cli do
 
         cli.perform
 
-        expect(Abt::Providers::Asana::Commands::Share).to have_received(:new).once do |path:, **|
-          expect(path).to eq('called')
+        expect(Abt::Providers::Asana::Commands::Share).to have_received(:new).once do |ari:, **|
+          expect(ari.path).to eq('called')
         end
         expect(err_output.string).to(
           include('Dropping command for already used scheme: asana:not/called')
@@ -237,15 +237,15 @@ RSpec.describe Abt::Cli do
         cli_instance = Abt::Cli.new argv: argv, err_output: err_output
         cli_instance.perform
 
-        expect(Provider1Command).to have_received(:new) do |path:, flags:, cli:|
-          expect(path).to eq('path1')
-          expect(flags).to eq(['--1'])
+        expect(Provider1Command).to have_received(:new) do |ari:, cli:|
+          expect(ari.path).to eq('path1')
+          expect(ari.flags).to eq(['--1'])
           expect(cli).to eq(cli_instance)
         end
 
-        expect(Provider2Command).to have_received(:new) do |path:, flags:, cli:|
-          expect(path).to eq('path2')
-          expect(flags).to eq(['--2'])
+        expect(Provider2Command).to have_received(:new) do |ari:, cli:|
+          expect(ari.path).to eq('path2')
+          expect(ari.flags).to eq(['--2'])
           expect(cli).to eq(cli_instance)
         end
       end

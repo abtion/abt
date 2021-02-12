@@ -105,26 +105,24 @@ module Abt
 
     def process_aris
       used_schemes = []
-      aris.each do |ari|
-        scheme = ari.scheme
-        path = ari.path
 
-        if used_schemes.include?(scheme)
+      aris.each do |ari|
+        if used_schemes.include?(ari.scheme)
           warn "Dropping command for already used scheme: #{ari}"
           next
         end
 
-        command_class = get_command_class(scheme)
+        command_class = get_command_class(ari.scheme)
         next if command_class.nil?
 
         print_command(command, ari) if output.isatty
         begin
-          command_class.new(path: path, cli: self, flags: ari.flags).perform
+          command_class.new(ari: ari, cli: self).perform
         rescue Exit => e
           puts e.message
         end
 
-        used_schemes << scheme
+        used_schemes << ari.scheme
       end
 
       return unless used_schemes.empty? && output.isatty

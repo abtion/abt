@@ -10,7 +10,7 @@ module Abt
           end
 
           def self.description
-            'Print DevOps config string'
+            'Print DevOps ARI'
           end
 
           def perform

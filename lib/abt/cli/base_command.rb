@@ -15,12 +15,12 @@ module Abt
         []
       end
 
-      attr_reader :path, :flags, :cli
+      attr_reader :ari, :cli, :flags
 
-      def initialize(path:, flags:, cli:)
+      def initialize(ari:, cli:)
         @cli = cli
-        @path = path
-        @flags = parse_flags(flags)
+        @ari = ari
+        @flags = parse_flags(ari.flags)
       end
 
       def perform

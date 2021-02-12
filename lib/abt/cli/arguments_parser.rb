@@ -3,28 +3,6 @@
 module Abt
   class Cli
     class ArgumentsParser
-      class Ari
-        attr_reader :scheme, :path, :flags
-
-        def initialize(scheme:, path:, flags:)
-          @scheme = scheme
-          @path = path
-          @flags = flags
-        end
-
-        def to_s
-          str = scheme
-          str += ":#{path}" if path
-
-          [str, *flags].join(' ')
-        end
-      end
-      class Aris < Array
-        def to_s
-          map(&:to_s).join(' -- ')
-        end
-      end
-
       attr_reader :arguments
 
       def initialize(arguments)
@@ -32,14 +10,14 @@ module Abt
       end
 
       def parse
-        result = Aris.new
+        result = Abt::Cli::AriList.new
         rest = arguments.dup
 
         until rest.empty?
           (scheme, path) = rest.shift.split(':')
           flags = take_flags(rest)
 
-          result << Ari.new(scheme: scheme, path: path, flags: flags)
+          result << Abt::Cli::Ari.new(scheme: scheme, path: path, flags: flags)
         end
 
         result

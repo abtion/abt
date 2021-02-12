@@ -6,15 +6,15 @@ module Abt
       class BaseCommand < Abt::Cli::BaseCommand
         attr_reader :path, :flags, :project_id, :task_id, :cli, :config
 
-        def initialize(path:, cli:, **)
+        def initialize(ari:, cli:)
           super
 
           @config = Configuration.new(cli: cli)
 
-          if path.nil?
+          if ari.path.nil?
             use_current_path
           else
-            use_path(path)
+            use_path(ari.path)
           end
         end
 
