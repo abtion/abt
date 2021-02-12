@@ -16,16 +16,11 @@ module Abt
         end
 
         def path
-          local_available? ? Path.from_ids(git['projectId'], git['taskId']) : Path.new
+          Path.new(local_available? && git['path'] || '')
         end
 
         def path=(new_path)
-          return if path == new_path
-
-          clear_local(verbose: false)
-
-          git['projectId'] = new_path.project_id
-          git['taskId'] = new_path.task_id
+          git['path'] = new_path
         end
 
         def clear_local(verbose: true)
