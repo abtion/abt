@@ -85,7 +85,6 @@ module Abt
 
               return if lines.empty?
 
-              # TODO: Make user choose which reference to use by printing the urls
               if lines.length > 1
                 cli.abort('Got reference data from multiple scheme providers, only one is supported at a time')
               end
