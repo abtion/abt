@@ -26,14 +26,15 @@ module Abt
             'abt pick asana -d | abt track harvest' => 'Track on asana meeting task',
             'abt pick harvest -d | abt track harvest -c "Name of meeting"' => 'Track on separate harvest-task'
           },
-          'Command output can be piped:' => {
+          'Many commands output ARIs that can be piped into other commands:' => {
             'abt tasks asana | grep -i <name of task>' => nil,
             'abt tasks asana | grep -i <name of task> | abt start' => nil
           },
-          'Sharing configuration:' => {
-            'abt share asana harvest | tr "\n" " "' => 'Print current configuration',
-            'abt share asana harvest | tr "\n" " " | pbcopy' => 'Copy configuration (mac only)',
-            'abt start <shared configuration>' => 'Start a shared configuration'
+          'Sharing ARIs:' => {
+            'abt share asana harvest | tr "\n" " "' => 'Print current asana and harvest ARIs on a single line',
+            'abt share asana harvest | tr "\n" " " | pbcopy' => 'Copy ARIs to clipboard (mac only)',
+            'abt start <ARIs from coworker>' => 'Work on a task your coworker shared with you',
+            'abt current <ARIs from coworker> | abt start' => 'Set task as current, then start it'
           },
           'Flags:' => {
             'abt start harvest -c "comment"' => 'Add command flags after ARIs',
