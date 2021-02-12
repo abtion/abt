@@ -95,7 +95,7 @@ module Abt
 
           def maybe_override_current_task
             return unless flags[:set]
-            return if same_args_as_config?
+            return if path == config.path
             return unless config.local_available?
 
             input = StringIO.new("harvest:#{project_id}/#{task_id}")

@@ -14,13 +14,9 @@ module Abt
           end
 
           def perform
-            if project_id.nil?
-              cli.warn 'No project selected'
-            elsif task_id.nil?
-              cli.print_ari('harvest', project_id)
-            else
-              cli.print_ari('harvest', "#{project_id}/#{task_id}")
-            end
+            cli.abort 'No project selected' if path.empty?
+
+            cli.print_ari('harvest', path)
           end
         end
       end

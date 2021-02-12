@@ -15,25 +15,17 @@ module Abt
           GitConfig.local_available?
         end
 
-        def project_id
-          local_available? ? git['projectId'] : nil
+        def path
+          local_available? ? Path.from_ids(git['projectId'], git['taskId']) : Path.new
         end
 
-        def task_id
-          local_available? ? git['taskId'] : nil
-        end
-
-        def project_id=(value)
-          value = value.to_s unless value.nil?
-          return if project_id == value
+        def path=(new_path)
+          return if path == new_path
 
           clear_local(verbose: false)
-          git['projectId'] = value
-        end
 
-        def task_id=(value)
-          value = value.to_s unless value.nil?
-          git['taskId'] = value
+          git['projectId'] = new_path.project_id
+          git['taskId'] = new_path.task_id
         end
 
         def clear_local(verbose: true)
@@ -77,8 +69,7 @@ module Abt
         attr_reader :git
 
         def api
-          @api ||=
-            Abt::Providers::Harvest::Api.new(access_token: access_token, account_id: account_id)
+          @api ||= Api.new(access_token: access_token, account_id: account_id)
         end
       end
     end

@@ -30,8 +30,7 @@ module Abt
 
             return if flags[:"dry-run"]
 
-            config.project_id = project_id # We might have gotten the project ID as a path
-            config.task_id = task['id']
+            config.path = Path.from_ids(project_id, task['id'])
           end
 
           private
