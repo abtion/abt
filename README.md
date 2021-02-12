@@ -7,7 +7,7 @@ Abt makes re-occuring tasks easily accessible from the terminal:
 
 ## How does abt work?
 
-Abt is a hybrid af having small scripts each doing one thing:
+Abt is a hybrid of having small scripts each doing one thing:
 - `start-asana --project-gid xxxx --task-gid yyyy`
 - `start-harvest --project-id aaaa --task-id bbbb`
 
