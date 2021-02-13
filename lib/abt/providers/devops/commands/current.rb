@@ -16,7 +16,7 @@ module Abt
           def perform
             require_board!
 
-            if same_args_as_config? || !config.local_available?
+            if path == config.path || !config.local_available?
               show_current_configuration
             else
               cli.warn 'Updating configuration'
@@ -38,24 +38,13 @@ module Abt
             ensure_board_is_valid!
 
             if work_item_id.nil?
-              update_board_config
-              config.work_item_id = nil
-
               print_board(organization_name, project_name, board)
             else
               ensure_work_item_is_valid!
-
-              update_board_config
-              config.work_item_id = work_item_id
-
               print_work_item(organization_name, project_name, board, work_item)
             end
-          end
 
-          def update_board_config
-            config.organization_name = organization_name
-            config.project_name = project_name
-            config.board_id = board_id
+            config.path = path
           end
 
           def ensure_board_is_valid!

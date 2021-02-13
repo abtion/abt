@@ -30,17 +30,10 @@ module Abt
 
             return if flags[:"dry-run"]
 
-            update_config!(work_item)
+            config.path = Path.from_ids(organization_name, project_name, board_id, work_item['id'])
           end
 
           private
-
-          def update_config!(work_item)
-            config.organization_name = organization_name
-            config.project_name = project_name
-            config.board_id = board_id
-            config.work_item_id = work_item['id']
-          end
 
           def select_work_item
             loop do

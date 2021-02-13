@@ -19,13 +19,9 @@ module Abt
           def perform
             cli.abort 'Must be run inside a git repository' unless config.local_available?
 
-            @organization_name = config.organization_name = organization_name_from_url
-            @project_name = config.project_name = project_name_from_url
-
             board = cli.prompt.choice 'Select a project work board', boards
 
-            config.board_id = board['id']
-
+            config.path = Path.from_ids(organization_name, project_name, board['id'])
             print_board(organization_name, project_name, board)
           end
 
@@ -35,17 +31,21 @@ module Abt
             @boards ||= api.get_paged('work/boards')
           end
 
-          def project_name_from_url
-            if (match = AZURE_DEV_URL_REGEX.match(project_url)) ||
-               (match = VS_URL_REGEX.match(project_url))
-              match[:project]
+          def project_name
+            @project_name ||= begin
+              if (match = AZURE_DEV_URL_REGEX.match(project_url)) ||
+                 (match = VS_URL_REGEX.match(project_url))
+                match[:project]
+              end
             end
           end
 
-          def organization_name_from_url
-            if (match = AZURE_DEV_URL_REGEX.match(project_url)) ||
-               (match = VS_URL_REGEX.match(project_url))
-              match[:organization]
+          def organization_name
+            @organization_name ||= begin
+              if (match = AZURE_DEV_URL_REGEX.match(project_url)) ||
+                 (match = VS_URL_REGEX.match(project_url))
+                match[:organization]
+              end
             end
           end
 

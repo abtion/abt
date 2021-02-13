@@ -15,46 +15,12 @@ module Abt
           GitConfig.local_available?
         end
 
-        def organization_name
-          local_available? ? git['organizationName'] : nil
+        def path
+          Path.new(local_available? && git['path'] || '')
         end
 
-        def project_name
-          local_available? ? git['projectName'] : nil
-        end
-
-        def board_id
-          local_available? ? git['boardId'] : nil
-        end
-
-        def work_item_id
-          local_available? ? git['workItemId'] : nil
-        end
-
-        def organization_name=(value)
-          return if organization_name == value
-
-          clear_local(verbose: false)
-          git['organizationName'] = value unless value.nil?
-        end
-
-        def project_name=(value)
-          return if project_name == value
-
-          git['projectName'] = value unless value.nil?
-          git['boardId'] = nil
-          git['workItemId'] = nil
-        end
-
-        def board_id=(value)
-          return if board_id == value
-
-          git['boardId'] = value unless value.nil?
-          git['workItemId'] = nil
-        end
-
-        def work_item_id=(value)
-          git['workItemId'] = value
+        def path=(new_path)
+          git['path'] = new_path
         end
 
         def clear_local(verbose: true)
