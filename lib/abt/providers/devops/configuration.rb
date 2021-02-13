@@ -9,10 +9,11 @@ module Abt
         def initialize(cli:)
           @cli = cli
           @git = GitConfig.new(namespace: 'abt.devops')
+          @git_global = GitConfig.new(namespace: 'abt.devops', scope: 'global')
         end
 
         def local_available?
-          GitConfig.local_available?
+          git.available?
         end
 
         def path
@@ -28,15 +29,15 @@ module Abt
         end
 
         def clear_global(verbose: true)
-          git.global.clear(output: verbose ? cli.err_output : nil)
+          git_global.clear(output: verbose ? cli.err_output : nil)
         end
 
         def username_for_organization(organization_name)
           username_key = "organizations.#{organization_name}.username"
 
-          return git.global[username_key] unless git.global[username_key].nil?
+          return git_global[username_key] unless git_global[username_key].nil?
 
-          git.global[username_key] = cli.prompt.text([
+          git_global[username_key] = cli.prompt.text([
             "Please provide your username for the DevOps organization (#{organization_name}).",
             '',
             'Enter username'
@@ -46,9 +47,9 @@ module Abt
         def access_token_for_organization(organization_name)
           access_token_key = "organizations.#{organization_name}.accessToken"
 
-          return git.global[access_token_key] unless git.global[access_token_key].nil?
+          return git_global[access_token_key] unless git_global[access_token_key].nil?
 
-          git.global[access_token_key] = cli.prompt.text([
+          git_global[access_token_key] = cli.prompt.text([
             "Please provide your personal access token for the DevOps organization (#{organization_name}).",
             'If you don\'t have one, follow the guide here: https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate',
             '',
@@ -61,7 +62,7 @@ module Abt
 
         private
 
-        attr_reader :git
+        attr_reader :git, :git_global
       end
     end
   end

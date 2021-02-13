@@ -6,20 +6,6 @@ module Abt
 
     class UnsafeNamespaceError < StandardError; end
 
-    LOCAL_CONFIG_AVAILABLE_CHECK_COMMAND = 'git config --local -l'
-
-    def self.local_available?
-      return @local_available if instance_variables.include?(:@local_available)
-
-      @local_available = begin
-        success = false
-        Open3.popen3(LOCAL_CONFIG_AVAILABLE_CHECK_COMMAND) do |_i, _o, _e, thread|
-          success = thread.value.success?
-        end
-        success
-      end
-    end
-
     def initialize(namespace: '', scope: 'local')
       @namespace = namespace
 
@@ -28,6 +14,20 @@ module Abt
       end
 
       @scope = scope
+    end
+
+    def available?
+      unless instance_variables.include?(:available)
+        @available = begin
+          success = false
+          Open3.popen3(availability_check_call) do |_i, _o, _e, thread|
+            success = thread.value.success?
+          end
+          success
+        end
+      end
+
+      @available
     end
 
     def [](key)
@@ -49,26 +49,6 @@ module Abt
       `git config --#{scope} --get-regexp --name-only ^#{namespace}`.lines.map(&:strip)
     end
 
-    def local
-      @local ||= begin
-        if scope == 'local'
-          self
-        else
-          self.class.new(namespace: namespace, scope: 'local')
-        end
-      end
-    end
-
-    def global
-      @global ||= begin
-        if scope == 'global'
-          self
-        else
-          self.class.new(namespace: namespace, scope: 'global')
-        end
-      end
-    end
-
     def clear(output: nil)
       raise UnsafeNamespaceError, 'Keys can only be cleared within a namespace' if namespace.empty?
 
@@ -80,8 +60,12 @@ module Abt
 
     private
 
+    def availability_check_call
+      "git config --#{scope} -l"
+    end
+
     def ensure_scope_available!
-      return if scope != 'local' || self.class.local_available?
+      return if available?
 
       raise StandardError, 'Local configuration is not available outside a git repository'
     end

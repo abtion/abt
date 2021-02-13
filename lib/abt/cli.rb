@@ -17,7 +17,6 @@ module Abt
       @output = output
       @err_output = err_output
       @prompt = Abt::Cli::Prompt.new(output: err_output)
-
       @aris = ArgumentsParser.new(sanitized_piped_args + remaining_args).parse
     end
 

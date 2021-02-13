@@ -32,7 +32,7 @@ module Abt
             loop do
               matches = matches_for_string cli.prompt.text('Enter search')
               if matches.empty?
-                warn 'No matches'
+                cli.warn 'No matches'
                 next
               end
 

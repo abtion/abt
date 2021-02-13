@@ -1,11 +1,22 @@
 # frozen_string_literal: true
 
 require 'byebug'
+require 'webmock/rspec'
 
 require_relative './code_coverage'
 require_relative '../lib/abt'
 
+Dir.glob("#{File.expand_path(__dir__)}/support/*.rb").sort.each do |file|
+  require file
+end
+
+# When threading out to test reading from / writing to scripts asynchronously,
+# ensure that script exceptions won't be silent.
+Thread.abort_on_exception = true
+
 RSpec.configure do |config|
+  include NullStream
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

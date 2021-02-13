@@ -9,10 +9,11 @@ module Abt
         def initialize(cli:)
           @cli = cli
           @git = GitConfig.new(namespace: 'abt.asana')
+          @git_global = GitConfig.new(namespace: 'abt.asana', scope: 'global')
         end
 
         def local_available?
-          GitConfig.local_available?
+          git.available?
         end
 
         def path
@@ -25,7 +26,7 @@ module Abt
 
         def workspace_gid
           @workspace_gid ||= begin
-            current = git.global['workspaceGid']
+            current = git_global['workspaceGid']
             if current.nil?
               prompt_workspace['gid']
             else
@@ -51,13 +52,13 @@ module Abt
         end
 
         def clear_global(verbose: true)
-          git.global.clear(output: verbose ? cli.err_output : nil)
+          git_global.clear(output: verbose ? cli.err_output : nil)
         end
 
         def access_token
-          return git.global['accessToken'] unless git.global['accessToken'].nil?
+          return git_global['accessToken'] unless git_global['accessToken'].nil?
 
-          git.global['accessToken'] = cli.prompt.text([
+          git_global['accessToken'] = cli.prompt.text([
             'Please provide your personal access token for Asana.',
             'If you don\'t have one, create one here: https://app.asana.com/0/developer-console',
             '',
@@ -67,7 +68,7 @@ module Abt
 
         private
 
-        attr_reader :git
+        attr_reader :git, :git_global
 
         def prompt_finalized_section
           section = prompt_section('Select section for finalized tasks (E.g. "Merged")')
@@ -99,7 +100,7 @@ module Abt
             workspace = cli.prompt.choice('Select Asana workspace', workspaces)
           end
 
-          git.global['workspaceGid'] = workspace['gid']
+          git_global['workspaceGid'] = workspace['gid']
           workspace
         end
 

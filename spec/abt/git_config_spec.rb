@@ -1,38 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe Abt::GitConfig do
-  describe '.local_available?' do
-    after do
-      Abt::GitConfig.remove_instance_variable '@local_available'
-    end
-
-    it 'calls "git config --local -l"' do
-      system_call = nil
-
-      allow(Open3).to receive(:popen3) do |received_system_call|
-        system_call = received_system_call
-      end
-
-      Abt::GitConfig.local_available?
-
-      expect(system_call).to eq('git config --local -l')
-    end
-
-    context 'when command is successful' do
-      it 'is true' do
-        stub_const 'Abt::GitConfig::LOCAL_CONFIG_AVAILABLE_CHECK_COMMAND', 'true'
-        expect(Abt::GitConfig.local_available?).to be(true)
-      end
-    end
-
-    context 'when command is unsuccessful' do
-      it 'is false' do
-        stub_const 'Abt::GitConfig::LOCAL_CONFIG_AVAILABLE_CHECK_COMMAND', 'false'
-        expect(Abt::GitConfig.local_available?).to be(false)
-      end
-    end
-  end
-
   describe '#initialize' do
     it 'sets namespace and scope' do
       config = Abt::GitConfig.new(namespace: 'namespace', scope: 'local')
@@ -49,14 +17,11 @@ RSpec.describe Abt::GitConfig do
   end
 
   describe 'instance' do
-    before do
-      allow(Abt::GitConfig).to receive(:local_available?).and_return true
-    end
-
     describe '#[]' do
       it 'uses the specified scope and prefixes the key with the namespace' do
         config = Abt::GitConfig.new(namespace: 'namespace', scope: 'global')
 
+        allow(config).to receive(:available?).and_return true
         allow(config).to receive(:`).and_return('')
 
         config['key']
@@ -68,6 +33,7 @@ RSpec.describe Abt::GitConfig do
         it 'strips and returns the value' do
           config = Abt::GitConfig.new
 
+          allow(config).to receive(:available?).and_return true
           allow(config).to receive(:`).and_return("a value\n")
 
           expect(config['key']).to eq('a value')
@@ -78,17 +44,18 @@ RSpec.describe Abt::GitConfig do
         it 'returns nil' do
           config = Abt::GitConfig.new
 
+          allow(config).to receive(:available?).and_return true
           allow(config).to receive(:`).and_return('')
 
           expect(config['key']).to be_nil
         end
       end
 
-      context 'when local scope is not available' do
+      context 'when scope is not available' do
         it 'raises an error' do
-          allow(Abt::GitConfig).to receive(:local_available?).and_return false
+          config = Abt::GitConfig.new
 
-          config = Abt::GitConfig.new(scope: 'local')
+          allow(config).to receive(:available?).and_return false
 
           expect { config['key'] }.to raise_error(StandardError)
         end
@@ -99,6 +66,7 @@ RSpec.describe Abt::GitConfig do
       it 'uses the specified scope and prefixes the key with the namespace' do
         config = Abt::GitConfig.new(namespace: 'namespace', scope: 'global')
 
+        allow(config).to receive(:available?).and_return true
         allow(config).to receive(:`).and_return('')
 
         config['key'] = 'value'
@@ -112,6 +80,7 @@ RSpec.describe Abt::GitConfig do
         it 'unsets the key' do
           config = Abt::GitConfig.new
 
+          allow(config).to receive(:available?).and_return true
           allow(config).to receive(:`).and_return('')
 
           config['key'] = nil
@@ -124,6 +93,7 @@ RSpec.describe Abt::GitConfig do
         it 'sets the key and returns the value' do
           config = Abt::GitConfig.new
 
+          allow(config).to receive(:available?).and_return true
           allow(config).to receive(:`)
 
           expect(config['key'] = 'value').to eq('value')
@@ -131,11 +101,10 @@ RSpec.describe Abt::GitConfig do
         end
       end
 
-      context 'when local scope is not available' do
+      context 'when scope is not available' do
         it 'raises an error' do
-          allow(Abt::GitConfig).to receive(:local_available?).and_return false
-
-          config = Abt::GitConfig.new(scope: 'local')
+          config = Abt::GitConfig.new
+          allow(config).to receive(:available?).and_return false
 
           expect { config['key'] = 'value' }.to raise_error(StandardError)
         end
@@ -146,6 +115,7 @@ RSpec.describe Abt::GitConfig do
       it 'gets all keys in the scope prefixed with the namespace' do
         config = Abt::GitConfig.new(namespace: 'namespace', scope: 'global')
 
+        allow(config).to receive(:available?).and_return true
         allow(config).to receive(:`).and_return([
           'namespace.key1',
           'namespace.key2'
@@ -157,11 +127,10 @@ RSpec.describe Abt::GitConfig do
         )
       end
 
-      context 'when local scope is not available' do
+      context 'when scope is not available' do
         it 'raises an error' do
-          allow(Abt::GitConfig).to receive(:local_available?).and_return false
-
-          config = Abt::GitConfig.new(scope: 'local')
+          config = Abt::GitConfig.new
+          allow(config).to receive(:available?).and_return false
 
           expect { config.full_keys }.to raise_error(StandardError)
         end
@@ -172,45 +141,10 @@ RSpec.describe Abt::GitConfig do
       it 'returns the same keys as #full_keys but without the namespace prefix' do
         config = Abt::GitConfig.new(namespace: 'namespace')
 
+        allow(config).to receive(:available?).and_return true
         allow(config).to receive(:full_keys).and_return(['namespace.key1', 'namespace.key2'])
 
         expect(config.keys).to eq(%w[key1 key2])
-      end
-    end
-
-    describe '#local' do
-      context 'when scope is local' do
-        it 'returns itself' do
-          config = Abt::GitConfig.new(scope: 'local')
-          expect(config.local).to be(config)
-        end
-      end
-
-      context 'when scope is global' do
-        it 'returns another config object with same namespace but global scope' do
-          config = Abt::GitConfig.new(scope: 'global', namespace: 'namespace')
-          expect(config.local).not_to be(config)
-          expect(config.local.scope).to eq('local')
-          expect(config.local.namespace).to eq('namespace')
-        end
-      end
-    end
-
-    describe '#global' do
-      context 'when scope is global' do
-        it 'returns itself' do
-          config = Abt::GitConfig.new(scope: 'global')
-          expect(config.global).to be(config)
-        end
-      end
-
-      context 'when scope is local' do
-        it 'returns another config object with same namespace but local scope' do
-          config = Abt::GitConfig.new(scope: 'local', namespace: 'namespace')
-          expect(config.global).not_to be(config)
-          expect(config.global.scope).to eq('global')
-          expect(config.global.namespace).to eq('namespace')
-        end
       end
     end
 
@@ -218,6 +152,7 @@ RSpec.describe Abt::GitConfig do
       it 'sets all keys to nil' do
         config = Abt::GitConfig.new(namespace: 'namespace')
 
+        allow(config).to receive(:available?).and_return true
         allow(config).to receive(:keys).and_return(%w[key1 key2])
         allow(config).to receive(:[]=)
 
@@ -232,6 +167,7 @@ RSpec.describe Abt::GitConfig do
           output = StringIO.new
           config = Abt::GitConfig.new(namespace: 'namespace', scope: 'local')
 
+          allow(config).to receive(:available?).and_return true
           allow(config).to receive(:keys).and_return(%w[key1 key2])
           allow(config).to receive(:[]=)
 
@@ -249,8 +185,42 @@ RSpec.describe Abt::GitConfig do
       context 'when namespace is empty' do
         it 'raises an UnsafeNamespaceError' do
           config = Abt::GitConfig.new(namespace: '')
+          allow(config).to receive(:available?).and_return true
 
           expect { config.clear }.to raise_error(Abt::GitConfig::UnsafeNamespaceError)
+        end
+      end
+    end
+
+    describe '#available?' do
+      it 'calls "git config --scope -l"' do
+        config = Abt::GitConfig.new(scope: 'local')
+
+        system_call = nil
+        allow(Open3).to receive(:popen3) do |received_system_call|
+          system_call = received_system_call
+        end
+
+        config.available?
+
+        expect(system_call).to eq('git config --local -l')
+      end
+
+      context 'when command is successful' do
+        it 'is true' do
+          config = Abt::GitConfig.new
+          allow(config).to receive(:availability_check_call).and_return 'true'
+
+          expect(config.available?).to be(true)
+        end
+      end
+
+      context 'when command is unsuccessful' do
+        it 'is false' do
+          config = Abt::GitConfig.new
+          allow(config).to receive(:availability_check_call).and_return 'false'
+
+          expect(config.available?).to be(false)
         end
       end
     end

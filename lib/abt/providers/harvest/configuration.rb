@@ -9,10 +9,11 @@ module Abt
         def initialize(cli:)
           @cli = cli
           @git = GitConfig.new(namespace: 'abt.harvest')
+          @git_global = GitConfig.new(namespace: 'abt.harvest', scope: 'global')
         end
 
         def local_available?
-          GitConfig.local_available?
+          git.available?
         end
 
         def path
@@ -28,13 +29,13 @@ module Abt
         end
 
         def clear_global(verbose: true)
-          git.global.clear(output: verbose ? cli.err_output : nil)
+          git_global.clear(output: verbose ? cli.err_output : nil)
         end
 
         def access_token
-          return git.global['accessToken'] unless git.global['accessToken'].nil?
+          return git_global['accessToken'] unless git_global['accessToken'].nil?
 
-          git.global['accessToken'] = cli.prompt.text([
+          git_global['accessToken'] = cli.prompt.text([
             'Please provide your personal access token for Harvest.',
             'If you don\'t have one, create one here: https://id.getharvest.com/developers',
             '',
@@ -43,9 +44,9 @@ module Abt
         end
 
         def account_id
-          return git.global['accountId'] unless git.global['accountId'].nil?
+          return git_global['accountId'] unless git_global['accountId'].nil?
 
-          git.global['accountId'] = cli.prompt.text([
+          git_global['accountId'] = cli.prompt.text([
             'Please provide harvest account id.',
             'This information is shown next to your generated access token',
             '',
@@ -54,14 +55,14 @@ module Abt
         end
 
         def user_id
-          return git.global['userId'] unless git.global['userId'].nil?
+          return git_global['userId'] unless git_global['userId'].nil?
 
-          git.global['userId'] = api.get('users/me')['id'].to_s
+          git_global['userId'] = api.get('users/me')['id'].to_s
         end
 
         private
 
-        attr_reader :git
+        attr_reader :git, :git_global
 
         def api
           @api ||= Api.new(access_token: access_token, account_id: account_id)

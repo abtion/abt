@@ -11,3 +11,5 @@ group :test do
 end
 
 gem 'rubocop'
+
+gem "webmock", "~> 3.11"

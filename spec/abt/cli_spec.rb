@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe Abt::Cli do
-  def null_stream
-    StringIO.new
-  end
-
   context 'when no command given' do
     it 'writes "no command specified" to err_output and help to output' do
       allow(Abt::Docs::Cli).to receive(:help).and_return('Help content')
