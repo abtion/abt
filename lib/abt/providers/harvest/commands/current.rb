@@ -16,17 +16,17 @@ module Abt
           def perform
             require_project!
 
-            if path == config.path || !config.local_available?
-              show_current_configuration
-            else
+            if path != config.path && config.local_available?
               cli.warn 'Updating configuration'
               update_configuration
             end
+
+            print_configuration
           end
 
           private
 
-          def show_current_configuration
+          def print_configuration
             if task_id.nil?
               print_project(project)
             else
@@ -36,14 +36,7 @@ module Abt
 
           def update_configuration
             ensure_project_is_valid!
-
-            if task_id.nil?
-              print_project(project)
-            else
-              ensure_task_is_valid!
-              print_task(project, task)
-            end
-
+            ensure_task_is_valid! if task_id
             config.path = path
           end
 

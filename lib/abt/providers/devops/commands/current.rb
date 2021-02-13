@@ -16,17 +16,17 @@ module Abt
           def perform
             require_board!
 
-            if path == config.path || !config.local_available?
-              show_current_configuration
-            else
+            if path != config.path && config.local_available?
               cli.warn 'Updating configuration'
               update_configuration
             end
+
+            print_configuration
           end
 
           private
 
-          def show_current_configuration
+          def print_configuration
             if work_item_id.nil?
               print_board(organization_name, project_name, board)
             else
@@ -36,14 +36,7 @@ module Abt
 
           def update_configuration
             ensure_board_is_valid!
-
-            if work_item_id.nil?
-              print_board(organization_name, project_name, board)
-            else
-              ensure_work_item_is_valid!
-              print_work_item(organization_name, project_name, board, work_item)
-            end
-
+            ensure_work_item_is_valid! if work_item_id
             config.path = path
           end
 
