@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative 'lib/abt/version'
+
+puts Abt::VERSION
+
+[
+  'gem build abt-cli.gemspec',
+  "gem install abt-cli-#{Abt::VERSION}.gem",
+  "rm abt-cli-#{Abt::VERSION}.gem"
+].each do |command|
+  puts command
+  puts `#{command}`
+end
