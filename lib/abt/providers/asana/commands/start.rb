@@ -33,10 +33,10 @@ module Abt
           def maybe_override_current_task
             return unless flags[:set]
             return if path.nil?
-            return if same_args_as_config?
+            return if path == config.path
             return unless config.local_available?
 
-            Current.new(path: path, cli: cli).call
+            Current.new(ari: ari.without_flags, cli: cli).perform
           end
 
           def update_assignee_if_needed
@@ -54,7 +54,7 @@ module Abt
           end
 
           def move_if_needed
-            unless project_gid == config.project_gid
+            unless project_gid == config.path.project_gid
               cli.warn 'Task was not moved, this is not implemented for tasks outside current project'
               return
             end

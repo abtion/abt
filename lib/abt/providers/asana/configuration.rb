@@ -15,12 +15,12 @@ module Abt
           GitConfig.local_available?
         end
 
-        def project_gid
-          local_available? ? git['projectGid'] : nil
+        def path
+          Path.new(local_available? && git['path'] || '')
         end
 
-        def task_gid
-          local_available? ? git['taskGid'] : nil
+        def path=(new_path)
+          git['path'] = new_path
         end
 
         def workspace_gid
@@ -44,17 +44,6 @@ module Abt
           return nil unless local_available?
 
           @finalized_section_gid ||= git['finalizedSectionGid'] || prompt_finalized_section['gid']
-        end
-
-        def project_gid=(value)
-          return if project_gid == value
-
-          clear_local(verbose: false)
-          git['projectGid'] = value unless value.nil?
-        end
-
-        def task_gid=(value)
-          git['taskGid'] = value
         end
 
         def clear_local(verbose: true)
@@ -94,7 +83,7 @@ module Abt
 
         def prompt_section(message)
           cli.warn 'Fetching sections...'
-          sections = api.get_paged("projects/#{project_gid}/sections")
+          sections = api.get_paged("projects/#{path.project_gid}/sections")
           cli.prompt.choice(message, sections)
         end
 

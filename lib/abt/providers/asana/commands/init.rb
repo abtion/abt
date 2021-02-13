@@ -24,7 +24,7 @@ module Abt
             projects # Load projects up front to make it obvious that searches are instant
             project = find_search_result
 
-            config.project_gid = project['gid']
+            config.path = Path.from_ids(project['gid'])
 
             print_project(project)
           end

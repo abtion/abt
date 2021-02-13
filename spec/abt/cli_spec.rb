@@ -104,7 +104,7 @@ RSpec.describe Abt::Cli do
         piped_argument = StringIO.new('')
 
         expect do
-          Abt::Cli.new argv: ['share', 'asana:test/test'], input: piped_argument
+          Abt::Cli.new argv: ['share', 'asana:111/222'], input: piped_argument
         end.to raise_error(Abt::Cli::Abort, 'No input from pipe')
       end
     end
@@ -146,7 +146,7 @@ RSpec.describe Abt::Cli do
 
     context 'when ARI given through input IO (pipe)' do
       it 'uses the piped ARI' do
-        piped_ari = StringIO.new('asana:test/test # Description text')
+        piped_ari = StringIO.new('asana:111/222 # Description text')
         cli = Abt::Cli.new argv: ['share'], input: piped_ari, output: null_stream, err_output: null_stream
 
         allow(Abt::Providers::Asana::Commands::Share).to receive(:new).and_call_original
@@ -154,14 +154,14 @@ RSpec.describe Abt::Cli do
         cli.perform
 
         expect(Abt::Providers::Asana::Commands::Share).to have_received(:new).once do |ari:, **|
-          expect(ari.path).to eq('test/test')
+          expect(ari.path).to eq('111/222')
         end
       end
     end
 
     context 'when no provider implements the command' do
       it 'aborts with "No providers found for command and ARI(s)"' do
-        cli = Abt::Cli.new argv: ['invalid-command', 'asana:test/test']
+        cli = Abt::Cli.new argv: ['invalid-command', 'asana:111/222']
 
         expect do
           cli.perform
@@ -172,7 +172,7 @@ RSpec.describe Abt::Cli do
     context 'when there are multiple commands for the same provider' do
       it 'drops subsequent commands and prints a warning' do
         err_output = StringIO.new
-        cli = Abt::Cli.new(argv: ['share', 'asana:called', 'asana:not/called'],
+        cli = Abt::Cli.new(argv: ['share', 'asana:111', 'asana:222/333'],
                            err_output: err_output,
                            output: null_stream)
 
@@ -181,17 +181,17 @@ RSpec.describe Abt::Cli do
         cli.perform
 
         expect(Abt::Providers::Asana::Commands::Share).to have_received(:new).once do |ari:, **|
-          expect(ari.path).to eq('called')
+          expect(ari.path).to eq('111')
         end
         expect(err_output.string).to(
-          include('Dropping command for already used scheme: asana:not/called')
+          include('Dropping command for already used scheme: asana:222/333')
         )
       end
     end
 
     context 'when at least one provider implements the command' do
       it 'does not abort' do
-        cli = Abt::Cli.new argv: ['share', 'asana:test/test', 'git'], output: null_stream, err_output: null_stream
+        cli = Abt::Cli.new argv: ['share', 'asana:111/222', 'git'], output: null_stream, err_output: null_stream
 
         expect do
           cli.perform
