@@ -98,9 +98,8 @@ module Abt
             return if path == config.path
             return unless config.local_available?
 
-            input = StringIO.new("harvest:#{project_id}/#{task_id}")
-            output = StringIO.new
-            Abt::Cli.new(argv: ['current'], output: output, input: input).perform
+            config.path = path
+            cli.warn 'Current task updated'
           end
         end
       end
