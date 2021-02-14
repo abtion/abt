@@ -10,16 +10,16 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Pick, :harvest) do
       allow(Abt::GitConfig).to receive(:new).with('local', 'abt.harvest').and_return(local_git)
       allow(Abt::GitConfig).to receive(:new).with('global', 'abt.harvest').and_return(global_git)
 
-      stub_project_assignments_request(global_git, [
-                                         {
-                                           "project": { "id": 27_701_618, "name": 'Project' },
-                                           "client": { "name": 'Abtion' },
-                                           "task_assignments": [
-                                             { "task": { "id": 14_628_589, "name": 'Task 1' } },
-                                             { "task": { "id": 14_628_590, "name": 'Task 2' } }
-                                           ]
-                                         }
-                                       ])
+      stub_get_project_assignments(global_git, [
+                                     {
+                                       "project": { "id": 27_701_618, "name": 'Project' },
+                                       "client": { "name": 'Abtion' },
+                                       "task_assignments": [
+                                         { "task": { "id": 14_628_589, "name": 'Task 1' } },
+                                         { "task": { "id": 14_628_590, "name": 'Task 2' } }
+                                       ]
+                                     }
+                                   ])
     end
 
     it 'prompts for a project and stores it in the configuration' do
@@ -32,7 +32,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Pick, :harvest) do
 
       thr = Thread.new do
         cli = Abt::Cli.new(argv: argv, input: input, err_output: err_output, output: output)
-        allow(cli.prompt).to receive(:read_user_input) { input.gets }
+        allow(cli.prompt).to receive(:read_user_input) { input.gets.strip }
 
         cli.perform
       end
