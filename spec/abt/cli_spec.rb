@@ -137,7 +137,7 @@ RSpec.describe Abt::Cli do
         expect(cli).to eq(cli_instance)
       end
       expect(command_instance).to have_received(:perform)
-      expect(err_output.string).to include('===== COMMAND PROVIDER:PATH --1 --2 =====')
+      expect(err_output.string).to include('===== COMMAND provider:path --1 --2 =====')
     end
 
     context 'when ARI given through input IO (pipe)' do

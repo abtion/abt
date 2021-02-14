@@ -5,11 +5,12 @@ class GitConfigMock < Hash
 
   def_delegators(:@store, :[], :[]=, :keys)
 
-  def initialize(initial = {})
-    @store = initial.dup
+  def initialize(data: {}, available: true)
+    @store = data.dup
+    @available = available
   end
 
   def available?
-    true
+    @available
   end
 end

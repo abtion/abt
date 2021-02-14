@@ -8,8 +8,8 @@ module Abt
 
         def initialize(cli:)
           @cli = cli
-          @git = GitConfig.new(namespace: 'abt.harvest')
-          @git_global = GitConfig.new(namespace: 'abt.harvest', scope: 'global')
+          @git = GitConfig.new('local', 'abt.harvest')
+          @git_global = GitConfig.new('global', 'abt.harvest')
         end
 
         def local_available?

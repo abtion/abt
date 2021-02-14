@@ -6,7 +6,7 @@ module Abt
 
     class UnsafeNamespaceError < StandardError; end
 
-    def initialize(namespace: '', scope: 'local')
+    def initialize(scope = 'local', namespace = '')
       @namespace = namespace
 
       unless %w[local global].include? scope

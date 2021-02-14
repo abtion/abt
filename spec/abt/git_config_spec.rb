@@ -3,23 +3,23 @@
 RSpec.describe Abt::GitConfig do
   describe '#initialize' do
     it 'sets namespace and scope' do
-      config = Abt::GitConfig.new(namespace: 'namespace', scope: 'local')
+      config = Abt::GitConfig.new('local', 'namespace')
 
       expect(config.namespace).to be('namespace')
       expect(config.scope).to be('local')
     end
 
     it 'only allows namespaces "local" and "global"' do
-      expect { Abt::GitConfig.new(scope: 'local') }.to_not raise_error
-      expect { Abt::GitConfig.new(scope: 'global') }.to_not raise_error
-      expect { Abt::GitConfig.new(scope: 'testing') }.to raise_error(ArgumentError)
+      expect { Abt::GitConfig.new('local') }.to_not raise_error
+      expect { Abt::GitConfig.new('global') }.to_not raise_error
+      expect { Abt::GitConfig.new('testing') }.to raise_error(ArgumentError)
     end
   end
 
   describe 'instance' do
     describe '#[]' do
       it 'uses the specified scope and prefixes the key with the namespace' do
-        config = Abt::GitConfig.new(namespace: 'namespace', scope: 'global')
+        config = Abt::GitConfig.new('global', 'namespace')
 
         allow(config).to receive(:available?).and_return true
         allow(config).to receive(:`).and_return('')
@@ -64,7 +64,7 @@ RSpec.describe Abt::GitConfig do
 
     describe '#[]=' do
       it 'uses the specified scope and prefixes the key with the namespace' do
-        config = Abt::GitConfig.new(namespace: 'namespace', scope: 'global')
+        config = Abt::GitConfig.new('global', 'namespace')
 
         allow(config).to receive(:available?).and_return true
         allow(config).to receive(:`).and_return('')
@@ -113,7 +113,7 @@ RSpec.describe Abt::GitConfig do
 
     describe '#full_keys' do
       it 'gets all keys in the scope prefixed with the namespace' do
-        config = Abt::GitConfig.new(namespace: 'namespace', scope: 'global')
+        config = Abt::GitConfig.new('global', 'namespace')
 
         allow(config).to receive(:available?).and_return true
         allow(config).to receive(:`).and_return([
@@ -139,7 +139,7 @@ RSpec.describe Abt::GitConfig do
 
     describe '#keys' do
       it 'returns the same keys as #full_keys but without the namespace prefix' do
-        config = Abt::GitConfig.new(namespace: 'namespace')
+        config = Abt::GitConfig.new('local', 'namespace')
 
         allow(config).to receive(:available?).and_return true
         allow(config).to receive(:full_keys).and_return(['namespace.key1', 'namespace.key2'])
@@ -150,7 +150,7 @@ RSpec.describe Abt::GitConfig do
 
     describe '#clear' do
       it 'sets all keys to nil' do
-        config = Abt::GitConfig.new(namespace: 'namespace')
+        config = Abt::GitConfig.new('local', 'namespace')
 
         allow(config).to receive(:available?).and_return true
         allow(config).to receive(:keys).and_return(%w[key1 key2])
@@ -165,7 +165,7 @@ RSpec.describe Abt::GitConfig do
       context 'when an output is specified' do
         it 'logs the deleted keys' do
           output = StringIO.new
-          config = Abt::GitConfig.new(namespace: 'namespace', scope: 'local')
+          config = Abt::GitConfig.new('local', 'namespace')
 
           allow(config).to receive(:available?).and_return true
           allow(config).to receive(:keys).and_return(%w[key1 key2])
@@ -184,7 +184,7 @@ RSpec.describe Abt::GitConfig do
 
       context 'when namespace is empty' do
         it 'raises an UnsafeNamespaceError' do
-          config = Abt::GitConfig.new(namespace: '')
+          config = Abt::GitConfig.new('local', '')
           allow(config).to receive(:available?).and_return true
 
           expect { config.clear }.to raise_error(Abt::GitConfig::UnsafeNamespaceError)
@@ -194,7 +194,7 @@ RSpec.describe Abt::GitConfig do
 
     describe '#available?' do
       it 'calls "git config --scope -l"' do
-        config = Abt::GitConfig.new(scope: 'local')
+        config = Abt::GitConfig.new('local')
 
         system_call = nil
         allow(Open3).to receive(:popen3) do |received_system_call|

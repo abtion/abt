@@ -15,7 +15,8 @@ end
 Thread.abort_on_exception = true
 
 RSpec.configure do |config|
-  include NullStream
+  config.include NullStream
+  config.include HarvestHelpers, :harvest
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

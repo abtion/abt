@@ -8,8 +8,8 @@ module Abt
 
         def initialize(cli:)
           @cli = cli
-          @git = GitConfig.new(namespace: 'abt.asana')
-          @git_global = GitConfig.new(namespace: 'abt.asana', scope: 'global')
+          @git = GitConfig.new('local', 'abt.asana')
+          @git_global = GitConfig.new('global', 'abt.asana')
         end
 
         def local_available?

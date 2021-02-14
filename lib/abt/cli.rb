@@ -137,7 +137,7 @@ module Abt
     end
 
     def print_command(name, ari)
-      warn "===== #{name} #{ari} =====".upcase
+      warn "===== #{name.upcase} #{ari} ====="
     end
   end
 end
