@@ -22,6 +22,8 @@ module Abt
           def perform
             require_task!
 
+            print_task(project_gid, task)
+
             maybe_override_current_task
 
             update_assignee_if_needed
@@ -36,7 +38,8 @@ module Abt
             return if path == config.path
             return unless config.local_available?
 
-            Current.new(ari: ari.without_flags, cli: cli).perform
+            config.path = path
+            cli.warn 'Current task updated'
           end
 
           def update_assignee_if_needed
@@ -102,7 +105,7 @@ module Abt
           end
 
           def task
-            @task ||= api.get("tasks/#{task_gid}", opt_fields: 'name,memberships.section.name,assignee.name')
+            @task ||= api.get("tasks/#{task_gid}", opt_fields: 'name,memberships.section.name,assignee.name,permalink_url')
           end
         end
       end

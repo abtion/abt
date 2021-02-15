@@ -11,10 +11,6 @@ module Abt
         @flags = flags
       end
 
-      def without_flags
-        self.class.new(scheme: scheme, path: path)
-      end
-
       def to_s
         str = scheme
         str += ":#{path}" if path
