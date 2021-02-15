@@ -77,20 +77,29 @@ module Abt
 
           def external_link_data
             @external_link_data ||= begin
-              input = StringIO.new(cli.aris.to_s)
-              output = StringIO.new
-              Abt::Cli.new(argv: ['harvest-time-entry-data'], output: output, input: input).perform
+              lines = call_harvest_time_entry_data_for_other_aris
 
-              lines = output.string.strip.lines
+              if lines.empty?
+                nil
+              else
+                if lines.length > 1
+                  cli.abort('Got reference data from multiple scheme providers, only one is supported at a time')
+                end
 
-              return if lines.empty?
-
-              if lines.length > 1
-                cli.abort('Got reference data from multiple scheme providers, only one is supported at a time')
+                Oj.load(lines.first, symbol_keys: true)
               end
-
-              Oj.load(lines.first, symbol_keys: true)
             end
+          end
+
+          def call_harvest_time_entry_data_for_other_aris
+            other_aris = cli.aris - [ari]
+            return [] if other_aris.empty?
+
+            input = StringIO.new(other_aris.to_s)
+            output = StringIO.new
+            Abt::Cli.new(argv: ['harvest-time-entry-data'], output: output, input: input).perform
+
+            output.string.strip.lines
           end
 
           def maybe_override_current_task
