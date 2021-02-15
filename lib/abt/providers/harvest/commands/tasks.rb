@@ -28,7 +28,10 @@ module Abt
           end
 
           def tasks
-            @tasks ||= project_assignment['task_assignments'].map { |ta| ta['task'] }
+            @tasks ||= begin
+              cli.warn 'Fetching tasks...'
+              project_assignment['task_assignments'].map { |ta| ta['task'] }
+            end
           end
 
           def project_assignment
