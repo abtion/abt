@@ -154,22 +154,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
     it 'adds reference data to the time entry' do
       link_data = { notes: 'Note', external_reference: { permalink: 'link' } }
 
-      harvest_time_entry_data_command_class = Class.new do
-        LINK_DATA = link_data
-
-        def initialize(cli:, **)
-          @cli = cli
-        end
-
-        def perform
-          @cli.puts Oj.dump(LINK_DATA, mode: :json)
-        end
-      end
-
-      allow(Abt::Providers::Asana).to receive(:command_class).and_call_original
-      allow(Abt::Providers::Asana).to receive(:command_class)
-        .with('harvest-time-entry-data')
-        .and_return(harvest_time_entry_data_command_class)
+      stub_command_output('asana', 'harvest-time-entry-data', Oj.dump(link_data, mode: :json))
 
       stub_post_time_entry(global_git,
                            "project": { "id": project_id, "name": 'Project' },
@@ -187,22 +172,8 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
 
     context 'when multiple compatible ARIs' do
       it 'aborts with correct message' do
-        harvest_time_entry_data_command_class = Class.new do
-          def initialize(cli:, **)
-            @cli = cli
-          end
-
-          def perform
-            @cli.puts '{}'
-          end
-        end
-
-        [Abt::Providers::Asana, Abt::Providers::Devops].each do |provider|
-          allow(provider).to receive(:command_class).and_call_original
-          allow(provider).to receive(:command_class)
-            .with('harvest-time-entry-data')
-            .and_return(harvest_time_entry_data_command_class)
-        end
+        stub_command_output('asana', 'harvest-time-entry-data', '{}')
+        stub_command_output('devops', 'harvest-time-entry-data', '{}')
 
         output = StringIO.new
         argv = ['track', "harvest:#{project_id}/#{task_id}", 'asana', 'devops']
