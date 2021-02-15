@@ -2,14 +2,19 @@
 
 module HarvestHelpers
   def stub_get_project_assignments(git_config, project_assignments)
-    response_data = {
-      "project_assignments": project_assignments,
-      "total_pages": 1
-    }
+    # Create a page per project assignment to force our pagination code into action
+    project_assignments.each_with_index do |project_assignment, index|
+      page = index + 1
 
-    stub_request(:get, 'https://api.harvestapp.com/v2/users/me/project_assignments?page=1')
-      .with(headers: request_headers_for_git_config(git_config))
-      .to_return(body: Oj.dump(response_data, mode: :json))
+      response_data = {
+        "project_assignments": [project_assignment],
+        "total_pages": project_assignments.length
+      }
+
+      stub_request(:get, "https://api.harvestapp.com/v2/users/me/project_assignments?page=#{page}")
+        .with(headers: request_headers_for_git_config(git_config))
+        .to_return(body: Oj.dump(response_data, mode: :json))
+    end
   end
 
   def stub_post_time_entry(git_config, time_entry)
