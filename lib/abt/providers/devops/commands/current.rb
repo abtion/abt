@@ -17,7 +17,7 @@ module Abt
             require_board!
 
             if path != config.path && config.local_available?
-              cli.warn 'Updating configuration'
+              warn 'Updating configuration'
               update_configuration
             end
 
@@ -42,17 +42,17 @@ module Abt
 
           def ensure_board_is_valid!
             if board.nil?
-              cli.abort 'Board could not be found, ensure that settings for organization, project, and board are correct'
+              abort 'Board could not be found, ensure that settings for organization, project, and board are correct'
             end
           end
 
           def ensure_work_item_is_valid!
-            cli.abort "No such work item: ##{work_item_id}" if work_item.nil?
+            abort "No such work item: ##{work_item_id}" if work_item.nil?
           end
 
           def board
             @board ||= begin
-                         cli.warn 'Fetching board...'
+                         warn 'Fetching board...'
                          api.get("work/boards/#{board_id}")
                        rescue HttpError::NotFoundError
                          nil
@@ -61,7 +61,7 @@ module Abt
 
           def work_item
             @work_item ||= begin
-                             cli.warn 'Fetching work item...'
+                             warn 'Fetching work item...'
                              work_item = api.get_paged('wit/workitems', ids: work_item_id)[0]
                              sanitize_work_item(work_item)
                            rescue HttpError::NotFoundError

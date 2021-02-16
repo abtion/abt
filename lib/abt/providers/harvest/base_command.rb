@@ -22,15 +22,15 @@ module Abt
         def require_project!
           return if project_id
 
-          cli.abort 'No current/specified project. Did you initialize Harvest?'
+          abort 'No current/specified project. Did you initialize Harvest?'
         end
 
         def require_task!
           unless project_id
-            cli.abort 'No current/specified project. Did you initialize Harvest and pick a task?'
+            abort 'No current/specified project. Did you initialize Harvest and pick a task?'
           end
 
-          cli.abort 'No current/specified task. Did you pick a Harvest task?' if task_id.nil?
+          abort 'No current/specified task. Did you pick a Harvest task?' if task_id.nil?
         end
 
         def print_project(project)

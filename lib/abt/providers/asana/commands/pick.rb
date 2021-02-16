@@ -20,10 +20,10 @@ module Abt
           end
 
           def perform
-            cli.abort 'Must be run inside a git repository' unless config.local_available?
+            abort 'Must be run inside a git repository' unless config.local_available?
             require_project!
 
-            cli.warn project['name']
+            warn project['name']
 
             task = select_task
 
@@ -43,11 +43,11 @@ module Abt
           def select_task
             loop do
               section = cli.prompt.choice 'Which section?', sections
-              cli.warn 'Fetching tasks...'
+              warn 'Fetching tasks...'
               tasks = tasks_in_section(section)
 
               if tasks.length.zero?
-                cli.warn 'Section is empty'
+                warn 'Section is empty'
                 next
               end
 
@@ -62,7 +62,7 @@ module Abt
 
           def sections
             @sections ||= begin
-              cli.warn 'Fetching sections...'
+              warn 'Fetching sections...'
               api.get_paged("projects/#{project_gid}/sections", opt_fields: 'name')
                           rescue Abt::HttpError::HttpError
                             []

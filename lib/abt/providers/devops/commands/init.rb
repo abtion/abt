@@ -17,7 +17,7 @@ module Abt
           end
 
           def perform
-            cli.abort 'Must be run inside a git repository' unless config.local_available?
+            abort 'Must be run inside a git repository' unless config.local_available?
 
             board = cli.prompt.choice 'Select a project work board', boards
 
@@ -61,7 +61,7 @@ module Abt
 
                 break url if AZURE_DEV_URL_REGEX =~ url || VS_URL_REGEX =~ url
 
-                cli.warn 'Invalid URL'
+                warn 'Invalid URL'
               end
             end
           end

@@ -39,33 +39,33 @@ module Abt
             return unless config.local_available?
 
             config.path = path
-            cli.warn 'Current task updated'
+            warn 'Current task updated'
           end
 
           def update_assignee_if_needed
             current_assignee = task.dig('assignee')
 
             if current_assignee.nil?
-              cli.warn "Assigning task to user: #{current_user['name']}"
+              warn "Assigning task to user: #{current_user['name']}"
               update_assignee
             elsif current_assignee['gid'] == current_user['gid']
-              cli.warn 'You are already assigned to this task'
+              warn 'You are already assigned to this task'
             elsif cli.prompt.boolean "Task is assigned to: #{current_assignee['name']}, take over?"
-              cli.warn "Reassigning task to user: #{current_user['name']}"
+              warn "Reassigning task to user: #{current_user['name']}"
               update_assignee
             end
           end
 
           def move_if_needed
             unless project_gid == config.path.project_gid
-              cli.warn 'Task was not moved, this is not implemented for tasks outside current project'
+              warn 'Task was not moved, this is not implemented for tasks outside current project'
               return
             end
 
             if task_already_in_wip_section?
-              cli.warn "Task already in section: #{current_task_section['name']}"
+              warn "Task already in section: #{current_task_section['name']}"
             else
-              cli.warn "Moving task to section: #{wip_section['name']}"
+              warn "Moving task to section: #{wip_section['name']}"
               move_task
             end
           end

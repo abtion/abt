@@ -23,7 +23,7 @@ module Abt
 
           def projects
             @projects ||= begin
-              cli.warn 'Fetching projects...'
+              warn 'Fetching projects...'
               api.get_paged(
                 'projects',
                 workspace: config.workspace_gid,

@@ -17,7 +17,7 @@ module Abt
             require_project!
 
             if path != config.path && config.local_available?
-              cli.warn 'Updating configuration'
+              warn 'Updating configuration'
               update_configuration
             end
 
@@ -41,11 +41,11 @@ module Abt
           end
 
           def ensure_project_is_valid!
-            cli.abort "Invalid project: #{project_id}" if project.nil?
+            abort "Invalid project: #{project_id}" if project.nil?
           end
 
           def ensure_task_is_valid!
-            cli.abort "Invalid task: #{task_id}" if task.nil?
+            abort "Invalid task: #{task_id}" if task.nil?
           end
 
           def project

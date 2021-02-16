@@ -15,15 +15,15 @@ module Abt
 
           def perform
             unless config.local_available?
-              cli.abort 'This is a no-op for tasks outside the current project'
+              abort 'This is a no-op for tasks outside the current project'
             end
             require_task!
             print_task(project_gid, task)
 
             if task_already_in_finalized_section?
-              cli.warn "Task already in section: #{current_task_section['name']}"
+              warn "Task already in section: #{current_task_section['name']}"
             else
-              cli.warn "Moving task to section: #{finalized_section['name']}"
+              warn "Moving task to section: #{finalized_section['name']}"
               move_task
             end
           end

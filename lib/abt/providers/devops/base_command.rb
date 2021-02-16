@@ -22,17 +22,17 @@ module Abt
         def require_board!
           return if organization_name && project_name && board_id
 
-          cli.abort 'No current/specified board. Did you initialize DevOps?'
+          abort 'No current/specified board. Did you initialize DevOps?'
         end
 
         def require_work_item!
           unless organization_name && project_name && board_id
-            cli.abort 'No current/specified board. Did you initialize DevOps and pick a work item?'
+            abort 'No current/specified board. Did you initialize DevOps and pick a work item?'
           end
 
           return if work_item_id
 
-          cli.abort 'No current/specified work item. Did you pick a DevOps work item?'
+          abort 'No current/specified work item. Did you pick a DevOps work item?'
         end
 
         def sanitize_work_item(work_item)
@@ -49,14 +49,14 @@ module Abt
           path = "#{organization_name}/#{project_name}/#{board['id']}"
 
           cli.print_ari('devops', path, board['name'])
-          cli.warn api.url_for_board(board) if cli.output.isatty
+          warn api.url_for_board(board) if cli.output.isatty
         end
 
         def print_work_item(organization, project, board, work_item)
           path = "#{organization}/#{project}/#{board['id']}/#{work_item['id']}"
 
           cli.print_ari('devops', path, work_item['name'])
-          cli.warn work_item['url'] if work_item.key?('url') && cli.output.isatty
+          warn work_item['url'] if work_item.key?('url') && cli.output.isatty
         end
 
         def api

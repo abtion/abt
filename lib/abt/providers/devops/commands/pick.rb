@@ -20,10 +20,10 @@ module Abt
           end
 
           def perform
-            cli.abort 'Must be run inside a git repository' unless config.local_available?
+            abort 'Must be run inside a git repository' unless config.local_available?
             require_board!
 
-            cli.warn "#{project_name} - #{board['name']}"
+            warn "#{project_name} - #{board['name']}"
 
             work_item = select_work_item
             print_work_item(organization_name, project_name, board, work_item)
@@ -38,11 +38,11 @@ module Abt
           def select_work_item
             loop do
               column = cli.prompt.choice 'Which column?', columns
-              cli.warn 'Fetching work items...'
+              warn 'Fetching work items...'
               work_items = work_items_in_column(column)
 
               if work_items.length.zero?
-                cli.warn 'Section is empty'
+                warn 'Section is empty'
                 next
               end
 

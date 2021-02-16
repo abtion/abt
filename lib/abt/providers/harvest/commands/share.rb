@@ -14,7 +14,7 @@ module Abt
           end
 
           def perform
-            cli.abort 'No project selected' if path.empty?
+            abort 'No project selected' if path.empty?
 
             cli.print_ari('harvest', path)
           end

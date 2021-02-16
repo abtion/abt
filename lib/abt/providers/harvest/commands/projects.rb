@@ -23,7 +23,7 @@ module Abt
 
           def projects
             @projects ||= begin
-              cli.warn 'Fetching projects...'
+              warn 'Fetching projects...'
               project_assignments.map do |project_assignment|
                 project_assignment['project'].merge('client' => project_assignment['client'])
               end

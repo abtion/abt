@@ -14,15 +14,15 @@ module Abt
           end
 
           def perform
-            cli.abort 'No running time entry' if time_entry.nil?
+            abort 'No running time entry' if time_entry.nil?
 
             stop_time_entry
 
-            cli.warn 'Harvest time entry stopped'
+            warn 'Harvest time entry stopped'
             print_task(project, task)
           rescue Abt::HttpError::HttpError => e
-            cli.warn e
-            cli.abort 'Unable to stop time entry'
+            warn e
+            abort 'Unable to stop time entry'
           end
 
           private
@@ -47,8 +47,8 @@ module Abt
                 user_id: config.user_id
               ).first
             rescue Abt::HttpError::HttpError => e # rubocop:disable Layout/RescueEnsureAlignment
-              cli.warn e
-              cli.abort 'Unable to fetch running time entry'
+              warn e
+              abort 'Unable to fetch running time entry'
             end
           end
         end

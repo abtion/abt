@@ -31,7 +31,7 @@ module Abt
 
           def tasks
             @tasks ||= begin
-              cli.warn 'Fetching tasks...'
+              warn 'Fetching tasks...'
               api.get_paged('tasks', project: project['gid'], opt_fields: 'name')
             end
           end

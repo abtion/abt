@@ -25,7 +25,7 @@ module Abt
 
           def work_items
             @work_items ||= begin
-              cli.warn 'Fetching work items...'
+              warn 'Fetching work items...'
               api.work_item_query(
                 <<~WIQL
                   SELECT [System.Id]

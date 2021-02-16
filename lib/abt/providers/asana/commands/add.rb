@@ -33,7 +33,7 @@ module Abt
                   projects: [project_gid]
                 }
               }
-              cli.warn 'Creating task'
+              warn 'Creating task'
               api.post('tasks', Oj.dump(body, mode: :json))
             end
           end
@@ -62,7 +62,7 @@ module Abt
 
           def sections
             @sections ||= begin
-              cli.warn 'Fetching sections...'
+              warn 'Fetching sections...'
               api.get_paged("projects/#{project_gid}/sections", opt_fields: 'name')
                           rescue Abt::HttpError::HttpError
                             []

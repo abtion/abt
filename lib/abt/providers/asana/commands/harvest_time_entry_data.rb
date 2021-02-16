@@ -26,17 +26,17 @@ module Abt
               }
             }
 
-            cli.puts Oj.dump(body, mode: :json)
+            puts Oj.dump(body, mode: :json)
           end
 
           private
 
           def ensure_current_is_valid!
-            cli.abort "Invalid task gid: #{task_gid}" if task.nil?
+            abort "Invalid task gid: #{task_gid}" if task.nil?
 
             return if task['memberships'].any? { |m| m.dig('project', 'gid') == project_gid }
 
-            cli.abort "Invalid project gid: #{project_gid}"
+            abort "Invalid project gid: #{project_gid}"
           end
 
           def task

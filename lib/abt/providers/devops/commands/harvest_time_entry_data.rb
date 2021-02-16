@@ -25,7 +25,7 @@ module Abt
               }
             }
 
-            cli.puts Oj.dump(body, mode: :json)
+            puts Oj.dump(body, mode: :json)
           end
 
           private

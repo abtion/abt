@@ -17,7 +17,7 @@ module Abt
             require_project!
 
             if path != config.path && config.local_available?
-              cli.warn 'Updating configuration'
+              warn 'Updating configuration'
               update_configuration
             end
 
@@ -37,23 +37,23 @@ module Abt
           end
 
           def ensure_project_is_valid!
-            cli.abort "Invalid project: #{project_gid}" if project.nil?
+            abort "Invalid project: #{project_gid}" if project.nil?
           end
 
           def ensure_task_is_valid!
-            cli.abort "Invalid task: #{task_gid}" if task.nil?
+            abort "Invalid task: #{task_gid}" if task.nil?
           end
 
           def project
             @project ||= begin
-              cli.warn 'Fetching project...'
+              warn 'Fetching project...'
               api.get("projects/#{project_gid}", opt_fields: 'name,permalink_url')
             end
           end
 
           def task
             @task ||= begin
-              cli.warn 'Fetching task...'
+              warn 'Fetching task...'
               api.get("tasks/#{task_gid}", opt_fields: 'name,permalink_url')
             end
           end

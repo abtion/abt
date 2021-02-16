@@ -3,6 +3,8 @@
 module Abt
   class Cli
     class BaseCommand
+      extend Forwardable
+
       def self.usage
         raise NotImplementedError, 'Command classes must implement .command'
       end
@@ -16,6 +18,8 @@ module Abt
       end
 
       attr_reader :ari, :cli, :flags
+
+      def_delegators(:@cli, :warn, :puts, :print, :abort, :exit_with_message)
 
       def initialize(ari:, cli:)
         @cli = cli
@@ -34,11 +38,11 @@ module Abt
 
         flag_parser.parse!(flags.dup, into: result)
 
-        cli.exit_with_message(flag_parser.help) if result[:help]
+        exit_with_message(flag_parser.help) if result[:help]
 
         result
       rescue OptionParser::InvalidOption => e
-        cli.abort e.message
+        abort e.message
       end
 
       def flag_parser

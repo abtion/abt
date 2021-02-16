@@ -16,11 +16,11 @@ module Abt
           def perform
             require_work_item!
 
-            cli.puts name
+            puts name
           rescue HttpError::NotFoundError
             args = [organization_name, project_name, board_id, work_item_id].compact
-            cli.warn 'Unable to find work item for configuration:'
-            cli.abort "devops:#{args.join('/')}"
+            warn 'Unable to find work item for configuration:'
+            abort "devops:#{args.join('/')}"
           end
 
           private

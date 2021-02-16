@@ -14,7 +14,7 @@ module Abt
           end
 
           def perform
-            cli.abort 'Must be run inside a git repository' unless config.local_available?
+            abort 'Must be run inside a git repository' unless config.local_available?
 
             projects # Load projects up front to make it obvious that searches are instant
             project = find_search_result
@@ -27,16 +27,16 @@ module Abt
           private
 
           def find_search_result
-            cli.warn 'Select a project'
+            warn 'Select a project'
 
             loop do
               matches = matches_for_string cli.prompt.text('Enter search')
               if matches.empty?
-                cli.warn 'No matches'
+                warn 'No matches'
                 next
               end
 
-              cli.warn 'Showing the 10 first matches' if matches.size > 10
+              warn 'Showing the 10 first matches' if matches.size > 10
               choice = cli.prompt.choice 'Select a project', matches[0...10], true
               break choice['project'] unless choice.nil?
             end
@@ -65,7 +65,7 @@ module Abt
 
           def projects
             @projects ||= begin
-              cli.warn 'Fetching projects...'
+              warn 'Fetching projects...'
               project_assignments.map do |project_assignment|
                 project_assignment['project'].merge('client' => project_assignment['client'])
               end

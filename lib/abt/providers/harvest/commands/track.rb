@@ -29,7 +29,7 @@ module Abt
 
             maybe_override_current_task
           rescue Abt::HttpError::HttpError => _e
-            cli.abort 'Invalid task'
+            abort 'Invalid task'
           end
 
           private
@@ -60,14 +60,14 @@ module Abt
             }
 
             if external_link_data
-              cli.warn <<~TXT
+              warn <<~TXT
                 Linking to:
                   #{external_link_data[:notes]}
                   #{external_link_data[:external_reference][:permalink]}
               TXT
               body.merge! external_link_data
             else
-              cli.warn 'No external link provided'
+              warn 'No external link provided'
             end
 
             body[:notes] = flags[:comment] if flags.key?(:comment)
@@ -83,7 +83,7 @@ module Abt
                 nil
               else
                 if lines.length > 1
-                  cli.abort('Got reference data from multiple scheme providers, only one is supported at a time')
+                  abort('Got reference data from multiple scheme providers, only one is supported at a time')
                 end
 
                 Oj.load(lines.first, symbol_keys: true)
@@ -108,7 +108,7 @@ module Abt
             return unless config.local_available?
 
             config.path = path
-            cli.warn 'Current task updated'
+            warn 'Current task updated'
           end
         end
       end

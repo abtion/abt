@@ -20,10 +20,10 @@ module Abt
           end
 
           def perform
-            cli.abort 'Must be run inside a git repository' unless config.local_available?
+            abort 'Must be run inside a git repository' unless config.local_available?
             require_project!
 
-            cli.warn project['name']
+            warn project['name']
             task = cli.prompt.choice 'Select a task', tasks
 
             print_task(project, task)

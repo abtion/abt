@@ -15,7 +15,7 @@ module Abt
 
           def perform
             create_and_switch unless switch
-            cli.warn "Switched to #{branch_name}"
+            warn "Switched to #{branch_name}"
           end
 
           private
@@ -29,8 +29,8 @@ module Abt
           end
 
           def create_and_switch
-            cli.warn "No such branch: #{branch_name}"
-            cli.abort('Aborting') unless cli.prompt.boolean 'Create branch?'
+            warn "No such branch: #{branch_name}"
+            abort('Aborting') unless cli.prompt.boolean 'Create branch?'
 
             Open3.popen3("git switch -c #{branch_name}") do |_i, _o, _e, thread|
               thread.value
@@ -40,7 +40,7 @@ module Abt
           def branch_name # rubocop:disable Metrics/MethodLength
             @branch_name ||= begin
               if branch_names_from_aris.empty?
-                cli.abort [
+                abort [
                   'None of the specified ARIs responded to `branch-name`.',
                   'Did you add compatible scheme? e.g.:',
                   '   abt branch git asana',
@@ -49,7 +49,7 @@ module Abt
               end
 
               if branch_names_from_aris.length > 1
-                cli.abort [
+                abort [
                   'Got branch names from multiple ARIs, only one is supported',
                   'Branch names were:',
                   *branch_names_from_aris.map { |name| "   #{name}" }
