@@ -190,11 +190,9 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
       stub_request(:post, 'https://api.harvestapp.com/v2/time_entries')
         .and_return(status: 422)
 
-      output = StringIO.new
       comment_to_avoid_prompt = ['-c', 'Note']
       argv = ['track', "harvest:#{project_id}/#{task_id}", *comment_to_avoid_prompt]
-
-      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: output)
+      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, 'Invalid task')
     end

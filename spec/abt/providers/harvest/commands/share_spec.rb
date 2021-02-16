@@ -32,13 +32,8 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Share, :harvest) do
 
   context 'when no path current specified path' do
     it 'prints the current/specified ARI' do
-      err_output = StringIO.new
-      output = StringIO.new
       argv = %w[share harvest]
-
-      allow(output).to receive(:isatty).and_return(true)
-
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, 'No project selected')
     end

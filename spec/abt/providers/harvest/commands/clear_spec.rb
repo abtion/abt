@@ -84,13 +84,8 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Share, :harvest) do
       local_git['path'] = '11111/22222'
       global_git['accessToken'] = '333333'
 
-      err_output = StringIO.new
-      output = StringIO.new
       argv = %w[clear harvest -a -g]
-
-      allow(output).to receive(:isatty).and_return(true)
-
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to(
         raise_error(Abt::Cli::Abort, 'Flags --global and --all cannot be used at the same time')
