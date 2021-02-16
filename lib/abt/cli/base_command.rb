@@ -6,7 +6,7 @@ module Abt
       extend Forwardable
 
       def self.usage
-        raise NotImplementedError, 'Command classes must implement .command'
+        raise NotImplementedError, 'Command classes must implement .usage'
       end
 
       def self.description
