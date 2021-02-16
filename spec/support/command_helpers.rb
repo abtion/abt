@@ -2,7 +2,9 @@
 
 module CommandHelpers
   def null_stream
-    StringIO.new
+    stream = StringIO.new
+    allow(stream).to receive(:isatty).and_return(false)
+    stream
   end
 
   def stub_command_output(scheme, command, output_string)
