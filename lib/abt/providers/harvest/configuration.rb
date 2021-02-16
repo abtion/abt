@@ -8,8 +8,6 @@ module Abt
 
         def initialize(cli:)
           @cli = cli
-          @git = GitConfig.new('local', 'abt.harvest')
-          @git_global = GitConfig.new('global', 'abt.harvest')
         end
 
         def local_available?
@@ -62,7 +60,13 @@ module Abt
 
         private
 
-        attr_reader :git, :git_global
+        def git
+          @git ||= GitConfig.new('local', 'abt.harvest')
+        end
+
+        def git_global
+          @git_global ||= GitConfig.new('global', 'abt.harvest')
+        end
 
         def api
           @api ||= Api.new(access_token: access_token, account_id: account_id)

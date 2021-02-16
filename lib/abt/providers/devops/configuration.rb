@@ -8,8 +8,6 @@ module Abt
 
         def initialize(cli:)
           @cli = cli
-          @git = GitConfig.new('local', 'abt.devops')
-          @git_global = GitConfig.new('global', 'abt.devops')
         end
 
         def local_available?
@@ -62,7 +60,13 @@ module Abt
 
         private
 
-        attr_reader :git, :git_global
+        def git
+          @git ||= GitConfig.new('local', 'abt.devops')
+        end
+
+        def git_global
+          @git_global ||= GitConfig.new('global', 'abt.devops')
+        end
       end
     end
   end

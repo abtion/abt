@@ -8,8 +8,6 @@ module Abt
 
         def initialize(cli:)
           @cli = cli
-          @git = GitConfig.new('local', 'abt.asana')
-          @git_global = GitConfig.new('global', 'abt.asana')
         end
 
         def local_available?
@@ -68,7 +66,13 @@ module Abt
 
         private
 
-        attr_reader :git, :git_global
+        def git
+          @git ||= GitConfig.new('local', 'abt.asana')
+        end
+
+        def git_global
+          @git_global ||= GitConfig.new('global', 'abt.asana')
+        end
 
         def prompt_finalized_section
           section = prompt_section('Select section for finalized tasks (E.g. "Merged")')
