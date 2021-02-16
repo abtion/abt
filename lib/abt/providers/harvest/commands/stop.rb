@@ -20,15 +20,15 @@ module Abt
 
             warn 'Harvest time entry stopped'
             print_task(project, task)
-          rescue Abt::HttpError::HttpError => e
-            warn e
-            abort 'Unable to stop time entry'
           end
 
           private
 
           def stop_time_entry
             api.patch("time_entries/#{time_entry['id']}/stop")
+          rescue Abt::HttpError::HttpError => e
+            warn e
+            abort 'Unable to stop time entry'
           end
 
           def project
