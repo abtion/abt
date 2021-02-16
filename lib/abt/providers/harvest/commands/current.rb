@@ -14,11 +14,14 @@ module Abt
           end
 
           def perform
-            require_project!
+            abort 'Must be run inside a git repository' unless config.local_available?
 
-            if path != config.path && config.local_available?
+            require_project!
+            ensure_valid_configuration!
+
+            if path != config.path
               warn 'Updating configuration'
-              update_configuration
+              config.path = path
             end
 
             print_configuration
@@ -34,28 +37,27 @@ module Abt
             end
           end
 
-          def update_configuration
-            ensure_project_is_valid!
-            ensure_task_is_valid! if task_id
-            config.path = path
-          end
-
-          def ensure_project_is_valid!
+          def ensure_valid_configuration!
             abort "Invalid project: #{project_id}" if project.nil?
-          end
-
-          def ensure_task_is_valid!
-            abort "Invalid task: #{task_id}" if task.nil?
+            abort "Invalid task: #{task_id}" if task_id && task.nil?
           end
 
           def project
-            @project ||= project_assignment['project'].merge('client' => project_assignment['client'])
+            return @project if instance_variable_defined? :@project
+
+            @project = if project_assignment
+                         project_assignment['project'].merge('client' => project_assignment['client'])
+                       end
           end
 
           def task
-            @task ||= project_assignment['task_assignments'].map { |ta| ta['task'] }.find do |task|
-              task['id'].to_s == task_id
-            end
+            return @task if instance_variable_defined? :@task
+
+            @task = if project_assignment
+                      project_assignment['task_assignments'].map { |ta| ta['task'] }.find do |task|
+                        task['id'].to_s == task_id
+                      end
+                    end
           end
 
           def project_assignment
