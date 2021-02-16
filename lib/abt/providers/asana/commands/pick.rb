@@ -57,7 +57,15 @@ module Abt
           end
 
           def tasks_in_section(section)
-            api.get_paged('tasks', section: section['gid'], opt_fields: 'name,permalink_url')
+            tasks = api.get_paged(
+              'tasks',
+              section: section['gid'],
+              opt_fields: 'name,completed,permalink_url'
+            )
+
+            # The below filtering is the best we can do with Asanas api, see this:
+            # https://forum.asana.com/t/tasks-query-completed-since-is-broken-for-sections/21461
+            tasks.filter { |task| !task['completed'] }
           end
 
           def sections
