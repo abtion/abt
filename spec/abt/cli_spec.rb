@@ -100,22 +100,24 @@ RSpec.describe Abt::Cli do
 
   describe 'ARIs' do
     it 'correctly executes the matching provider command' do
-      Command = Class.new do
+      command = Class.new do
         def initialize(ari:, cli:); end
 
         def perform; end
       end
-      Provider = Module.new do
+      provider = Module.new do
+        @command = command
+
         def self.command_class(command_name)
-          return Command if command_name == 'command'
+          return @command if command_name == 'command'
         end
       end
 
-      stub_const('Abt::Providers::Provider', Provider) # Add the provider to Abt for only this spec
+      stub_const('Abt::Providers::Provider', provider) # Add the provider to Abt for only this spec
 
-      command_instance = instance_double(Command)
+      command_instance = instance_double(command)
 
-      allow(Command).to receive(:new).and_return(command_instance)
+      allow(command).to receive(:new).and_return(command_instance)
       allow(command_instance).to receive(:perform)
 
       err_output = StringIO.new
@@ -123,7 +125,7 @@ RSpec.describe Abt::Cli do
                                   err_output: err_output)
       cli_instance.perform
 
-      expect(Command).to have_received(:new) do |ari:, cli:|
+      expect(command).to have_received(:new) do |ari:, cli:|
         expect(ari.path).to eq('path')
         expect(ari.flags).to eq(['--1', '--2'])
         expect(cli).to eq(cli_instance)
@@ -189,35 +191,39 @@ RSpec.describe Abt::Cli do
 
     context 'when an ARI with flags is followed by another ARI' do
       it 'uses -- to separate the two ARIs' do
-        Provider1Command = Class.new do
+        provider1_command = Class.new do
           def initialize(*); end
 
           def perform; end
         end
 
-        Provider1 = Module.new do
+        provider1 = Module.new do
+          @command = provider1_command
+
           def self.command_class(command_name)
-            return Provider1Command if command_name == 'command'
+            return @command if command_name == 'command'
           end
         end
 
-        Provider2Command = Class.new do
+        provider2_command = Class.new do
           def initialize(*); end
 
           def perform; end
         end
 
-        Provider2 = Module.new do
+        provider2 = Module.new do
+          @command = provider2_command
+
           def self.command_class(command_name)
-            return Provider2Command if command_name == 'command'
+            return @command if command_name == 'command'
           end
         end
 
-        stub_const('Abt::Providers::Provider1', Provider1)
-        stub_const('Abt::Providers::Provider2', Provider2)
+        stub_const('Abt::Providers::Provider1', provider1)
+        stub_const('Abt::Providers::Provider2', provider2)
 
-        allow(Provider1Command).to receive(:new).and_call_original
-        allow(Provider2Command).to receive(:new).and_call_original
+        allow(provider1_command).to receive(:new).and_call_original
+        allow(provider2_command).to receive(:new).and_call_original
 
         err_output = StringIO.new
         argv = ['command', 'provider1:path1', '--1', '--', 'provider2:path2', '--2']
@@ -225,17 +231,48 @@ RSpec.describe Abt::Cli do
         cli_instance = Abt::Cli.new argv: argv, err_output: err_output
         cli_instance.perform
 
-        expect(Provider1Command).to have_received(:new) do |ari:, cli:|
+        expect(provider1_command).to have_received(:new) do |ari:, cli:|
           expect(ari.path).to eq('path1')
           expect(ari.flags).to eq(['--1'])
           expect(cli).to eq(cli_instance)
         end
 
-        expect(Provider2Command).to have_received(:new) do |ari:, cli:|
+        expect(provider2_command).to have_received(:new) do |ari:, cli:|
           expect(ari.path).to eq('path2')
           expect(ari.flags).to eq(['--2'])
           expect(cli).to eq(cli_instance)
         end
+      end
+    end
+
+    context 'when command uses exit_with_message' do
+      it 'outputs the message without exiting early' do
+        command = Class.new do
+          def initialize(ari:, cli:)
+            @cli = cli
+          end
+
+          def perform
+            @cli.exit_with_message('A message!')
+          end
+        end
+        provider = Module.new do
+          @command = command
+
+          def self.command_class(command_name)
+            return @command if command_name == 'command'
+          end
+        end
+
+        stub_const('Abt::Providers::Provider', provider) # Add the provider to Abt for only this spec
+
+        output = StringIO.new
+        cli_instance = Abt::Cli.new(argv: ['command', 'provider:path'],
+                                    err_output: null_stream,
+                                    output: output)
+        cli_instance.perform
+
+        expect(output.string).to include('A message!')
       end
     end
   end
@@ -280,6 +317,16 @@ RSpec.describe Abt::Cli do
       expect do
         cli.abort('Error!')
       end.to raise_error(Abt::Cli::Abort, 'Error!')
+    end
+  end
+
+  describe '#exit_with_message' do
+    it 'raises an Abt::Cli::Abort with the given message' do
+      cli = Abt::Cli.new
+
+      expect do
+        cli.exit_with_message('Exit!')
+      end.to raise_error(Abt::Cli::Exit, 'Exit!')
     end
   end
 end
