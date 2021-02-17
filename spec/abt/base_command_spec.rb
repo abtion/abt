@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
-RSpec.describe Abt::Cli::BaseCommand do
+RSpec.describe Abt::BaseCommand do
   describe 'flags' do
     context 'subclass' do
       it 'requires .usage to be implemented' do
-        command = Class.new(Abt::Cli::BaseCommand)
+        command = Class.new(Abt::BaseCommand)
 
         expect { command.usage }.to raise_error(NotImplementedError, 'Command classes must implement .usage')
       end
 
       it 'requires .description to be implemented' do
-        command = Class.new(Abt::Cli::BaseCommand)
+        command = Class.new(Abt::BaseCommand)
 
         expect { command.description }.to raise_error(NotImplementedError, 'Command classes must implement .description')
       end
 
       it 'requires #perform to be implemented' do
-        command = Class.new(Abt::Cli::BaseCommand) do
+        command = Class.new(Abt::BaseCommand) do
           def self.usage
             'command'
           end
@@ -27,7 +27,7 @@ RSpec.describe Abt::Cli::BaseCommand do
         end
 
         cli = Abt::Cli.new
-        ari = Abt::Cli::Ari.new(scheme: 'provider')
+        ari = Abt::Ari.new(scheme: 'provider')
         command_instance = command.new(cli: cli, ari: ari)
 
         expect { command_instance.perform }.to raise_error(NotImplementedError, 'Command classes must implement #perform')
@@ -36,7 +36,7 @@ RSpec.describe Abt::Cli::BaseCommand do
 
     context 'when the command has invalid flags' do
       it 'aborts with correct error message' do
-        command = Class.new(Abt::Cli::BaseCommand) do
+        command = Class.new(Abt::BaseCommand) do
           def self.usage
             'command'
           end
@@ -51,7 +51,7 @@ RSpec.describe Abt::Cli::BaseCommand do
         end
 
         cli = Abt::Cli.new
-        ari = Abt::Cli::Ari.new(scheme: 'provider', flags: ['--invalid-flag'])
+        ari = Abt::Ari.new(scheme: 'provider', flags: ['--invalid-flag'])
 
         expect { command.new(cli: cli, ari: ari) }.to raise_error(Abt::Cli::Abort, 'invalid option: --invalid-flag')
       end

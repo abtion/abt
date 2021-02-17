@@ -4,7 +4,7 @@ module Abt
   module Providers
     module Git
       module Commands
-        class Branch < Abt::Cli::BaseCommand
+        class Branch < Abt::BaseCommand
           def self.usage
             'abt branch git <scheme>[:<path>]'
           end

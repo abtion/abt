@@ -3,7 +3,7 @@
 module Abt
   module Providers
     module Asana
-      class BaseCommand < Abt::Cli::BaseCommand
+      class BaseCommand < Abt::BaseCommand
         extend Forwardable
 
         attr_reader :path, :config

@@ -10,14 +10,14 @@ module Abt
       end
 
       def parse
-        result = Abt::Cli::AriList.new
+        result = AriList.new
         rest = arguments.dup
 
         until rest.empty?
           (scheme, path) = rest.shift.split(':')
           flags = take_flags(rest)
 
-          result << Abt::Cli::Ari.new(scheme: scheme, path: path, flags: flags)
+          result << Ari.new(scheme: scheme, path: path, flags: flags)
         end
 
         result
