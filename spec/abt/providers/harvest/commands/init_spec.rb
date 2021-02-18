@@ -18,7 +18,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Init, :harvest) do
                                    ])
     end
 
-    it 'prompts for a task and stores it in the configuration' do
+    it 'prompts for a project and stores it in the configuration' do
       input = QueueIO.new
       err_output = QueueIO.new
       output = QueueIO.new
