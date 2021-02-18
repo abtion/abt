@@ -16,11 +16,7 @@ module Abt
           def perform
             require_project!
 
-            if task_gid.nil?
-              cli.print_ari('asana', project_gid)
-            else
-              cli.print_ari('asana', "#{project_gid}/#{task_gid}")
-            end
+            cli.print_ari('asana', path)
           end
         end
       end
