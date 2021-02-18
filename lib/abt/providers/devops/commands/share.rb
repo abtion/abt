@@ -14,10 +14,9 @@ module Abt
           end
 
           def perform
-            require_work_item!
+            require_board!
 
-            args = [organization_name, project_name, board_id, work_item_id].compact
-            cli.print_ari('devops', args.join('/'))
+            cli.print_ari('devops', path)
           end
         end
       end
