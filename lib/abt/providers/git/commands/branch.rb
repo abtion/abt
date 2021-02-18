@@ -14,7 +14,7 @@ module Abt
           end
 
           def perform
-            create_and_switch unless switch
+            switch || create_and_switch
             warn "Switched to #{branch_name}"
           end
 
@@ -22,7 +22,7 @@ module Abt
 
           def switch
             success = false
-            Open3.popen3("git switch #{branch_name}") do |_i, _o, _error_output, thread|
+            Open3.popen3("git switch #{branch_name}") do |_i, _o, _e, thread|
               success = thread.value.success?
             end
             success
@@ -61,6 +61,12 @@ module Abt
           end
 
           def branch_names_from_aris
+            other_aris = cli.aris - [ari]
+
+            if other_aris.empty?
+              abort 'You must provide an additional ARI that responds to: branch-name. E.g., asana'
+            end
+
             input = StringIO.new(cli.aris.to_s)
             output = StringIO.new
             Abt::Cli.new(argv: ['branch-name'], output: output, input: input).perform
