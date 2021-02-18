@@ -35,7 +35,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Share, :harvest) do
       argv = %w[share harvest]
       cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
 
-      expect { cli.perform }.to raise_error(Abt::Cli::Abort, 'No project selected')
+      expect { cli.perform }.to raise_error(Abt::Cli::Abort, 'No current/specified project. Did you initialize Harvest?')
     end
   end
 end
