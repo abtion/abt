@@ -17,11 +17,14 @@ module Abt
             require_project!
 
             task
-
             warn 'Task created'
-            print_task(project, task)
 
-            move_task if section
+            if section
+              move_task
+              warn "Moved to section: #{section['name']}"
+            end
+
+            print_task(project, task)
           end
 
           private
