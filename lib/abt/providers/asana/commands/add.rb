@@ -17,6 +17,8 @@ module Abt
             require_project!
 
             task
+
+            warn 'Task created'
             print_task(project, task)
 
             move_task if section
@@ -33,7 +35,6 @@ module Abt
                   projects: [project_gid]
                 }
               }
-              warn 'Creating task'
               api.post('tasks', Oj.dump(body, mode: :json))
             end
           end
@@ -53,7 +54,7 @@ module Abt
           end
 
           def project
-            @project ||= api.get("projects/#{project_gid}")
+            @project ||= api.get("projects/#{project_gid}", opt_fields: 'name')
           end
 
           def section
@@ -64,8 +65,6 @@ module Abt
             @sections ||= begin
               warn 'Fetching sections...'
               api.get_paged("projects/#{project_gid}/sections", opt_fields: 'name')
-                          rescue Abt::HttpError::HttpError
-                            []
             end
           end
         end
