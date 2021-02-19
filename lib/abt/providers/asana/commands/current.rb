@@ -14,11 +14,14 @@ module Abt
           end
 
           def perform
-            require_project!
+            abort 'Must be run inside a git repository' unless config.local_available?
 
-            if path != config.path && config.local_available?
+            require_project!
+            ensure_valid_configuration!
+
+            if path != config.path
               warn 'Updating configuration'
-              update_configuration
+              config.path = path
             end
 
             print_configuration
@@ -30,24 +33,17 @@ module Abt
             task_gid.nil? ? print_project(project) : print_task(project, task)
           end
 
-          def update_configuration
-            ensure_project_is_valid!
-            ensure_task_is_valid! if task_gid
-            config.path = path
-          end
-
-          def ensure_project_is_valid!
+          def ensure_valid_configuration!
             abort "Invalid project: #{project_gid}" if project.nil?
-          end
-
-          def ensure_task_is_valid!
-            abort "Invalid task: #{task_gid}" if task.nil?
+            abort "Invalid task: #{task_gid}" if task_gid && task.nil?
           end
 
           def project
             @project ||= begin
               warn 'Fetching project...'
               api.get("projects/#{project_gid}", opt_fields: 'name,permalink_url')
+                         rescue Abt::HttpError::NotFoundError
+                           nil
             end
           end
 
@@ -55,6 +51,8 @@ module Abt
             @task ||= begin
               warn 'Fetching task...'
               api.get("tasks/#{task_gid}", opt_fields: 'name,permalink_url')
+                      rescue Abt::HttpError::NotFoundError
+                        nil
             end
           end
         end
