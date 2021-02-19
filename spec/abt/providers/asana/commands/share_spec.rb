@@ -31,7 +31,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Share, :asana) do
   end
 
   context 'when no path current specified path' do
-    it 'prints the current/specified ARI' do
+    it 'aborts with correct error message' do
       argv = %w[share asana]
       cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
 
