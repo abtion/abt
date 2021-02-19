@@ -17,8 +17,8 @@ module Abt
             require_board!
 
             if path != config.path && config.local_available?
-              warn 'Updating configuration'
               update_configuration
+              warn 'Configuration updated'
             end
 
             print_configuration

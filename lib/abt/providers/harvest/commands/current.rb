@@ -20,8 +20,8 @@ module Abt
             ensure_valid_configuration!
 
             if path != config.path
-              warn 'Updating configuration'
               config.path = path
+              warn 'Configuration updated'
             end
 
             print_configuration

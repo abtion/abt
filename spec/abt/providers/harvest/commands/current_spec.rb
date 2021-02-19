@@ -79,7 +79,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Init, :harvest) do
         cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
         cli.perform
 
-        expect(err_output.string).to include 'Updating configuration'
+        expect(err_output.string).to include 'Configuration updated'
         expect(local_git['path']).to eq('27701618/14628589')
       end
     end

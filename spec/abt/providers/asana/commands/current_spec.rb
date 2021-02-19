@@ -81,7 +81,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Init, :asana) do
         cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
         cli.perform
 
-        expect(err_output.string).to include 'Updating configuration'
+        expect(err_output.string).to include 'Configuration updated'
         expect(local_git['path']).to eq('11111/22222')
       end
     end
