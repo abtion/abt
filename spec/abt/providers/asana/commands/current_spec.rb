@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe(Abt::Providers::Asana::Commands::Init, :asana) do
+RSpec.describe(Abt::Providers::Asana::Commands::Current, :asana) do
   context 'when local config is available' do
     let(:asana_credentials) { { 'accessToken' => 'access_token' } }
     let(:local_git) { GitConfigMock.new }
