@@ -37,7 +37,7 @@ module Abt
           private
 
           def project
-            @project ||= api.get("projects/#{project_gid}")
+            @project ||= api.get("projects/#{project_gid}", opt_fields: 'name')
           end
 
           def select_task
@@ -72,8 +72,6 @@ module Abt
             @sections ||= begin
               warn 'Fetching sections...'
               api.get_paged("projects/#{project_gid}/sections", opt_fields: 'name')
-                          rescue Abt::HttpError::HttpError
-                            []
             end
           end
         end
