@@ -22,7 +22,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Pick, :harvest) do
                                    ])
     end
 
-    it 'prompts for a project and stores it in the configuration' do
+    it 'prompts for a task and stores it in the configuration' do
       local_git['path'] = '27701618'
 
       input = QueueIO.new
