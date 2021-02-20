@@ -70,7 +70,7 @@ module Abt
         end
 
         def url_for_board(board)
-          "#{base_url}/_boards/board/#{URI.escape(board['name'])}"
+          "#{base_url}/_boards/board/#{rfc_3986_encode_path_segment(board['name'])}"
         end
 
         def connection
@@ -82,6 +82,14 @@ module Abt
         end
 
         private
+
+        # Shamelessly copied from ERB::Util.url_encode
+        # https://apidock.com/ruby/ERB/Util/url_encode
+        def rfc_3986_encode_path_segment(string)
+          string.to_s.b.gsub(/[^a-zA-Z0-9_\-.~]/) do |match|
+            format('%%%02X', match.unpack1('C')) # rubocop:disable Style/FormatStringToken
+          end
+        end
 
         def handle_denied_by_conditional_access_policy!(exception)
           raise exception unless exception.message.include?(CONDITIONAL_ACCESS_POLICY_ERROR_CODE)

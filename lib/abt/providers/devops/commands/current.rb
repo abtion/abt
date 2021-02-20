@@ -14,10 +14,13 @@ module Abt
           end
 
           def perform
+            abort 'Must be run inside a git repository' unless config.local_available?
+
             require_board!
+            ensure_valid_configuration!
 
             if path != config.path && config.local_available?
-              update_configuration
+              config.path = path
               warn 'Configuration updated'
             end
 
@@ -34,20 +37,11 @@ module Abt
             end
           end
 
-          def update_configuration
-            ensure_board_is_valid!
-            ensure_work_item_is_valid! if work_item_id
-            config.path = path
-          end
-
-          def ensure_board_is_valid!
+          def ensure_valid_configuration!
             if board.nil?
               abort 'Board could not be found, ensure that settings for organization, project, and board are correct'
             end
-          end
-
-          def ensure_work_item_is_valid!
-            abort "No such work item: ##{work_item_id}" if work_item.nil?
+            abort "No such work item: ##{work_item_id}" if work_item_id && work_item.nil?
           end
 
           def board

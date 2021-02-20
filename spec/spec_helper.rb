@@ -16,6 +16,7 @@ Thread.abort_on_exception = true
 
 RSpec.configure do |config|
   config.include CommandHelpers
+  config.include DevopsHelpers, :devops
   config.include AsanaHelpers, :asana
   config.include HarvestHelpers, :harvest
 
