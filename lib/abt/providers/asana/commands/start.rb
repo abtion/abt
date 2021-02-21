@@ -24,10 +24,9 @@ module Abt
 
             print_task(project_gid, task)
 
-            maybe_override_current_task
-
             update_assignee_if_needed
             move_if_needed
+            maybe_override_current_task
           end
 
           private
@@ -85,7 +84,7 @@ module Abt
           end
 
           def wip_section
-            @wip_section ||= api.get("sections/#{config.wip_section_gid}")
+            @wip_section ||= api.get("sections/#{config.wip_section_gid}", opt_fields: 'name')
           end
 
           def move_task
