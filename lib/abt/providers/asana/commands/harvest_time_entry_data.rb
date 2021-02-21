@@ -36,11 +36,16 @@ module Abt
 
             return if task['memberships'].any? { |m| m.dig('project', 'gid') == project_gid }
 
-            abort "Invalid project gid: #{project_gid}"
+            abort "Invalid or unmatching project gid: #{project_gid}"
           end
 
           def task
-            @task ||= api.get("tasks/#{task_gid}", opt_fields: 'name,permalink_url,memberships.project')
+            @task ||= begin
+              warn 'Fetching task...'
+              api.get("tasks/#{task_gid}", opt_fields: 'name,permalink_url,memberships.project')
+                      rescue Abt::HttpError::NotFoundError
+                        nil
+            end
           end
         end
       end
