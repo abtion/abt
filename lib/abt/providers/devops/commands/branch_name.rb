@@ -19,8 +19,12 @@ module Abt
             puts name
           rescue HttpError::NotFoundError
             args = [organization_name, project_name, board_id, work_item_id].compact
-            warn 'Unable to find work item for configuration:'
-            abort "devops:#{args.join('/')}"
+
+            error_message = [
+              'Unable to find work item for configuration:',
+              "devops:#{args.join('/')}"
+            ].join("\n")
+            abort error_message
           end
 
           private
