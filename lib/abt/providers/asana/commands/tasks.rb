@@ -25,14 +25,15 @@ module Abt
 
           def project
             @project ||= begin
-              api.get("projects/#{project_gid}")
+              api.get("projects/#{project_gid}", opt_fields: 'name')
             end
           end
 
           def tasks
             @tasks ||= begin
               warn 'Fetching tasks...'
-              api.get_paged('tasks', project: project['gid'], opt_fields: 'name')
+              tasks = api.get_paged('tasks', project: project['gid'], opt_fields: 'name,completed')
+              tasks.filter { |task| !task['completed'] }
             end
           end
         end
