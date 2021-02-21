@@ -26,6 +26,14 @@ module Abt
             }
 
             puts Oj.dump(body, mode: :json)
+          rescue HttpError::NotFoundError
+            args = [organization_name, project_name, board_id, work_item_id].compact
+
+            error_message = [
+              'Unable to find work item for configuration:',
+              "devops:#{args.join('/')}"
+            ].join("\n")
+            abort error_message
           end
 
           private
