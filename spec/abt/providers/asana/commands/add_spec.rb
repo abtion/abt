@@ -69,44 +69,46 @@ RSpec.describe(Abt::Providers::Asana::Commands::Add, :asana) do
     thr.join
   end
 
-  it 'when the user doesn\'t move the task to a section' do
-    stub_asana_request(global_git, :post, 'tasks')
-      .with(body: { data: { name: 'A task', notes: 'Notes', projects: ['11111'] } })
-      .to_return(body: Oj.dump({ data: { gid: '44444', name: 'A task' } }, mode: :json))
+  context 'when the user doesn\'t move the task to a section' do
+    it 'does not move the task' do
+      stub_asana_request(global_git, :post, 'tasks')
+        .with(body: { data: { name: 'A task', notes: 'Notes', projects: ['11111'] } })
+        .to_return(body: Oj.dump({ data: { gid: '44444', name: 'A task' } }, mode: :json))
 
-    input = QueueIO.new
-    err_output = QueueIO.new
-    output = QueueIO.new
-    argv = %w[add asana:11111]
+      input = QueueIO.new
+      err_output = QueueIO.new
+      output = QueueIO.new
+      argv = %w[add asana:11111]
 
-    thr = Thread.new do
-      cli = Abt::Cli.new(argv: argv, input: input, err_output: err_output, output: output)
-      allow(cli.prompt).to receive(:read_user_input) { input.gets.strip }
+      thr = Thread.new do
+        cli = Abt::Cli.new(argv: argv, input: input, err_output: err_output, output: output)
+        allow(cli.prompt).to receive(:read_user_input) { input.gets.strip }
 
-      cli.perform
+        cli.perform
+      end
+
+      expect(err_output.gets).to eq("===== ADD asana:11111 =====\n")
+      expect(err_output.gets).to eq('Enter task description: ')
+
+      input.puts('A task')
+
+      expect(err_output.gets).to eq('Enter task notes: ')
+
+      input.puts('Notes')
+
+      expect(err_output.gets).to eq("Task created\n")
+      expect(err_output.gets).to eq("Fetching sections...\n")
+      expect(err_output.gets).to eq("Add to section?:\n")
+      expect(err_output.gets).to eq("(1) Section A\n")
+      expect(err_output.gets).to eq("(2) Section B\n")
+      expect(err_output.gets).to eq('(1-2, q: Don\'t add to section): ')
+
+      input.puts('q')
+
+      expect(output.gets).to eq("asana:11111/44444 # A task\n")
+
+      thr.join
     end
-
-    expect(err_output.gets).to eq("===== ADD asana:11111 =====\n")
-    expect(err_output.gets).to eq('Enter task description: ')
-
-    input.puts('A task')
-
-    expect(err_output.gets).to eq('Enter task notes: ')
-
-    input.puts('Notes')
-
-    expect(err_output.gets).to eq("Task created\n")
-    expect(err_output.gets).to eq("Fetching sections...\n")
-    expect(err_output.gets).to eq("Add to section?:\n")
-    expect(err_output.gets).to eq("(1) Section A\n")
-    expect(err_output.gets).to eq("(2) Section B\n")
-    expect(err_output.gets).to eq('(1-2, q: Don\'t add to section): ')
-
-    input.puts('q')
-
-    expect(output.gets).to eq("asana:11111/44444 # A task\n")
-
-    thr.join
   end
 
   context 'when no path current/specified project' do
