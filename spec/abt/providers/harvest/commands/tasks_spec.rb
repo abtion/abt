@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe(Abt::Providers::Harvest::Commands::Projects, :harvest) do
+RSpec.describe(Abt::Providers::Harvest::Commands::Tasks, :harvest) do
   let(:harvest_credentials) { { 'accessToken' => 'access_token', 'accountId' => 'account_id' } }
   let(:global_git) { GitConfigMock.new(data: harvest_credentials) }
   let(:local_git) { GitConfigMock.new }
@@ -24,7 +24,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Projects, :harvest) do
                                    ])
     end
 
-    it 'prints all projects' do
+    it 'prints all tasks for the project' do
       err_output = StringIO.new
       output = StringIO.new
       argv = ['tasks', 'harvest:27701618']
@@ -47,7 +47,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Projects, :harvest) do
   end
 
   context 'when no project specified' do
-    it 'aborts with "Must be run inside a git repository"' do
+    it 'aborts with correct message' do
       cli = Abt::Cli.new(argv: %w[tasks harvest], output: null_stream)
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, 'No current/specified project. Did you initialize Harvest?')
