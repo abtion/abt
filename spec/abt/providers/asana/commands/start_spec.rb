@@ -7,45 +7,64 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
       'workspaceGid' => 'workspace_gid'
     }
   end
-  let(:local_git) { GitConfigMock.new(data: { 'wipSectionGid' => '33333' }) }
+  let(:local_git) { GitConfigMock.new(data: { 'wipSectionGid' => wip_section_id }) }
   let(:global_git) { GitConfigMock.new(data: asana_credentials) }
+
+  let(:user_id) { '1001' }
+  let(:project_id) { '1002' }
+  let(:wip_section_id) { '1003' }
+  let(:task_id) { '1004' }
+
+  let(:stub_user_request) do
+    stub_asana_request(global_git, :get, 'users/me')
+      .with(query: { opt_fields: 'name' })
+      .to_return(body: Oj.dump({ data: { gid: user_id, name: 'Name of user' } }, mode: :json))
+  end
+  let(:stub_project_request) do
+    stub_asana_request(global_git, :get, "projects/#{project_id}")
+      .with(query: { opt_fields: 'name' })
+      .to_return(body: Oj.dump({ data: { gid: project_id, name: 'Project' } }, mode: :json))
+  end
+  let(:stub_task_request) do
+    stub_asana_request(global_git, :get, "tasks/#{task_id}")
+      .with(query: { opt_fields: 'name,memberships.section.name,assignee.name,permalink_url' })
+      .to_return(body: Oj.dump({ data: { gid: task_id,
+                                         name: 'Started task',
+                                         assignee: nil,
+                                         memberships: [],
+                                         permalink_url: "https://ta.sk/#{task_id}/URL" } },
+                               mode: :json))
+  end
+  let(:stub_wip_section_request) do
+    stub_asana_request(global_git, :get, "sections/#{wip_section_id}")
+      .with(query: { opt_fields: 'name' })
+      .to_return(body: Oj.dump({ data: { gid: wip_section_id, name: 'WIP' } }, mode: :json))
+  end
+  let(:stub_add_to_wip_section_request) do
+    stub_asana_request(global_git, :post, "sections/#{wip_section_id}/addTask")
+      .with(body: { data: { task: task_id } })
+      .to_return(body: Oj.dump({ data: {} }, mode: :json))
+  end
+  let(:stub_reassign_request) do
+    stub_asana_request(global_git, :put, "tasks/#{task_id}")
+      .with(body: { data: { assignee: user_id } })
+      .to_return(body: Oj.dump({ data: {} }, mode: :json))
+  end
 
   before do
     allow(Abt::GitConfig).to receive(:new).with('local', 'abt.asana').and_return(local_git)
     allow(Abt::GitConfig).to receive(:new).with('global', 'abt.asana').and_return(global_git)
-
-    stub_asana_request(global_git, :get, 'users/me')
-      .with(query: { opt_fields: 'name' })
-      .to_return(body: Oj.dump({ data: { gid: '88888', name: 'Name of user' } }, mode: :json))
-
-    stub_asana_request(global_git, :get, 'projects/11111')
-      .with(query: { opt_fields: 'name' })
-      .to_return(body: Oj.dump({ data: { gid: '11111', name: 'Project' } }, mode: :json))
-
-    stub_asana_request(global_git, :get, 'sections/33333')
-      .with(query: { opt_fields: 'name' })
-      .to_return(body: Oj.dump({ data: { gid: '33333', name: 'WIP' } }, mode: :json))
-
-    stub_asana_request(global_git, :post, 'sections/33333/addTask')
-      .with(body: { data: { task: '44444' } })
-      .to_return(body: Oj.dump({ data: {} }, mode: :json))
-
-    stub_asana_request(global_git, :put, 'tasks/44444')
-      .with(body: { data: { assignee: '88888' } })
-      .to_return(body: Oj.dump({ data: {} }, mode: :json))
   end
 
   it 'assigns the current user to the current task and moves the task to the wip-section' do
-    stub_asana_request(global_git, :get, 'tasks/44444')
-      .with(query: { opt_fields: 'name,memberships.section.name,assignee.name,permalink_url' })
-      .to_return(body: Oj.dump({ data: { gid: '44444',
-                                         name: 'Started task',
-                                         assignee: nil,
-                                         memberships: [{ section: { gid: '22222' } }],
-                                         permalink_url: 'https://ta.sk/44444/URL' } },
-                               mode: :json))
+    stub_user_request
+    stub_project_request
+    stub_task_request
+    stub_wip_section_request
+    stub_add_to_wip_section_request
+    stub_reassign_request
 
-    local_git['path'] = '11111/44444'
+    local_git['path'] = "#{project_id}/#{task_id}"
     err_output = StringIO.new
     output = StringIO.new
     argv = %w[start asana]
@@ -57,28 +76,34 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
 
     expect(err_output.string).to eq <<~TXT
       ===== START asana =====
-      https://ta.sk/44444/URL
+      https://ta.sk/#{task_id}/URL
       Assigning task to user: Name of user
       Moving task to section: WIP
     TXT
 
     expect(output.string).to eq <<~TXT
-      asana:11111/44444 # Started task
+      asana:#{project_id}/#{task_id} # Started task
     TXT
   end
 
   context 'when the task is already in the WIP section' do
     it 'does not move the task' do
-      stub_asana_request(global_git, :get, 'tasks/44444')
+      stub_user_request
+      stub_project_request
+      stub_wip_section_request
+      stub_reassign_request
+
+      stub_asana_request(global_git, :get, "tasks/#{task_id}")
         .with(query: { opt_fields: 'name,memberships.section.name,assignee.name,permalink_url' })
-        .to_return(body: Oj.dump({ data: { gid: '44444',
+        .to_return(body: Oj.dump({ data: { gid: task_id,
                                            name: 'Started task',
                                            assignee: nil,
-                                           memberships: [{ section: { gid: '33333', name: 'WIP' } }],
-                                           permalink_url: 'https://ta.sk/44444/URL' } },
+                                           memberships: [{ section: { gid: wip_section_id,
+                                                                      name: 'WIP' } }],
+                                           permalink_url: "https://ta.sk/#{task_id}/URL" } },
                                  mode: :json))
 
-      local_git['path'] = '11111/44444'
+      local_git['path'] = "#{project_id}/#{task_id}"
       err_output = StringIO.new
       output = StringIO.new
       argv = %w[start asana]
@@ -90,29 +115,34 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
 
       expect(err_output.string).to eq <<~TXT
         ===== START asana =====
-        https://ta.sk/44444/URL
+        https://ta.sk/#{task_id}/URL
         Assigning task to user: Name of user
         Task already in section: WIP
       TXT
 
       expect(output.string).to eq <<~TXT
-        asana:11111/44444 # Started task
+        asana:#{project_id}/#{task_id} # Started task
       TXT
     end
   end
 
   context 'when the task is already assigned to the current user' do
     it 'does not reassign the task' do
-      stub_asana_request(global_git, :get, 'tasks/44444')
+      stub_user_request
+      stub_project_request
+      stub_wip_section_request
+      stub_add_to_wip_section_request
+
+      stub_asana_request(global_git, :get, "tasks/#{task_id}")
         .with(query: { opt_fields: 'name,memberships.section.name,assignee.name,permalink_url' })
-        .to_return(body: Oj.dump({ data: { gid: '44444',
+        .to_return(body: Oj.dump({ data: { gid: task_id,
                                            name: 'Started task',
-                                           assignee: { gid: '88888' },
-                                           memberships: [{ section: { gid: '22222' } }],
-                                           permalink_url: 'https://ta.sk/44444/URL' } },
+                                           assignee: { gid: user_id },
+                                           memberships: [],
+                                           permalink_url: "https://ta.sk/#{task_id}/URL" } },
                                  mode: :json))
 
-      local_git['path'] = '11111/44444'
+      local_git['path'] = "#{project_id}/#{task_id}"
       err_output = StringIO.new
       output = StringIO.new
       argv = %w[start asana]
@@ -124,41 +154,35 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
 
       expect(err_output.string).to eq <<~TXT
         ===== START asana =====
-        https://ta.sk/44444/URL
+        https://ta.sk/#{task_id}/URL
         You are already assigned to this task
         Moving task to section: WIP
       TXT
 
       expect(output.string).to eq <<~TXT
-        asana:11111/44444 # Started task
+        asana:#{project_id}/#{task_id} # Started task
       TXT
     end
   end
 
   context 'when the task is assigned to another user' do
     it 'lets the user decide whether or not to reassign it' do
-      stub_asana_request(global_git, :get, 'tasks/44444')
+      stub_user_request
+      stub_project_request
+      stub_wip_section_request
+      stub_add_to_wip_section_request
+      stub_reassign_request
+
+      stub_asana_request(global_git, :get, "tasks/#{task_id}")
         .with(query: { opt_fields: 'name,memberships.section.name,assignee.name,permalink_url' })
-        .to_return(body: Oj.dump({ data: { gid: '44444',
+        .to_return(body: Oj.dump({ data: { gid: task_id,
                                            name: 'Started task',
-                                           assignee: { gid: '12121', name: 'Another assigned user' },
-                                           memberships: [{ section: { gid: '22222' } }],
-                                           permalink_url: 'https://ta.sk/44444/URL' } },
+                                           assignee: { gid: '4234', name: 'Another assigned user' },
+                                           memberships: [],
+                                           permalink_url: "https://ta.sk/#{task_id}/URL" } },
                                  mode: :json))
 
-      stub_asana_request(global_git, :post, 'sections/33333/addTask')
-        .with(body: { data: { task: '44444' } })
-        .to_return(body: Oj.dump({ data: {} }, mode: :json))
-
-      stub_asana_request(global_git, :put, 'tasks/44444')
-        .with(body: { data: { assignee: '88888' } })
-        .to_return(body: Oj.dump({ data: {} }, mode: :json))
-
-      stub_asana_request(global_git, :post, 'tasks')
-        .with(body: { data: { name: 'A task', notes: 'Notes', projects: ['11111'] } })
-        .to_return(body: Oj.dump({ data: { gid: '44444', name: 'A task' } }, mode: :json))
-
-      local_git['path'] = '11111/44444'
+      local_git['path'] = "#{project_id}/#{task_id}"
 
       input = QueueIO.new
       err_output = QueueIO.new
@@ -173,7 +197,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
       end
 
       expect(err_output.gets).to eq("===== START asana =====\n")
-      expect(err_output.gets).to eq("https://ta.sk/44444/URL\n")
+      expect(err_output.gets).to eq("https://ta.sk/#{task_id}/URL\n")
       expect(err_output.gets).to eq("Task is assigned to: Another assigned user, take over?\n")
       expect(err_output.gets).to eq('(y / n): ')
 
@@ -181,7 +205,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
 
       expect(err_output.gets).to eq("Reassigning task to user: Name of user\n")
       expect(err_output.gets).to eq("Moving task to section: WIP\n")
-      expect(output.gets).to eq("asana:11111/44444 # Started task\n")
+      expect(output.gets).to eq("asana:#{project_id}/#{task_id} # Started task\n")
 
       thr.join
     end
@@ -189,19 +213,18 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
 
   context 'when using --set flag' do
     it 'overrides the current task' do
-      stub_asana_request(global_git, :get, 'tasks/44444')
-        .with(query: { opt_fields: 'name,memberships.section.name,assignee.name,permalink_url' })
-        .to_return(body: Oj.dump({ data: { gid: '44444',
-                                           name: 'Started task',
-                                           assignee: nil,
-                                           memberships: [{ section: { gid: '22222' } }],
-                                           permalink_url: 'https://ta.sk/44444/URL' } },
-                                 mode: :json))
+      stub_user_request
+      stub_project_request
+      stub_task_request
+      stub_wip_section_request
+      stub_add_to_wip_section_request
+      stub_reassign_request
 
-      local_git['path'] = '11111/10101'
+      other_task_id = '32432432432'
+      local_git['path'] = "#{project_id}/#{other_task_id}"
       err_output = StringIO.new
       output = StringIO.new
-      argv = %w[start asana:11111/44444 -s]
+      argv = ['start', "asana:#{project_id}/#{task_id}", '-s']
 
       allow(output).to receive(:isatty).and_return(true)
 
@@ -209,36 +232,41 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
       cli.perform
 
       expect(err_output.string).to eq <<~TXT
-        ===== START asana:11111/44444 -s =====
-        https://ta.sk/44444/URL
+        ===== START asana:#{project_id}/#{task_id} -s =====
+        https://ta.sk/#{task_id}/URL
         Assigning task to user: Name of user
         Moving task to section: WIP
         Current task updated
       TXT
 
       expect(output.string).to eq <<~TXT
-        asana:11111/44444 # Started task
+        asana:#{project_id}/#{task_id} # Started task
       TXT
 
-      expect(local_git['path']).to eq('11111/44444')
+      expect(local_git['path']).to eq("#{project_id}/#{task_id}")
     end
   end
 
   context 'task is outside of current project' do
     it 'does not move the task - since the WIP section is stored per git repo' do
-      stub_asana_request(global_git, :get, 'tasks/44444')
+      stub_user_request
+      stub_project_request
+      stub_reassign_request
+
+      stub_asana_request(global_git, :get, "tasks/#{task_id}")
         .with(query: { opt_fields: 'name,memberships.section.name,assignee.name,permalink_url' })
-        .to_return(body: Oj.dump({ data: { gid: '44444',
-                                           name: 'Started task',
+        .to_return(body: Oj.dump({ data: { gid: task_id,
+                                           name: 'Task outside of current project',
                                            assignee: nil,
-                                           memberships: [{ section: { gid: '22222' } }],
-                                           permalink_url: 'https://ta.sk/44444/URL' } },
+                                           memberships: [],
+                                           permalink_url: "https://ta.sk/#{task_id}/URL" } },
                                  mode: :json))
 
-      local_git['path'] = '20202'
+      other_project_id = '32432432432'
+      local_git['path'] = other_project_id
       err_output = StringIO.new
       output = StringIO.new
-      argv = %w[start asana:11111/44444]
+      argv = ['start', "asana:#{project_id}/#{task_id}"]
 
       allow(output).to receive(:isatty).and_return(true)
 
@@ -246,14 +274,14 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
       cli.perform
 
       expect(err_output.string).to eq <<~TXT
-        ===== START asana:11111/44444 =====
-        https://ta.sk/44444/URL
+        ===== START asana:#{project_id}/#{task_id} =====
+        https://ta.sk/#{task_id}/URL
         Assigning task to user: Name of user
         Task was not moved, this is not implemented for tasks outside current project
       TXT
 
       expect(output.string).to eq <<~TXT
-        asana:11111/44444 # Started task
+        asana:#{project_id}/#{task_id} # Task outside of current project
       TXT
     end
   end
@@ -264,7 +292,8 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
       cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to(
-        raise_error(Abt::Cli::Abort, 'No current/specified project. Did you initialize Asana and pick a task?')
+        raise_error(Abt::Cli::Abort,
+                    'No current/specified project. Did you initialize Asana and pick a task?')
       )
     end
   end
