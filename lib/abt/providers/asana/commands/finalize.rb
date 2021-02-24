@@ -14,7 +14,7 @@ module Abt
           end
 
           def perform
-            unless config.local_available?
+            unless project_gid == config.path.project_gid
               abort 'This is a no-op for tasks outside the current project'
             end
             require_task!
@@ -57,11 +57,7 @@ module Abt
 
           def task
             @task ||= begin
-              if task_gid.nil?
-                nil
-              else
-                api.get("tasks/#{task_gid}", opt_fields: 'name,memberships.section.name,permalink_url')
-              end
+              api.get("tasks/#{task_gid}", opt_fields: 'name,memberships.section.name,permalink_url')
             end
           end
         end
