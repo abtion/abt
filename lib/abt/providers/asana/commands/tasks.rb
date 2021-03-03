@@ -33,7 +33,7 @@ module Abt
             @tasks ||= begin
               warn 'Fetching tasks...'
               tasks = api.get_paged('tasks', project: project['gid'], opt_fields: 'name,completed')
-              tasks.filter { |task| !task['completed'] }
+              tasks.select { |task| !task['completed'] }
             end
           end
         end
