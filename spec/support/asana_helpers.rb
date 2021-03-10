@@ -17,9 +17,8 @@ module AsanaHelpers
       next_path = "projects?offset=#{index}"
       response_data["next_page"] = { "path" => "/#{next_path}" } if index != projects.length - 1
 
-      stub_asana_request(git_config, :get, path)
-        .with(query: used_query)
-        .to_return(body: Oj.dump(response_data, mode: :json))
+      stub_asana_request(git_config, :get, path).with(query: used_query)
+                                                .to_return(body: Oj.dump(response_data, mode: :json))
 
       path = next_path
     end

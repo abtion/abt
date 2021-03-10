@@ -48,9 +48,9 @@ module Abt
         @providers ||= begin
           providers = {}
 
-          global_command_names = Abt::Cli.global_command_names
+          global_command_names = Abt::Cli::GlobalCommands.command_names
           providers["Global"] = global_command_names.each_with_object({}) do |name, definition|
-            command_class = Abt::Cli.global_command_class(name)
+            command_class = Abt::Cli::GlobalCommands.command_class(name)
             full_name = "abt #{name}"
 
             if command_class.respond_to?(:usage) && command_class.respond_to?(:description)

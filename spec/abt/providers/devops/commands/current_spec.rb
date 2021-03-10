@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe(Abt::Providers::Devops::Commands::Init, :devops) do
+RSpec.describe(Abt::Providers::Devops::Commands::Current, :devops) do
   context "when local config is available" do
     let(:devops_credentials) do
       { "organizations.org-name.username" => "username",

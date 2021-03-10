@@ -12,7 +12,7 @@ RSpec.describe Abt do
 
   describe ".scheme_provider(name)" do
     it "returns the provider module for the specified command name" do
-      scheme_provider = Module.new {}
+      scheme_provider = Module.new
 
       allow(Abt::Providers).to receive(:const_defined?).with("ModuleName").and_return(true)
       allow(Abt::Providers).to receive(:const_get).with("ModuleName").and_return(scheme_provider)

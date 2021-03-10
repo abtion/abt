@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Dir.glob("#{File.expand_path(__dir__)}/cli/**/*.rb").sort.each do |file|
+Dir.glob("#{File.expand_path(__dir__)}/cli/*.rb").sort.each do |file|
   require file
 end
 
@@ -9,20 +9,6 @@ module Abt
     class Abort < StandardError; end
 
     class Exit < StandardError; end
-
-    def self.global_command_names
-      GlobalCommands.constants.sort.map { |constant_name| Helpers.const_to_command(constant_name) }
-    end
-
-    def self.global_command_class(name)
-      name = "help" if [nil, "-h", "--help"].include?(name)
-      name = "version" if ["-v", "--version"].include?(name)
-
-      const_name = Helpers.command_to_const(name)
-      return unless GlobalCommands.const_defined?(const_name)
-
-      GlobalCommands.const_get(const_name)
-    end
 
     attr_reader :command, :aris, :input, :output, :err_output, :prompt
 
@@ -84,7 +70,7 @@ module Abt
     end
 
     def process_global_command
-      command_class = self.class.global_command_class(command)
+      command_class = GlobalCommands.command_class(command)
 
       abort("No such global command: #{command}, perhaps you forgot to add an ARI?") if command_class.nil?
 
@@ -105,9 +91,7 @@ module Abt
         abort("No input from pipe") if input_string.nil? || input_string.empty?
 
         # Exclude comment part of piped input lines
-        lines_without_comments = input_string.lines.map do |line|
-          line.split(" # ").first
-        end
+        lines_without_comments = input_string.lines.map { |line| line.split(" # ").first }
 
         # Allow multiple ARIs on a single piped input line
         # TODO: Force the user to pick a single ARI
@@ -125,22 +109,26 @@ module Abt
           next
         end
 
-        command_class = get_command_class(ari.scheme)
-        next if command_class.nil?
-
-        print_command(command, ari) if output.isatty
-        begin
-          command_class.new(ari: ari, cli: self).perform
-        rescue Exit => e
-          puts e.message
-        end
-
-        used_schemes << ari.scheme
+        used_schemes << ari.scheme if process_ari(ari)
       end
 
       return unless used_schemes.empty? && output.isatty
 
       abort("No providers found for command and ARI(s)")
+    end
+
+    def process_ari(ari)
+      command_class = get_command_class(ari.scheme)
+      return false if command_class.nil?
+
+      print_command(command, ari) if output.isatty
+      begin
+        command_class.new(ari: ari, cli: self).perform
+      rescue Exit => e
+        puts e.message
+      end
+
+      true
     end
 
     def get_command_class(scheme)

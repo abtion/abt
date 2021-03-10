@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe(Abt::Providers::Harvest::Commands::Share, :harvest) do
+RSpec.describe(Abt::Providers::Harvest::Commands::Clear, :harvest) do
   let(:local_git) { GitConfigMock.new }
   let(:global_git) { GitConfigMock.new }
 
