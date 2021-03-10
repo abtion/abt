@@ -9,6 +9,7 @@ Gem::Specification.new do |spec|
   spec.version = Abt::VERSION
   spec.authors = ["Jesper Sørensen"]
   spec.email = ["js@abtion.com"]
+  spec.required_ruby_version = ">= 2.5.0"
 
   spec.summary = "Versatile scripts"
   spec.homepage = "https://github.com/abtion/abt"
