@@ -52,7 +52,7 @@ module Abt
           Usage: #{self.class.usage}
         TXT
 
-        opts.on('-h', '--help')
+        opts.on('-h', '--help', 'Display this help')
 
         self.class.flags.each do |(*flag)|
           opts.on(*flag)
