@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative '../lib/abt.rb'
+require_relative "../lib/abt"
 
 begin
   Abt::Cli.new.perform
 rescue Abt::Cli::Abort => e
-  abort e.message
+  abort(e.message)
 rescue Interrupt
-  abort 'Aborted'
+  abort("Aborted")
 end

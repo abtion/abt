@@ -65,7 +65,7 @@ module Abt
 
             # The below filtering is the best we can do with Asanas api, see this:
             # https://forum.asana.com/t/tasks-query-completed-since-is-broken-for-sections/21461
-            tasks.select { |task| !task["completed"] }
+            tasks.reject { |task| task["completed"] }
           end
 
           def sections

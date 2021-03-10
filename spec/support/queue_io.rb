@@ -2,7 +2,7 @@
 
 class QueueIO < Queue
   def history
-    @history ||= String.new
+    @history ||= +""
   end
 
   def puts(str)

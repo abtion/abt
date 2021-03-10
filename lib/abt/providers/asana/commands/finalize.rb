@@ -14,9 +14,7 @@ module Abt
           end
 
           def perform
-            unless project_gid == config.path.project_gid
-              abort("This is a no-op for tasks outside the current project")
-            end
+            abort("This is a no-op for tasks outside the current project") unless project_gid == config.path.project_gid
             require_task!
             print_task(project_gid, task)
 

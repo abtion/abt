@@ -26,7 +26,7 @@ module Abt
 
     attr_reader :command, :aris, :input, :output, :err_output, :prompt
 
-    def initialize(argv: ARGV, input: STDIN, output: STDOUT, err_output: STDERR)
+    def initialize(argv: ARGV, input: $stdin, output: $stdout, err_output: $stderr)
       (@command, *remaining_args) = argv
       @input = input
       @output = output
@@ -86,9 +86,7 @@ module Abt
     def process_global_command
       command_class = self.class.global_command_class(command)
 
-      if command_class.nil?
-        abort("No such global command: #{command}, perhaps you forgot to add an ARI?")
-      end
+      abort("No such global command: #{command}, perhaps you forgot to add an ARI?") if command_class.nil?
 
       begin
         ari = aris.first || Abt::Ari.new

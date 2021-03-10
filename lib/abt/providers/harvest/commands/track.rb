@@ -45,9 +45,7 @@ module Abt
 
             result = api.post("time_entries", Oj.dump(body, mode: :json))
 
-            if flags.key?(:time) && flags[:running]
-              api.patch("time_entries/#{result['id']}/restart")
-            end
+            api.patch("time_entries/#{result['id']}/restart") if flags.key?(:time) && flags[:running]
 
             result
           end

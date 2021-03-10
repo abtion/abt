@@ -9,9 +9,7 @@ module Abt
     def initialize(scope = "local", namespace = "")
       @namespace = namespace
 
-      unless %w[local global].include?(scope)
-        raise ArgumentError, 'scope must be "local" or "global"'
-      end
+      raise ArgumentError, 'scope must be "local" or "global"' unless %w[local global].include?(scope)
 
       @scope = scope
     end

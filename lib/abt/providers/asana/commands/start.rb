@@ -42,7 +42,7 @@ module Abt
           end
 
           def update_assignee_if_needed
-            current_assignee = task.dig("assignee")
+            current_assignee = task["assignee"]
 
             if current_assignee.nil?
               warn("Assigning task to user: #{current_user['name']}")

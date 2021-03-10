@@ -25,9 +25,7 @@ module Abt
         end
 
         def require_task!
-          if project_gid.nil?
-            abort("No current/specified project. Did you initialize Asana and pick a task?")
-          end
+          abort("No current/specified project. Did you initialize Asana and pick a task?") if project_gid.nil?
           abort("No current/specified task. Did you pick an Asana task?") if task_gid.nil?
         end
 

@@ -26,9 +26,7 @@ module Abt
         end
 
         def require_task!
-          unless project_id
-            abort("No current/specified project. Did you initialize Harvest and pick a task?")
-          end
+          abort("No current/specified project. Did you initialize Harvest and pick a task?") unless project_id
 
           abort("No current/specified task. Did you pick a Harvest task?") if task_id.nil?
         end
