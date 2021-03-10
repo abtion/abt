@@ -77,6 +77,27 @@ RSpec.describe Abt::Cli do
       end
     end
 
+    describe 'share' do
+      it 'outputs local project configuration as ARIs' do
+        asana_config = GitConfigMock.new(data: { 'path' => '111/111' })
+        devops_config = GitConfigMock.new(data: {})
+        harvest_config = GitConfigMock.new(data: { 'path' => '333/333' })
+
+        allow(Abt::GitConfig).to receive(:new).with('local', 'abt.asana').and_return(asana_config)
+        allow(Abt::GitConfig).to receive(:new).with('local', 'abt.devops').and_return(devops_config)
+        allow(Abt::GitConfig).to(
+          receive(:new).with('local', 'abt.harvest').and_return(harvest_config)
+        )
+
+        output = StringIO.new
+
+        cli = Abt::Cli.new argv: ['share'], output: output, err_output: null_stream
+        cli.perform
+
+        expect(output.string).to eq("asana:111/111 harvest:333/333\n")
+      end
+    end
+
     context 'when a flag is added to a global command' do
       it 'works correctly' do
         output = StringIO.new
