@@ -14,9 +14,11 @@ module Abt
           end
 
           def perform
-            require_project!
-
-            cli.print_ari('asana', path)
+            if path != ''
+              cli.print_ari('asana', path)
+            elsif cli.output.isatty
+              warn 'No configuration for project. Did you initialize Asana?'
+            end
           end
         end
       end

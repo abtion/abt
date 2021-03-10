@@ -14,9 +14,11 @@ module Abt
           end
 
           def perform
-            require_board!
-
-            cli.print_ari('devops', path)
+            if path != ''
+              cli.print_ari('devops', path)
+            elsif cli.output.isatty
+              warn 'No configuration for project. Did you initialize DevOps?'
+            end
           end
         end
       end

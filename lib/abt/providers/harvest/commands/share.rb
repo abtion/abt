@@ -14,9 +14,11 @@ module Abt
           end
 
           def perform
-            require_project!
-
-            cli.print_ari('harvest', path)
+            if path != ''
+              cli.print_ari('harvest', path)
+            elsif cli.output.isatty
+              warn 'No configuration for project. Did you initialize Harvest?'
+            end
           end
         end
       end

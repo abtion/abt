@@ -30,12 +30,21 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Share, :harvest) do
     TXT
   end
 
-  context 'when no path current specified path' do
-    it 'prints the current/specified ARI' do
+  context 'when no current/specified path' do
+    it 'outputs a relevant warning' do
       argv = %w[share harvest]
-      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
+      output = StringIO.new
+      err_output = StringIO.new
 
-      expect { cli.perform }.to raise_error(Abt::Cli::Abort, 'No current/specified project. Did you initialize Harvest?')
+      allow(output).to receive(:isatty).and_return(true)
+
+      cli = Abt::Cli.new(argv: argv, output: output, err_output: err_output)
+
+      cli.perform
+
+      expect(err_output.string).to(
+        include('No configuration for project. Did you initialize Harvest?')
+      )
     end
   end
 end
