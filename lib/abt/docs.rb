@@ -45,8 +45,24 @@ module Abt
       end
 
       def providers
-        @providers ||= Abt.schemes.sort.each_with_object({}) do |scheme, definition|
-          definition[scheme] = command_definitions(scheme)
+        @providers ||= begin
+          providers = {}
+
+          global_command_names = Abt::Cli.global_command_names
+          providers['Global'] = global_command_names.each_with_object({}) do |name, definition|
+            command_class = Abt::Cli.global_command_class(name)
+            full_name = "abt #{name}"
+
+            if command_class.respond_to?(:usage) && command_class.respond_to?(:description)
+              definition[full_name] = [command_class.usage, command_class.description]
+            end
+          end
+
+          Abt.schemes.sort.each_with_object(providers) do |scheme, definition|
+            definition[scheme] = command_definitions(scheme)
+          end
+
+          providers
         end
       end
 

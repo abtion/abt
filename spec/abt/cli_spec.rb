@@ -2,7 +2,7 @@
 
 RSpec.describe Abt::Cli do
   context 'when no command given' do
-    it 'writes "no command specified" to err_output and help to output' do
+    it 'writes info message to err_output and help to output' do
       allow(Abt::Docs::Cli).to receive(:help).and_return('Help content')
 
       output = StringIO.new
@@ -12,7 +12,7 @@ RSpec.describe Abt::Cli do
       cli.perform
 
       expect(output.string).to eq("Help content\n")
-      expect(err_output.string).to eq("No command specified\n\n")
+      expect(err_output.string).to eq("No command specified, printing help\n\n")
     end
   end
 
@@ -76,15 +76,28 @@ RSpec.describe Abt::Cli do
         expect(output.string).to eq(Abt::Docs::Markdown.readme)
       end
     end
+
+    context 'when a flag is added to a global command' do
+      it 'works correctly' do
+        output = StringIO.new
+
+        cli = Abt::Cli.new argv: ['readme', '-h'], output: output, err_output: null_stream
+        cli.perform
+
+        expect(output.string).to include(Abt::Cli::GlobalCommands::Readme.usage)
+        expect(output.string).to include(Abt::Cli::GlobalCommands::Readme.description)
+      end
+    end
   end
 
   context 'when no ARI given' do
-    it 'aborts with "No ARIs"' do
+    it 'aborts with correct message' do
       cli = Abt::Cli.new argv: ['command']
 
       expect do
         cli.perform
-      end.to raise_error(Abt::Cli::Abort, 'No ARIs')
+      end.to raise_error(Abt::Cli::Abort,
+                         'No such global command: command, perhaps you forgot to add an ARI?')
     end
 
     context 'when no argument given through input IO' do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Dir.glob("#{File.expand_path(__dir__)}/cli/*.rb").sort.each do |file|
+Dir.glob("#{File.expand_path(__dir__)}/cli/**/*.rb").sort.each do |file|
   require file
 end
 
@@ -8,6 +8,20 @@ module Abt
   class Cli
     class Abort < StandardError; end
     class Exit < StandardError; end
+
+    def self.global_command_names
+      GlobalCommands.constants.sort.map { |constant_name| Helpers.const_to_command(constant_name) }
+    end
+
+    def self.global_command_class(name)
+      name = 'help' if [nil, '-h', '--help'].include?(name)
+      name = 'version' if ['-v', '--version'].include?(name)
+
+      const_name = Helpers.command_to_const(name)
+      return unless GlobalCommands.const_defined?(const_name)
+
+      GlobalCommands.const_get(const_name)
+    end
 
     attr_reader :command, :aris, :input, :output, :err_output, :prompt
 
@@ -21,11 +35,16 @@ module Abt
     end
 
     def perform
-      return if handle_global_commands!
+      if command.nil?
+        warn("No command specified, printing help\n\n")
+        @command = 'help'
+      end
 
-      abort('No ARIs') if aris.empty?
-
-      process_aris
+      if global_command?
+        process_global_command
+      else
+        process_aris
+      end
     end
 
     def print_ari(scheme, path, description = nil)
@@ -56,29 +75,25 @@ module Abt
 
     private
 
-    def handle_global_commands!
-      case command
-      when nil
-        warn("No command specified\n\n")
-        puts(Abt::Docs::Cli.help)
-        true
-      when '--version', '-v', 'version'
-        puts(Abt::VERSION)
-        true
-      when '--help', '-h', 'help'
-        puts(Abt::Docs::Cli.help)
-        true
-      when 'commands'
-        puts(Abt::Docs::Cli.commands)
-        true
-      when 'examples'
-        puts(Abt::Docs::Cli.examples)
-        true
-      when 'readme'
-        puts(Abt::Docs::Markdown.readme)
-        true
-      else
-        false
+    def global_command?
+      return true if aris.empty?
+      return true if aris.first.scheme.nil?
+
+      false
+    end
+
+    def process_global_command
+      command_class = self.class.global_command_class(command)
+
+      if command_class.nil?
+        abort "No such global command: #{command}, perhaps you forgot to add an ARI?"
+      end
+
+      begin
+        ari = aris.first || Abt::Ari.new
+        command_class.new(cli: self, ari: ari).perform
+      rescue Exit => e
+        puts e.message
       end
     end
 

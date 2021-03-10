@@ -4,7 +4,7 @@ module Abt
   class Ari
     attr_reader :scheme, :path, :flags
 
-    def initialize(scheme:, path: nil, flags: [])
+    def initialize(scheme: nil, path: nil, flags: [])
       @scheme = scheme
       @path = path
       @flags = flags
