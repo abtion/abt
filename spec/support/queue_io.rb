@@ -6,7 +6,7 @@ class QueueIO < Queue
   end
 
   def puts(str)
-    print "#{str}\n"
+    print("#{str}\n")
   end
 
   def print(str)

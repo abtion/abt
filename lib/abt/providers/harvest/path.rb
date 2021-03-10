@@ -7,12 +7,12 @@ module Abt
         PATH_REGEX = %r{^(?<project_id>\d+)?(/(?<task_id>\d+))?$}.freeze
 
         def self.from_ids(project_id = nil, task_id = nil)
-          path = project_id ? [project_id, *task_id].join('/') : ''
-          new path
+          path = project_id ? [project_id, *task_id].join("/") : ""
+          new(path)
         end
 
-        def initialize(path = '')
-          raise Abt::Cli::Abort, "Invalid path: #{path}" unless path =~ PATH_REGEX
+        def initialize(path = "")
+          raise Abt::Cli::Abort, "Invalid path: #{path}" unless PATH_REGEX.match?(path)
 
           super
         end

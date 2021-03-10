@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'dry-inflector'
-require 'faraday'
-require 'oj'
-require 'open3'
-require 'stringio'
-require 'optparse'
+require "dry-inflector"
+require "faraday"
+require "oj"
+require "open3"
+require "stringio"
+require "optparse"
 
 Dir.glob("#{File.dirname(File.absolute_path(__FILE__))}/abt/*.rb").sort.each do |file|
   require file

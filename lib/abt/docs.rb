@@ -9,37 +9,37 @@ module Abt
     class << self
       def basic_examples
         {
-          'Getting started:' => {
-            'abt init asana harvest' => 'Setup asana and harvest project for local git repo',
-            'abt pick harvest' => 'Pick harvest task. This will likely stay the same throughout the project',
-            'abt pick asana | abt start harvest' => 'Pick asana task and start tracking time',
-            'abt stop harvest' => 'Stop time tracker',
-            'abt start asana harvest' => 'Continue working, e.g., after a break',
-            'abt finalize asana' => 'Finalize the selected asana task'
+          "Getting started:" => {
+            "abt init asana harvest" => "Setup asana and harvest project for local git repo",
+            "abt pick harvest" => "Pick harvest task. This will likely stay the same throughout the project",
+            "abt pick asana | abt start harvest" => "Pick asana task and start tracking time",
+            "abt stop harvest" => "Stop time tracker",
+            "abt start asana harvest" => "Continue working, e.g., after a break",
+            "abt finalize asana" => "Finalize the selected asana task"
           }
         }
       end
 
       def extended_examples
         {
-          'Tracking meetings (without switching current task setting):' => {
-            'abt pick asana -d | abt track harvest' => 'Track on asana meeting task',
-            'abt pick harvest -d | abt track harvest -c "Name of meeting"' => 'Track on separate harvest-task'
+          "Tracking meetings (without switching current task setting):" => {
+            "abt pick asana -d | abt track harvest" => "Track on asana meeting task",
+            'abt pick harvest -d | abt track harvest -c "Name of meeting"' => "Track on separate harvest-task"
           },
-          'Many commands output ARIs that can be piped into other commands:' => {
-            'abt tasks asana | grep -i <name of task>' => nil,
-            'abt tasks asana | grep -i <name of task> | abt start' => nil
+          "Many commands output ARIs that can be piped into other commands:" => {
+            "abt tasks asana | grep -i <name of task>" => nil,
+            "abt tasks asana | grep -i <name of task> | abt start" => nil
           },
-          'Sharing ARIs:' => {
-            'abt share asana harvest | tr "\n" " "' => 'Print current asana and harvest ARIs on a single line',
-            'abt share asana harvest | tr "\n" " " | pbcopy' => 'Copy ARIs to clipboard (mac only)',
-            'abt start <ARIs from coworker>' => 'Work on a task your coworker shared with you',
-            'abt current <ARIs from coworker> | abt start' => 'Set task as current, then start it'
+          "Sharing ARIs:" => {
+            'abt share asana harvest | tr "\n" " "' => "Print current asana and harvest ARIs on a single line",
+            'abt share asana harvest | tr "\n" " " | pbcopy' => "Copy ARIs to clipboard (mac only)",
+            "abt start <ARIs from coworker>" => "Work on a task your coworker shared with you",
+            "abt current <ARIs from coworker> | abt start" => "Set task as current, then start it"
           },
-          'Flags:' => {
-            'abt start harvest -c "comment"' => 'Add command flags after ARIs',
-            'abt start harvest -c "comment" -- asana' => 'Use -- to end a list of flags, so that it can be followed by another ARI',
-            'abt pick harvest | abt start -c "comment"' => 'Flags placed directly after a command applies to the piped in ARI'
+          "Flags:" => {
+            'abt start harvest -c "comment"' => "Add command flags after ARIs",
+            'abt start harvest -c "comment" -- asana' => "Use -- to end a list of flags, so that it can be followed by another ARI",
+            'abt pick harvest | abt start -c "comment"' => "Flags placed directly after a command applies to the piped in ARI"
           }
         }
       end
@@ -49,7 +49,7 @@ module Abt
           providers = {}
 
           global_command_names = Abt::Cli.global_command_names
-          providers['Global'] = global_command_names.each_with_object({}) do |name, definition|
+          providers["Global"] = global_command_names.each_with_object({}) do |name, definition|
             command_class = Abt::Cli.global_command_class(name)
             full_name = "abt #{name}"
 

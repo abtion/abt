@@ -4,8 +4,8 @@ module Abt
   module Providers
     module Asana
       class Api
-        API_ENDPOINT = 'https://app.asana.com/api/1.0'
-        VERBS = %i[get post put].freeze
+        API_ENDPOINT = "https://app.asana.com/api/1.0"
+        VERBS = [:get, :post, :put].freeze
 
         attr_reader :access_token
 
@@ -15,7 +15,7 @@ module Abt
 
         VERBS.each do |verb|
           define_method(verb) do |*args|
-            request(verb, *args)['data']
+            request(verb, *args)["data"]
           end
         end
 
@@ -24,10 +24,10 @@ module Abt
 
           loop do
             result = request(:get, path, query.merge(limit: 100))
-            records += result['data']
-            break if result['next_page'].nil?
+            records += result["data"]
+            break if result["next_page"].nil?
 
-            path = result['next_page']['path'][1..-1]
+            path = result["next_page"]["path"][1..-1]
           end
 
           records
@@ -40,15 +40,15 @@ module Abt
             Oj.load(response.body)
           else
             error_class = Abt::HttpError.error_class_for_status(response.status)
-            encoded_response_body = response.body.force_encoding('utf-8')
+            encoded_response_body = response.body.force_encoding("utf-8")
             raise error_class, "Code: #{response.status}, body: #{encoded_response_body}"
           end
         end
 
         def connection
           @connection ||= Faraday.new(API_ENDPOINT) do |connection|
-            connection.headers['Authorization'] = "Bearer #{access_token}"
-            connection.headers['Content-Type'] = 'application/json'
+            connection.headers["Authorization"] = "Bearer #{access_token}"
+            connection.headers["Content-Type"] = "application/json"
           end
         end
       end

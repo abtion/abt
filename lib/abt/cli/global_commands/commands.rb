@@ -5,11 +5,11 @@ module Abt
     module GlobalCommands
       class Commands < Abt::BaseCommand
         def self.usage
-          'abt commands'
+          "abt commands"
         end
 
         def self.description
-          'List all abt commands'
+          "List all abt commands"
         end
 
         attr_reader :cli

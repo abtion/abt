@@ -6,11 +6,11 @@ module Abt
       module Commands
         class Projects < BaseCommand
           def self.usage
-            'abt projects harvest'
+            "abt projects harvest"
           end
 
           def self.description
-            'List all available projects - useful for piping into grep etc.'
+            "List all available projects - useful for piping into grep etc."
           end
 
           def perform
@@ -23,15 +23,15 @@ module Abt
 
           def projects
             @projects ||= begin
-              warn 'Fetching projects...'
+              warn("Fetching projects...")
               project_assignments.map do |project_assignment|
-                project_assignment['project'].merge('client' => project_assignment['client'])
+                project_assignment["project"].merge("client" => project_assignment["client"])
               end
             end
           end
 
           def project_assignments
-            @project_assignments ||= api.get_paged('users/me/project_assignments')
+            @project_assignments ||= api.get_paged("users/me/project_assignments")
           end
         end
       end

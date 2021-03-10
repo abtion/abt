@@ -5,11 +5,11 @@ module Abt
     module GlobalCommands
       class Help < Abt::BaseCommand
         def self.usage
-          'abt help'
+          "abt help"
         end
 
         def self.description
-          'Print abt usage text'
+          "Print abt usage text"
         end
 
         attr_reader :cli

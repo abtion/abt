@@ -6,11 +6,11 @@ module Abt
       module Commands
         class WorkItems < BaseCommand
           def self.usage
-            'abt work-items devops'
+            "abt work-items devops"
           end
 
           def self.description
-            'List all work items on board - useful for piping into grep etc.'
+            "List all work items on board - useful for piping into grep etc."
           end
 
           def perform
@@ -25,7 +25,7 @@ module Abt
 
           def work_items
             @work_items ||= begin
-              warn 'Fetching work items...'
+              warn("Fetching work items...")
               api.work_item_query(
                 <<~WIQL
                   SELECT [System.Id]

@@ -6,11 +6,11 @@ module Abt
       module Commands
         class BranchName < BaseCommand
           def self.usage
-            'abt branch-name devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]'
+            "abt branch-name devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]"
           end
 
           def self.description
-            'Suggest a git branch name for the current/specified work-item.'
+            "Suggest a git branch name for the current/specified work-item."
           end
 
           def perform
@@ -21,24 +21,24 @@ module Abt
             args = [organization_name, project_name, board_id, work_item_id].compact
 
             error_message = [
-              'Unable to find work item for configuration:',
+              "Unable to find work item for configuration:",
               "devops:#{args.join('/')}"
             ].join("\n")
-            abort error_message
+            abort(error_message)
           end
 
           private
 
           def name
-            str = work_item['id']
-            str += '-'
-            str += work_item['name'].downcase.gsub(/[^\w]/, '-')
-            str.gsub(/-+/, '-')
+            str = work_item["id"]
+            str += "-"
+            str += work_item["name"].downcase.gsub(/[^\w]/, "-")
+            str.squeeze("-")
           end
 
           def work_item
             @work_item ||= begin
-              work_item = api.get_paged('wit/workitems', ids: work_item_id)[0]
+              work_item = api.get_paged("wit/workitems", ids: work_item_id)[0]
               sanitize_work_item(work_item)
             end
           end

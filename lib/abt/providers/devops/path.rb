@@ -14,11 +14,11 @@ module Abt
         def self.from_ids(organization_id = nil, project_name = nil, board_id = nil, work_item_id = nil)
           return new unless organization_id && project_name && board_id
 
-          new [organization_id, project_name, board_id, *work_item_id].join('/')
+          new([organization_id, project_name, board_id, *work_item_id].join("/"))
         end
 
-        def initialize(path = '')
-          raise Abt::Cli::Abort, "Invalid path: #{path}" unless path =~ PATH_REGEX
+        def initialize(path = "")
+          raise Abt::Cli::Abort, "Invalid path: #{path}" unless PATH_REGEX.match?(path)
 
           super
         end

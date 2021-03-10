@@ -6,47 +6,47 @@ module Abt
       module Commands
         class Pick < BaseCommand
           def self.usage
-            'abt pick devops[:<organization-name>/<project-name>/<board-id>]'
+            "abt pick devops[:<organization-name>/<project-name>/<board-id>]"
           end
 
           def self.description
-            'Pick work item for current git repository'
+            "Pick work item for current git repository"
           end
 
           def self.flags
             [
-              ['-d', '--dry-run', 'Keep existing configuration']
+              ["-d", "--dry-run", "Keep existing configuration"]
             ]
           end
 
           def perform
-            abort 'Must be run inside a git repository' unless config.local_available?
+            abort("Must be run inside a git repository") unless config.local_available?
             require_board!
 
-            warn "#{project_name} - #{board['name']}"
+            warn("#{project_name} - #{board['name']}")
 
             work_item = select_work_item
             print_work_item(organization_name, project_name, board, work_item)
 
             return if flags[:"dry-run"]
 
-            config.path = Path.from_ids(organization_name, project_name, board_id, work_item['id'])
+            config.path = Path.from_ids(organization_name, project_name, board_id, work_item["id"])
           end
 
           private
 
           def select_work_item
             loop do
-              column = cli.prompt.choice 'Which column?', columns
-              warn 'Fetching work items...'
+              column = cli.prompt.choice("Which column?", columns)
+              warn("Fetching work items...")
               work_items = work_items_in_column(column)
 
               if work_items.length.zero?
-                warn 'Section is empty'
+                warn("Section is empty")
                 next
               end
 
-              work_item = cli.prompt.choice 'Select a work item', work_items, true
+              work_item = cli.prompt.choice("Select a work item", work_items, true)
               return work_item if work_item
             end
           end
@@ -65,7 +65,7 @@ module Abt
           end
 
           def columns
-            board['columns']
+            board["columns"]
           end
 
           def board

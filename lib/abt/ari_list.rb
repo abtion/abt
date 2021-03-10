@@ -3,7 +3,7 @@
 module Abt
   class AriList < Array
     def to_s
-      map(&:to_s).join(' -- ')
+      map(&:to_s).join(" -- ")
     end
 
     def -(other)

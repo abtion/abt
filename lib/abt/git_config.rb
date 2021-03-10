@@ -6,10 +6,10 @@ module Abt
 
     class UnsafeNamespaceError < StandardError; end
 
-    def initialize(scope = 'local', namespace = '')
+    def initialize(scope = "local", namespace = "")
       @namespace = namespace
 
-      unless %w[local global].include? scope
+      unless %w[local global].include?(scope)
         raise ArgumentError, 'scope must be "local" or "global"'
       end
 
@@ -50,7 +50,7 @@ module Abt
     end
 
     def clear(output: nil)
-      raise UnsafeNamespaceError, 'Keys can only be cleared within a namespace' if namespace.empty?
+      raise UnsafeNamespaceError, "Keys can only be cleared within a namespace" if namespace.empty?
 
       keys.each do |key|
         output&.puts "Clearing #{scope}: #{key_with_namespace(key)}"
@@ -67,7 +67,7 @@ module Abt
     def ensure_scope_available!
       return if available?
 
-      raise StandardError, 'Local configuration is not available outside a git repository'
+      raise StandardError, "Local configuration is not available outside a git repository"
     end
 
     def key_with_namespace(key)

@@ -15,18 +15,18 @@ module Abt
         end
 
         def path
-          Path.new(local_available? && git['path'] || '')
+          Path.new(local_available? && git["path"] || "")
         end
 
         def path=(new_path)
-          git['path'] = new_path
+          git["path"] = new_path
         end
 
         def workspace_gid
           @workspace_gid ||= begin
-            current = git_global['workspaceGid']
+            current = git_global["workspaceGid"]
             if current.nil?
-              prompt_workspace['gid']
+              prompt_workspace["gid"]
             else
               current
             end
@@ -36,13 +36,13 @@ module Abt
         def wip_section_gid
           return nil unless local_available?
 
-          @wip_section_gid ||= git['wipSectionGid'] || prompt_wip_section['gid']
+          @wip_section_gid ||= git["wipSectionGid"] || prompt_wip_section["gid"]
         end
 
         def finalized_section_gid
           return nil unless local_available?
 
-          @finalized_section_gid ||= git['finalizedSectionGid'] || prompt_finalized_section['gid']
+          @finalized_section_gid ||= git["finalizedSectionGid"] || prompt_finalized_section["gid"]
         end
 
         def clear_local(verbose: true)
@@ -54,57 +54,57 @@ module Abt
         end
 
         def access_token
-          return git_global['accessToken'] unless git_global['accessToken'].nil?
+          return git_global["accessToken"] unless git_global["accessToken"].nil?
 
-          git_global['accessToken'] = cli.prompt.text([
-            'Please provide your personal access token for Asana.',
-            'If you don\'t have one, create one here: https://app.asana.com/0/developer-console',
-            '',
-            'Enter access token'
+          git_global["accessToken"] = cli.prompt.text([
+            "Please provide your personal access token for Asana.",
+            "If you don't have one, create one here: https://app.asana.com/0/developer-console",
+            "",
+            "Enter access token"
           ].join("\n"))
         end
 
         private
 
         def git
-          @git ||= GitConfig.new('local', 'abt.asana')
+          @git ||= GitConfig.new("local", "abt.asana")
         end
 
         def git_global
-          @git_global ||= GitConfig.new('global', 'abt.asana')
+          @git_global ||= GitConfig.new("global", "abt.asana")
         end
 
         def prompt_finalized_section
           section = prompt_section('Select section for finalized tasks (E.g. "Merged")')
-          git['finalizedSectionGid'] = section['gid']
+          git["finalizedSectionGid"] = section["gid"]
           section
         end
 
         def prompt_wip_section
-          section = prompt_section('Select WIP (Work In Progress) section')
-          git['wipSectionGid'] = section['gid']
+          section = prompt_section("Select WIP (Work In Progress) section")
+          git["wipSectionGid"] = section["gid"]
           section
         end
 
         def prompt_section(message)
-          cli.warn 'Fetching sections...'
-          sections = api.get_paged("projects/#{path.project_gid}/sections", opt_fields: 'name')
+          cli.warn("Fetching sections...")
+          sections = api.get_paged("projects/#{path.project_gid}/sections", opt_fields: "name")
           cli.prompt.choice(message, sections)
         end
 
         def prompt_workspace
-          cli.warn 'Fetching workspaces...'
-          workspaces = api.get_paged('workspaces', opt_fields: 'name')
+          cli.warn("Fetching workspaces...")
+          workspaces = api.get_paged("workspaces", opt_fields: "name")
           if workspaces.empty?
-            cli.abort 'Your asana access token does not have access to any workspaces'
+            cli.abort("Your asana access token does not have access to any workspaces")
           elsif workspaces.one?
             workspace = workspaces.first
-            cli.warn "Selected Asana workspace: #{workspace['name']}"
+            cli.warn("Selected Asana workspace: #{workspace['name']}")
           else
-            workspace = cli.prompt.choice('Select Asana workspace', workspaces)
+            workspace = cli.prompt.choice("Select Asana workspace", workspaces)
           end
 
-          git_global['workspaceGid'] = workspace['gid']
+          git_global["workspaceGid"] = workspace["gid"]
           workspace
         end
 

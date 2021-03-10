@@ -5,8 +5,8 @@ module DevopsHelpers
     path = "https://#{organization_name}.visualstudio.com/#{project_name}/_apis/#{path}"
 
     headers = {
-      'Content-Type' => 'application/json',
-      'Accept' => 'application/json; api-version=6.0'
+      "Content-Type" => "application/json",
+      "Accept" => "application/json; api-version=6.0"
     }
     basic_auth = [
       global_git["organizations.#{organization_name}.username"],

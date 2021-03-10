@@ -6,11 +6,11 @@ module Abt
       module Commands
         class Init < BaseCommand
           def self.usage
-            'abt init asana'
+            "abt init asana"
           end
 
           def self.description
-            'Pick Asana project for current git repository'
+            "Pick Asana project for current git repository"
           end
 
           def initialize(cli:, **)
@@ -19,12 +19,12 @@ module Abt
           end
 
           def perform
-            abort 'Must be run inside a git repository' unless config.local_available?
+            abort("Must be run inside a git repository") unless config.local_available?
 
             projects # Load projects up front to make it obvious that searches are instant
             project = find_search_result
 
-            config.path = Path.from_ids(project['gid'])
+            config.path = Path.from_ids(project["gid"])
 
             print_project(project)
           end
@@ -32,17 +32,17 @@ module Abt
           private
 
           def find_search_result
-            warn 'Select a project'
+            warn("Select a project")
 
             loop do
-              matches = matches_for_string cli.prompt.text('Enter search')
+              matches = matches_for_string(cli.prompt.text("Enter search"))
               if matches.empty?
-                warn 'No matches'
+                warn("No matches")
                 next
               end
 
-              warn 'Showing the 10 first matches' if matches.size > 10
-              choice = cli.prompt.choice 'Select a project', matches[0...10], true
+              warn("Showing the 10 first matches") if matches.size > 10
+              choice = cli.prompt.choice("Select a project", matches[0...10], true)
               break choice unless choice.nil?
             end
           end
@@ -51,21 +51,21 @@ module Abt
             search_string = sanitize_string(string)
 
             projects.select do |project|
-              sanitize_string(project['name']).include?(search_string)
+              sanitize_string(project["name"]).include?(search_string)
             end
           end
 
           def sanitize_string(string)
-            string.downcase.gsub(/[^\w]/, '')
+            string.downcase.gsub(/[^\w]/, "")
           end
 
           def projects
             @projects ||= begin
-              warn 'Fetching projects...'
-              api.get_paged('projects',
+              warn("Fetching projects...")
+              api.get_paged("projects",
                             workspace: config.workspace_gid,
                             archived: false,
-                            opt_fields: 'name,permalink_url')
+                            opt_fields: "name,permalink_url")
             end
           end
         end

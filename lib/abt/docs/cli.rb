@@ -45,14 +45,14 @@ module Abt
         private
 
         def usage_line
-          'abt <command> [<ARI>] [<options> --] [<ARI>] ...'
+          "abt <command> [<ARI>] [<options> --] [<ARI>] ..."
         end
 
         def formatted_examples(example_groups)
           lines = []
 
           example_groups.each_with_index do |(title, examples), index|
-            lines << '' unless index.zero?
+            lines << "" unless index.zero?
             lines << title
 
             max_length = examples.keys.map(&:length).max
@@ -68,7 +68,7 @@ module Abt
           lines = []
 
           Docs.providers.each_with_index do |(scheme, commands_definition), index|
-            lines << '' unless index.zero?
+            lines << "" unless index.zero?
             lines << "#{inflector.humanize(scheme)}:"
 
             max_length = commands_definition.keys.map(&:length).max

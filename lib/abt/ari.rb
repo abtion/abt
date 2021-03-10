@@ -14,7 +14,7 @@ module Abt
       str = scheme
       str += ":#{path}" if path
 
-      [str, *flags].join(' ')
+      [str, *flags].join(" ")
     end
   end
 end

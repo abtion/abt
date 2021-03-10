@@ -22,28 +22,28 @@ module Abt
         def require_project!
           return if project_id
 
-          abort 'No current/specified project. Did you initialize Harvest?'
+          abort("No current/specified project. Did you initialize Harvest?")
         end
 
         def require_task!
           unless project_id
-            abort 'No current/specified project. Did you initialize Harvest and pick a task?'
+            abort("No current/specified project. Did you initialize Harvest and pick a task?")
           end
 
-          abort 'No current/specified task. Did you pick a Harvest task?' if task_id.nil?
+          abort("No current/specified task. Did you pick a Harvest task?") if task_id.nil?
         end
 
         def print_project(project)
           cli.print_ari(
-            'harvest',
-            project['id'],
+            "harvest",
+            project["id"],
             "#{project['client']['name']} > #{project['name']}"
           )
         end
 
         def print_task(project, task)
           cli.print_ari(
-            'harvest',
+            "harvest",
             "#{project['id']}/#{task['id']}",
             "#{project['name']} > #{task['name']}"
           )

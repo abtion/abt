@@ -10,7 +10,7 @@ module Abt
       end
 
       def text(question)
-        output.print "#{question}: "
+        output.print("#{question}: ")
         read_user_input
       end
 
@@ -18,13 +18,13 @@ module Abt
         output.puts text
 
         loop do
-          output.print '(y / n): '
+          output.print("(y / n): ")
 
           case read_user_input
-          when 'y', 'Y' then return true
-          when 'n', 'N' then return false
+          when "y", "Y" then return true
+          when "n", "N" then return false
           else
-            output.puts 'Invalid choice'
+            output.puts "Invalid choice"
             next
           end
         end
@@ -34,9 +34,9 @@ module Abt
         output.puts "#{text}:"
 
         if options.length.zero?
-          raise Abort, 'No available options' unless nil_option
+          raise Abort, "No available options" unless nil_option
 
-          output.puts 'No available options'
+          output.puts "No available options"
           return nil
         end
 
@@ -69,11 +69,11 @@ module Abt
       end
 
       def read_option_number(options_length, nil_option)
-        str = '('
-        str += options_length > 1 ? "1-#{options_length}" : '1'
+        str = "("
+        str += options_length > 1 ? "1-#{options_length}" : "1"
         str += nil_option_string(nil_option)
-        str += '): '
-        output.print str
+        str += "): "
+        output.print(str)
 
         input = read_user_input
 
@@ -81,7 +81,7 @@ module Abt
 
         option_number = input.to_i
         if option_number <= 0 || option_number > options_length
-          output.puts 'Invalid selection'
+          output.puts "Invalid selection"
           return nil
         end
 
@@ -89,19 +89,19 @@ module Abt
       end
 
       def nil_option_string(nil_option)
-        return '' unless nil_option
+        return "" unless nil_option
 
         ", #{nil_option_character(nil_option)}: #{nil_option_description(nil_option)}"
       end
 
       def nil_option_character(nil_option)
-        return 'q' if nil_option == true
+        return "q" if nil_option == true
 
         nil_option[0]
       end
 
       def nil_option_description(nil_option)
-        return 'back' if nil_option == true
+        return "back" if nil_option == true
         return nil_option if nil_option.is_a?(String)
 
         nil_option[1]
@@ -113,9 +113,9 @@ module Abt
 
       def tty_path
         @tty_path ||= begin
-          candidates = ['/dev/tty', 'CON:'] # Unix: '/dev/tty', Windows: 'CON:'
+          candidates = ["/dev/tty", "CON:"] # Unix: '/dev/tty', Windows: 'CON:'
           selected = candidates.find { |candidate| File.exist?(candidate) }
-          raise Abort, 'Unable to prompt for user input' if selected.nil?
+          raise Abort, "Unable to prompt for user input" if selected.nil?
 
           selected
         end

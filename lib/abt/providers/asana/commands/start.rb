@@ -6,16 +6,16 @@ module Abt
       module Commands
         class Start < BaseCommand
           def self.usage
-            'abt start asana[:<project-gid>/<task-gid>]'
+            "abt start asana[:<project-gid>/<task-gid>]"
           end
 
           def self.description
-            'Move current or specified task to WIP section (column) and assign it to you'
+            "Move current or specified task to WIP section (column) and assign it to you"
           end
 
           def self.flags
             [
-              ['-s', '--set', 'Set specified task as current']
+              ["-s", "--set", "Set specified task as current"]
             ]
           end
 
@@ -38,33 +38,33 @@ module Abt
             return unless config.local_available?
 
             config.path = path
-            warn 'Current task updated'
+            warn("Current task updated")
           end
 
           def update_assignee_if_needed
-            current_assignee = task.dig('assignee')
+            current_assignee = task.dig("assignee")
 
             if current_assignee.nil?
-              warn "Assigning task to user: #{current_user['name']}"
+              warn("Assigning task to user: #{current_user['name']}")
               update_assignee
-            elsif current_assignee['gid'] == current_user['gid']
-              warn 'You are already assigned to this task'
-            elsif cli.prompt.boolean "Task is assigned to: #{current_assignee['name']}, take over?"
-              warn "Reassigning task to user: #{current_user['name']}"
+            elsif current_assignee["gid"] == current_user["gid"]
+              warn("You are already assigned to this task")
+            elsif cli.prompt.boolean("Task is assigned to: #{current_assignee['name']}, take over?")
+              warn("Reassigning task to user: #{current_user['name']}")
               update_assignee
             end
           end
 
           def move_if_needed
             unless project_gid == config.path.project_gid
-              warn 'Task was not moved, this is not implemented for tasks outside current project'
+              warn("Task was not moved, this is not implemented for tasks outside current project")
               return
             end
 
             if task_already_in_wip_section?
-              warn "Task already in section: #{current_task_section['name']}"
+              warn("Task already in section: #{current_task_section['name']}")
             else
-              warn "Moving task to section: #{wip_section['name']}"
+              warn("Moving task to section: #{wip_section['name']}")
               move_task
             end
           end
@@ -74,17 +74,17 @@ module Abt
           end
 
           def current_task_section
-            task_section_membership&.dig('section')
+            task_section_membership&.dig("section")
           end
 
           def task_section_membership
-            task['memberships'].find do |membership|
-              membership.dig('section', 'gid') == config.wip_section_gid
+            task["memberships"].find do |membership|
+              membership.dig("section", "gid") == config.wip_section_gid
             end
           end
 
           def wip_section
-            @wip_section ||= api.get("sections/#{config.wip_section_gid}", opt_fields: 'name')
+            @wip_section ||= api.get("sections/#{config.wip_section_gid}", opt_fields: "name")
           end
 
           def move_task
@@ -94,17 +94,18 @@ module Abt
           end
 
           def update_assignee
-            body = { data: { assignee: current_user['gid'] } }
+            body = { data: { assignee: current_user["gid"] } }
             body_json = Oj.dump(body, mode: :json)
             api.put("tasks/#{task_gid}", body_json)
           end
 
           def current_user
-            @current_user ||= api.get('users/me', opt_fields: 'name')
+            @current_user ||= api.get("users/me", opt_fields: "name")
           end
 
           def task
-            @task ||= api.get("tasks/#{task_gid}", opt_fields: 'name,memberships.section.name,assignee.name,permalink_url')
+            @task ||= api.get("tasks/#{task_gid}",
+                              opt_fields: "name,memberships.section.name,assignee.name,permalink_url")
           end
         end
       end

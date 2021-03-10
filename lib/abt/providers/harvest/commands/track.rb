@@ -6,30 +6,31 @@ module Abt
       module Commands
         class Track < BaseCommand
           def self.usage
-            'abt track harvest[:<project-id>/<task-id>] [options]'
+            "abt track harvest[:<project-id>/<task-id>] [options]"
           end
 
           def self.description
-            'Start tracker for current or specified task. Add a relevant ARI to link the time entry, e.g. `abt track harvest asana`'
+            "Start tracker for current or specified task. Add a relevant ARI to link the time entry, e.g. `abt track harvest asana`"
           end
 
           def self.flags
             [
-              ['-s', '--set', 'Set specified task as current'],
-              ['-c', '--comment COMMENT', 'Override comment'],
-              ['-t', '--time HOURS', 'Set hours. Creates a stopped entry unless used with --running'],
-              ['-r', '--running', 'Used with --time, starts the created time entry']
+              ["-s", "--set", "Set specified task as current"],
+              ["-c", "--comment COMMENT", "Override comment"],
+              ["-t", "--time HOURS",
+               "Set hours. Creates a stopped entry unless used with --running"],
+              ["-r", "--running", "Used with --time, starts the created time entry"]
             ]
           end
 
           def perform
             require_task!
 
-            print_task(created_time_entry['project'], created_time_entry['task'])
+            print_task(created_time_entry["project"], created_time_entry["task"])
 
             maybe_override_current_task
           rescue Abt::HttpError::HttpError => _e
-            abort 'Invalid task'
+            abort("Invalid task")
           end
 
           private
@@ -40,9 +41,9 @@ module Abt
 
           def create_time_entry
             body = time_entry_base_data
-            body.merge!(hours: flags[:time]) if flags.key? :time
+            body[:hours] = flags[:time] if flags.key?(:time)
 
-            result = api.post('time_entries', Oj.dump(body, mode: :json))
+            result = api.post("time_entries", Oj.dump(body, mode: :json))
 
             if flags.key?(:time) && flags[:running]
               api.patch("time_entries/#{result['id']}/restart")
@@ -60,18 +61,18 @@ module Abt
             }
 
             if external_link_data
-              warn <<~TXT
+              warn(<<~TXT)
                 Linking to:
                   #{external_link_data[:notes]}
                   #{external_link_data[:external_reference][:permalink]}
               TXT
-              body.merge! external_link_data
+              body.merge!(external_link_data)
             else
-              warn 'No external link provided'
+              warn("No external link provided")
             end
 
             body[:notes] = flags[:comment] if flags.key?(:comment)
-            body[:notes] ||= cli.prompt.text('Fill in comment (optional)')
+            body[:notes] ||= cli.prompt.text("Fill in comment (optional)")
             body
           end
 
@@ -83,7 +84,7 @@ module Abt
                 nil
               else
                 if lines.length > 1
-                  abort('Got reference data from multiple scheme providers, only one is supported at a time')
+                  abort("Got reference data from multiple scheme providers, only one is supported at a time")
                 end
 
                 Oj.load(lines.first, symbol_keys: true)
@@ -97,7 +98,7 @@ module Abt
 
             input = StringIO.new(other_aris.to_s)
             output = StringIO.new
-            Abt::Cli.new(argv: ['harvest-time-entry-data'], output: output, input: input).perform
+            Abt::Cli.new(argv: ["harvest-time-entry-data"], output: output, input: input).perform
 
             output.string.strip.lines
           end
@@ -108,7 +109,7 @@ module Abt
             return unless config.local_available?
 
             config.path = path
-            warn 'Current task updated'
+            warn("Current task updated")
           end
         end
       end

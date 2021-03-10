@@ -10,7 +10,7 @@ module CommandHelpers
   def stub_command_output(scheme, command, output_string)
     provider_class = Abt.scheme_provider(scheme)
 
-    raise ArgumentError, 'stub_command only works with existing schemes' unless provider_class
+    raise ArgumentError, "stub_command only works with existing schemes" unless provider_class
 
     allow(provider_class).to receive(:command_class).and_call_original
     allow(provider_class).to receive(:command_class)

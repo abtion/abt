@@ -6,11 +6,11 @@ module Abt
       module Commands
         class Tasks < BaseCommand
           def self.usage
-            'abt tasks asana'
+            "abt tasks asana"
           end
 
           def self.description
-            'List available tasks on project - useful for piping into grep etc.'
+            "List available tasks on project - useful for piping into grep etc."
           end
 
           def perform
@@ -25,15 +25,15 @@ module Abt
 
           def project
             @project ||= begin
-              api.get("projects/#{project_gid}", opt_fields: 'name')
+              api.get("projects/#{project_gid}", opt_fields: "name")
             end
           end
 
           def tasks
             @tasks ||= begin
-              warn 'Fetching tasks...'
-              tasks = api.get_paged('tasks', project: project['gid'], opt_fields: 'name,completed')
-              tasks.select { |task| !task['completed'] }
+              warn("Fetching tasks...")
+              tasks = api.get_paged("tasks", project: project["gid"], opt_fields: "name,completed")
+              tasks.select { |task| !task["completed"] }
             end
           end
         end

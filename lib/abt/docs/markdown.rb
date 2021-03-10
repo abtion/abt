@@ -52,11 +52,11 @@ module Abt
 
           examples = Docs.basic_examples.merge(Docs.extended_examples)
           examples.each_with_index do |(title, commands), index|
-            lines << '' unless index.zero?
+            lines << "" unless index.zero?
             lines << title
 
             commands.each do |(command, description)|
-              formatted_description = description.nil? ? '' : ": #{description}"
+              formatted_description = description.nil? ? "" : ": #{description}"
               lines << "- `#{command}`#{formatted_description}"
             end
           end
@@ -68,10 +68,10 @@ module Abt
           lines = []
 
           Docs.providers.each_with_index do |(scheme, commands), index|
-            lines << '' unless index.zero?
+            lines << "" unless index.zero?
             lines << "### #{inflector.humanize(scheme)}"
-            lines << '| Command | Description |'
-            lines << '| :------ | :---------- |'
+            lines << "| Command | Description |"
+            lines << "| :------ | :---------- |"
 
             max_length = commands.values.map(&:first).map(&:length).max
 

@@ -6,16 +6,16 @@ module Abt
       module Commands
         class Branch < Abt::BaseCommand
           def self.usage
-            'abt branch git <scheme>[:<path>]'
+            "abt branch git <scheme>[:<path>]"
           end
 
           def self.description
-            'Switch branch. Uses a compatible scheme to generate the branch-name: E.g. `abt branch git asana`'
+            "Switch branch. Uses a compatible scheme to generate the branch-name: E.g. `abt branch git asana`"
           end
 
           def perform
             switch || create_and_switch
-            warn "Switched to #{branch_name}"
+            warn("Switched to #{branch_name}")
           end
 
           private
@@ -29,8 +29,8 @@ module Abt
           end
 
           def create_and_switch
-            warn "No such branch: #{branch_name}"
-            abort('Aborting') unless cli.prompt.boolean 'Create branch?'
+            warn("No such branch: #{branch_name}")
+            abort("Aborting") unless cli.prompt.boolean("Create branch?")
 
             Open3.popen3("git switch -c #{branch_name}") do |_i, _o, _e, thread|
               thread.value
@@ -40,20 +40,20 @@ module Abt
           def branch_name # rubocop:disable Metrics/MethodLength
             @branch_name ||= begin
               if branch_names_from_aris.empty?
-                abort [
-                  'None of the specified ARIs responded to `branch-name`.',
-                  'Did you add compatible scheme? e.g.:',
-                  '   abt branch git asana',
-                  '   abt branch git devops'
-                ].join("\n")
+                abort([
+                  "None of the specified ARIs responded to `branch-name`.",
+                  "Did you add compatible scheme? e.g.:",
+                  "   abt branch git asana",
+                  "   abt branch git devops"
+                ].join("\n"))
               end
 
               if branch_names_from_aris.length > 1
-                abort [
-                  'Got branch names from multiple ARIs, only one is supported',
-                  'Branch names were:',
+                abort([
+                  "Got branch names from multiple ARIs, only one is supported",
+                  "Branch names were:",
                   *branch_names_from_aris.map { |name| "   #{name}" }
-                ].join("\n")
+                ].join("\n"))
               end
 
               branch_names_from_aris.first
@@ -64,12 +64,12 @@ module Abt
             other_aris = cli.aris - [ari]
 
             if other_aris.empty?
-              abort 'You must provide an additional ARI that responds to: branch-name. E.g., asana'
+              abort("You must provide an additional ARI that responds to: branch-name. E.g., asana")
             end
 
             input = StringIO.new(cli.aris.to_s)
             output = StringIO.new
-            Abt::Cli.new(argv: ['branch-name'], output: output, input: input).perform
+            Abt::Cli.new(argv: ["branch-name"], output: output, input: input).perform
 
             output.string.lines.map(&:strip).compact
           end

@@ -6,11 +6,11 @@ module Abt
       module Commands
         class Projects < BaseCommand
           def self.usage
-            'abt projects asana'
+            "abt projects asana"
           end
 
           def self.description
-            'List all available projects - useful for piping into grep etc.'
+            "List all available projects - useful for piping into grep etc."
           end
 
           def perform
@@ -23,12 +23,12 @@ module Abt
 
           def projects
             @projects ||= begin
-              warn 'Fetching projects...'
+              warn("Fetching projects...")
               api.get_paged(
-                'projects',
+                "projects",
                 workspace: config.workspace_gid,
                 archived: false,
-                opt_fields: 'name'
+                opt_fields: "name"
               )
             end
           end

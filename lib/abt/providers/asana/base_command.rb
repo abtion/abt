@@ -21,25 +21,25 @@ module Abt
         private
 
         def require_project!
-          abort 'No current/specified project. Did you initialize Asana?' if project_gid.nil?
+          abort("No current/specified project. Did you initialize Asana?") if project_gid.nil?
         end
 
         def require_task!
           if project_gid.nil?
-            abort 'No current/specified project. Did you initialize Asana and pick a task?'
+            abort("No current/specified project. Did you initialize Asana and pick a task?")
           end
-          abort 'No current/specified task. Did you pick an Asana task?' if task_gid.nil?
+          abort("No current/specified task. Did you pick an Asana task?") if task_gid.nil?
         end
 
         def print_project(project)
-          cli.print_ari('asana', project['gid'], project['name'])
-          warn project['permalink_url'] if project.key?('permalink_url') && cli.output.isatty
+          cli.print_ari("asana", project["gid"], project["name"])
+          warn(project["permalink_url"]) if project.key?("permalink_url") && cli.output.isatty
         end
 
         def print_task(project, task)
-          project = { 'gid' => project } if project.is_a?(String)
-          cli.print_ari('asana', "#{project['gid']}/#{task['gid']}", task['name'])
-          warn task['permalink_url'] if task.key?('permalink_url') && cli.output.isatty
+          project = { "gid" => project } if project.is_a?(String)
+          cli.print_ari("asana", "#{project['gid']}/#{task['gid']}", task["name"])
+          warn(task["permalink_url"]) if task.key?("permalink_url") && cli.output.isatty
         end
 
         def api

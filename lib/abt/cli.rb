@@ -7,6 +7,7 @@ end
 module Abt
   class Cli
     class Abort < StandardError; end
+
     class Exit < StandardError; end
 
     def self.global_command_names
@@ -14,8 +15,8 @@ module Abt
     end
 
     def self.global_command_class(name)
-      name = 'help' if [nil, '-h', '--help'].include?(name)
-      name = 'version' if ['-v', '--version'].include?(name)
+      name = "help" if [nil, "-h", "--help"].include?(name)
+      name = "version" if ["-v", "--version"].include?(name)
 
       const_name = Helpers.command_to_const(name)
       return unless GlobalCommands.const_defined?(const_name)
@@ -37,7 +38,7 @@ module Abt
     def perform
       if command.nil?
         warn("No command specified, printing help\n\n")
-        @command = 'help'
+        @command = "help"
       end
 
       if global_command?
@@ -86,7 +87,7 @@ module Abt
       command_class = self.class.global_command_class(command)
 
       if command_class.nil?
-        abort "No such global command: #{command}, perhaps you forgot to add an ARI?"
+        abort("No such global command: #{command}, perhaps you forgot to add an ARI?")
       end
 
       begin
@@ -103,16 +104,16 @@ module Abt
       @sanitized_piped_args ||= begin
         input_string = input.read.strip
 
-        abort 'No input from pipe' if input_string.nil? || input_string.empty?
+        abort("No input from pipe") if input_string.nil? || input_string.empty?
 
         # Exclude comment part of piped input lines
         lines_without_comments = input_string.lines.map do |line|
-          line.split(' # ').first
+          line.split(" # ").first
         end
 
         # Allow multiple ARIs on a single piped input line
         # TODO: Force the user to pick a single ARI
-        joined_lines = lines_without_comments.join(' ').strip
+        joined_lines = lines_without_comments.join(" ").strip
         joined_lines.split(/\s+/)
       end
     end
@@ -122,7 +123,7 @@ module Abt
 
       aris.each do |ari|
         if used_schemes.include?(ari.scheme)
-          warn "Dropping command for already used scheme: #{ari}"
+          warn("Dropping command for already used scheme: #{ari}")
           next
         end
 
@@ -141,7 +142,7 @@ module Abt
 
       return unless used_schemes.empty? && output.isatty
 
-      abort 'No providers found for command and ARI(s)'
+      abort("No providers found for command and ARI(s)")
     end
 
     def get_command_class(scheme)
@@ -152,7 +153,7 @@ module Abt
     end
 
     def print_command(name, ari)
-      warn "===== #{name.upcase} #{ari} ====="
+      warn("===== #{name.upcase} #{ari} =====")
     end
   end
 end

@@ -6,22 +6,22 @@ module Abt
       module Commands
         class Current < BaseCommand
           def self.usage
-            'abt current devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]'
+            "abt current devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]"
           end
 
           def self.description
-            'Get or set DevOps configuration for current git repository'
+            "Get or set DevOps configuration for current git repository"
           end
 
           def perform
-            abort 'Must be run inside a git repository' unless config.local_available?
+            abort("Must be run inside a git repository") unless config.local_available?
 
             require_board!
             ensure_valid_configuration!
 
             if path != config.path && config.local_available?
               config.path = path
-              warn 'Configuration updated'
+              warn("Configuration updated")
             end
 
             print_configuration
@@ -39,28 +39,28 @@ module Abt
 
           def ensure_valid_configuration!
             if board.nil?
-              abort 'Board could not be found, ensure that settings for organization, project, and board are correct'
+              abort("Board could not be found, ensure that settings for organization, project, and board are correct")
             end
-            abort "No such work item: ##{work_item_id}" if work_item_id && work_item.nil?
+            abort("No such work item: ##{work_item_id}") if work_item_id && work_item.nil?
           end
 
           def board
             @board ||= begin
-                         warn 'Fetching board...'
-                         api.get("work/boards/#{board_id}")
-                       rescue HttpError::NotFoundError
-                         nil
-                       end
+              warn("Fetching board...")
+              api.get("work/boards/#{board_id}")
+            rescue HttpError::NotFoundError
+              nil
+            end
           end
 
           def work_item
             @work_item ||= begin
-                             warn 'Fetching work item...'
-                             work_item = api.get_paged('wit/workitems', ids: work_item_id)[0]
-                             sanitize_work_item(work_item)
-                           rescue HttpError::NotFoundError
-                             nil
-                           end
+              warn("Fetching work item...")
+              work_item = api.get_paged("wit/workitems", ids: work_item_id)[0]
+              sanitize_work_item(work_item)
+            rescue HttpError::NotFoundError
+              nil
+            end
           end
         end
       end

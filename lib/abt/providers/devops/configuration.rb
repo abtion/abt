@@ -15,11 +15,11 @@ module Abt
         end
 
         def path
-          Path.new(local_available? && git['path'] || '')
+          Path.new(local_available? && git["path"] || "")
         end
 
         def path=(new_path)
-          git['path'] = new_path
+          git["path"] = new_path
         end
 
         def clear_local(verbose: true)
@@ -37,8 +37,8 @@ module Abt
 
           git_global[username_key] = cli.prompt.text([
             "Please provide your username for the DevOps organization (#{organization_name}).",
-            '',
-            'Enter username'
+            "",
+            "Enter username"
           ].join("\n"))
         end
 
@@ -49,23 +49,23 @@ module Abt
 
           git_global[access_token_key] = cli.prompt.text([
             "Please provide your personal access token for the DevOps organization (#{organization_name}).",
-            'If you don\'t have one, follow the guide here: https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate',
-            '',
+            "If you don't have one, follow the guide here: https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate",
+            "",
             'The token MUST have "Read" permission for Work Items',
             'Future features will likely require "Write" or "Manage"',
-            '',
-            'Enter access token'
+            "",
+            "Enter access token"
           ].join("\n"))
         end
 
         private
 
         def git
-          @git ||= GitConfig.new('local', 'abt.devops')
+          @git ||= GitConfig.new("local", "abt.devops")
         end
 
         def git_global
-          @git_global ||= GitConfig.new('global', 'abt.devops')
+          @git_global ||= GitConfig.new("global", "abt.devops")
         end
       end
     end

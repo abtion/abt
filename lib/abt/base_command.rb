@@ -5,11 +5,11 @@ module Abt
     extend Forwardable
 
     def self.usage
-      raise NotImplementedError, 'Command classes must implement .usage'
+      raise NotImplementedError, "Command classes must implement .usage"
     end
 
     def self.description
-      raise NotImplementedError, 'Command classes must implement .description'
+      raise NotImplementedError, "Command classes must implement .description"
     end
 
     def self.flags
@@ -27,7 +27,7 @@ module Abt
     end
 
     def perform
-      raise NotImplementedError, 'Command classes must implement #perform'
+      raise NotImplementedError, "Command classes must implement #perform"
     end
 
     private
@@ -41,7 +41,7 @@ module Abt
 
       result
     rescue OptionParser::InvalidOption => e
-      abort e.message
+      abort(e.message)
     end
 
     def flag_parser
@@ -52,7 +52,7 @@ module Abt
           Usage: #{self.class.usage}
         TXT
 
-        opts.on('-h', '--help', 'Display this help')
+        opts.on("-h", "--help", "Display this help")
 
         self.class.flags.each do |(*flag)|
           opts.on(*flag)

@@ -6,19 +6,19 @@ module Abt
       module Commands
         class Stop < BaseCommand
           def self.usage
-            'abt stop harvest'
+            "abt stop harvest"
           end
 
           def self.description
-            'Stop running harvest tracker'
+            "Stop running harvest tracker"
           end
 
           def perform
-            abort 'No running time entry' if time_entry.nil?
+            abort("No running time entry") if time_entry.nil?
 
             stop_time_entry
 
-            warn 'Harvest time entry stopped'
+            warn("Harvest time entry stopped")
             print_task(project, task)
           end
 
@@ -27,28 +27,28 @@ module Abt
           def stop_time_entry
             api.patch("time_entries/#{time_entry['id']}/stop")
           rescue Abt::HttpError::HttpError => e
-            warn e
-            abort 'Unable to stop time entry'
+            warn(e)
+            abort("Unable to stop time entry")
           end
 
           def project
-            time_entry['project']
+            time_entry["project"]
           end
 
           def task
-            time_entry['task']
+            time_entry["task"]
           end
 
           def time_entry
             @time_entry ||= begin
               api.get_paged(
-                'time_entries',
+                "time_entries",
                 is_running: true,
                 user_id: config.user_id
               ).first
-            rescue Abt::HttpError::HttpError => e # rubocop:disable Layout/RescueEnsureAlignment
-              warn e
-              abort 'Unable to fetch running time entry'
+            rescue Abt::HttpError::HttpError => e
+              warn(e)
+              abort("Unable to fetch running time entry")
             end
           end
         end

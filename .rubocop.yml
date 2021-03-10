@@ -1,7 +1,12 @@
+require:
+  - rubocop-performance
+  - rubocop-rspec
+
 AllCops:
+  TargetRubyVersion: 2.7
   DisplayCopNames: true
   DisplayStyleGuide: true
-  TargetRubyVersion: 2.6
+  NewCops: enable
   Severity: error
 
 Bundler/DuplicatedGem:
@@ -10,16 +15,90 @@ Bundler/DuplicatedGem:
 Bundler/OrderedGems:
   Enabled: true
 
-Layout/LineLength:
-  Max: 100
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Lint/ScriptPermission:
+  Exclude:
+    - "Rakefile"
+
+Metrics/AbcSize:
+  Exclude:
+    - "spec/**/*"
+
+Metrics/BlockLength:
+  Max: 25
+  Exclude:
+    - "spec/**/*_spec.rb"
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: always
 
 Style/Documentation:
   Enabled: false
 
-Metrics/AbcSize:
+Style/MethodCallWithArgsParentheses:
+  IgnoredMethods:
+    [
+      "to",
+      "to_not",
+      "require",
+      "require_relative",
+      "describe",
+      "it",
+      "context",
+      "exit",
+      "validate_presence_of",
+      "belong_to",
+      "have_many",
+      "raise",
+      "puts",
+      "desc",
+      "redirect_to",
+      "render",
+    ]
+  Enabled: true
   Exclude:
-    - "spec/**/*_spec.rb"
+    - "Gemfile"
 
-Metrics/BlockLength:
-  Exclude:
-    - "spec/**/*_spec.rb"
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/SymbolArray:
+  EnforcedStyle: brackets
+
+RSpec/DescribeClass:
+  Enabled: true
+
+RSpec/DescribedClass:
+  EnforcedStyle: explicit
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Max: 5
+
+RSpec/LeadingSubject:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 5
+
+RSpec/ContextWording:
+  Prefixes:
+    - when
+    - with
+    - without
+
+RSpec/VerifiedDoubles:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/MessageChain:
+  Enabled: false
+
+RSpec/InstanceVariable:
+  AssignmentOnly: false

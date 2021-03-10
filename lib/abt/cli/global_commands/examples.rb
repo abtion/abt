@@ -5,11 +5,11 @@ module Abt
     module GlobalCommands
       class Examples < Abt::BaseCommand
         def self.usage
-          'abt examples'
+          "abt examples"
         end
 
         def self.description
-          'Print command examples'
+          "Print command examples"
         end
 
         attr_reader :cli

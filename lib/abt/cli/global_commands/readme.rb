@@ -5,11 +5,11 @@ module Abt
     module GlobalCommands
       class Readme < Abt::BaseCommand
         def self.usage
-          'abt readme'
+          "abt readme"
         end
 
         def self.description
-          'Print markdown readme'
+          "Print markdown readme"
         end
 
         attr_reader :cli

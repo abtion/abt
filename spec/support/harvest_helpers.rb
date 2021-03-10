@@ -7,8 +7,8 @@ module HarvestHelpers
       page = index + 1
 
       response_data = {
-        "project_assignments": [project_assignment],
-        "total_pages": project_assignments.length
+        project_assignments: [project_assignment],
+        total_pages: project_assignments.length
       }
 
       stub_request(:get, "https://api.harvestapp.com/v2/users/me/project_assignments?page=#{page}")
@@ -18,15 +18,15 @@ module HarvestHelpers
   end
 
   def stub_post_time_entry(git_config, time_entry)
-    stub_request(:post, 'https://api.harvestapp.com/v2/time_entries')
+    stub_request(:post, "https://api.harvestapp.com/v2/time_entries")
       .with(headers: request_headers_for_git_config(git_config))
       .to_return(body: Oj.dump(time_entry, mode: :json))
   end
 
   def request_headers_for_git_config(git_config)
     {
-      'Authorization' => "Bearer #{git_config['accessToken']}",
-      'Harvest-Account-Id' => git_config['accountId'], 'Content-Type' => 'application/json'
+      "Authorization" => "Bearer #{git_config['accessToken']}",
+      "Harvest-Account-Id" => git_config["accountId"], "Content-Type" => "application/json"
     }
   end
 end

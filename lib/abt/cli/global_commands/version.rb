@@ -5,11 +5,11 @@ module Abt
     module GlobalCommands
       class Version < Abt::BaseCommand
         def self.usage
-          'abt version'
+          "abt version"
         end
 
         def self.description
-          'Print abt version'
+          "Print abt version"
         end
 
         attr_reader :cli

@@ -4,9 +4,9 @@ module Abt
   module Providers
     module Devops
       class Api
-        VERBS = %i[get post put].freeze
+        VERBS = [:get, :post, :put].freeze
 
-        CONDITIONAL_ACCESS_POLICY_ERROR_CODE = 'VS403463'
+        CONDITIONAL_ACCESS_POLICY_ERROR_CODE = "VS403463"
 
         attr_reader :organization_name, :project_name, :username, :access_token, :cli
 
@@ -26,18 +26,18 @@ module Abt
 
         def get_paged(path, query = {})
           result = request(:get, path, query)
-          result['value']
+          result["value"]
 
           # TODO: Loop if necessary
         end
 
         def work_item_query(wiql)
-          response = post('wit/wiql', Oj.dump({ query: wiql }, mode: :json))
-          ids = response['workItems'].map { |work_item| work_item['id'] }
+          response = post("wit/wiql", Oj.dump({ query: wiql }, mode: :json))
+          ids = response["workItems"].map { |work_item| work_item["id"] }
 
           work_items = []
           ids.each_slice(200) do |page_ids|
-            work_items += get_paged('wit/workitems', ids: page_ids.join(','))
+            work_items += get_paged("wit/workitems", ids: page_ids.join(","))
           end
 
           work_items
@@ -50,7 +50,7 @@ module Abt
             Oj.load(response.body)
           else
             error_class = Abt::HttpError.error_class_for_status(response.status)
-            encoded_response_body = response.body.force_encoding('utf-8')
+            encoded_response_body = response.body.force_encoding("utf-8")
             raise error_class, "Code: #{response.status}, body: #{encoded_response_body}"
           end
         rescue Abt::HttpError::ForbiddenError => e
@@ -75,9 +75,9 @@ module Abt
 
         def connection
           @connection ||= Faraday.new(api_endpoint) do |connection|
-            connection.basic_auth username, access_token
-            connection.headers['Content-Type'] = 'application/json'
-            connection.headers['Accept'] = 'application/json; api-version=6.0'
+            connection.basic_auth(username, access_token)
+            connection.headers["Content-Type"] = "application/json"
+            connection.headers["Accept"] = "application/json; api-version=6.0"
           end
         end
 
@@ -87,14 +87,14 @@ module Abt
         # https://apidock.com/ruby/ERB/Util/url_encode
         def rfc_3986_encode_path_segment(string)
           string.to_s.b.gsub(/[^a-zA-Z0-9_\-.~]/) do |match|
-            format('%%%02X', match.unpack1('C')) # rubocop:disable Style/FormatStringToken
+            format("%%%02X", match.unpack1("C"))
           end
         end
 
         def handle_denied_by_conditional_access_policy!(exception)
           raise exception unless exception.message.include?(CONDITIONAL_ACCESS_POLICY_ERROR_CODE)
 
-          cli.abort <<~TXT
+          cli.abort(<<~TXT)
             Access denied by conditional access policy.
             Try logging into the board using the URL below, then retry the command.
 

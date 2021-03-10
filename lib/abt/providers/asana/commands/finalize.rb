@@ -6,24 +6,24 @@ module Abt
       module Commands
         class Finalize < BaseCommand
           def self.usage
-            'abt finalize asana[:<project-gid>/<task-gid>]'
+            "abt finalize asana[:<project-gid>/<task-gid>]"
           end
 
           def self.description
-            'Move current/specified task to section (column) for finalized tasks'
+            "Move current/specified task to section (column) for finalized tasks"
           end
 
           def perform
             unless project_gid == config.path.project_gid
-              abort 'This is a no-op for tasks outside the current project'
+              abort("This is a no-op for tasks outside the current project")
             end
             require_task!
             print_task(project_gid, task)
 
             if task_already_in_finalized_section?
-              warn "Task already in section: #{current_task_section['name']}"
+              warn("Task already in section: #{current_task_section['name']}")
             else
-              warn "Moving task to section: #{finalized_section['name']}"
+              warn("Moving task to section: #{finalized_section['name']}")
               move_task
             end
           end
@@ -35,18 +35,18 @@ module Abt
           end
 
           def current_task_section
-            task_section_membership&.dig('section')
+            task_section_membership&.dig("section")
           end
 
           def task_section_membership
-            task['memberships'].find do |membership|
-              membership.dig('section', 'gid') == config.finalized_section_gid
+            task["memberships"].find do |membership|
+              membership.dig("section", "gid") == config.finalized_section_gid
             end
           end
 
           def finalized_section
             @finalized_section ||= api.get("sections/#{config.finalized_section_gid}",
-                                           opt_fields: 'name')
+                                           opt_fields: "name")
           end
 
           def move_task
@@ -57,7 +57,8 @@ module Abt
 
           def task
             @task ||= begin
-              api.get("tasks/#{task_gid}", opt_fields: 'name,memberships.section.name,permalink_url')
+              api.get("tasks/#{task_gid}",
+                      opt_fields: "name,memberships.section.name,permalink_url")
             end
           end
         end
