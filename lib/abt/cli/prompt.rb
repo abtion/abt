@@ -10,7 +10,7 @@ module Abt
       end
 
       def text(question)
-        output.print("#{question}: ")
+        output.print("#{question.strip}: ")
         read_user_input
       end
 
@@ -30,7 +30,7 @@ module Abt
       end
 
       def choice(text, options, nil_option: false)
-        output.puts "#{text}:"
+        output.puts "#{text.strip}:"
 
         if options.length.zero?
           raise Abort, "No available options" unless nil_option

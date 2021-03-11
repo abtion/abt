@@ -47,9 +47,9 @@ module Abt
     def flag_parser
       @flag_parser ||= OptionParser.new do |opts|
         opts.banner = <<~TXT
-          #{self.class.description}
+          #{self.class.description.strip}
 
-          Usage: #{self.class.usage}
+          Usage: #{self.class.usage.strip}
         TXT
 
         opts.on("-h", "--help", "Display this help")

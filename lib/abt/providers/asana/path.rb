@@ -4,7 +4,7 @@ module Abt
   module Providers
     module Asana
       class Path < String
-        PATH_REGEX = %r{^(?<project_gid>\d+)?(/(?<task_gid>\d+))?$}.freeze
+        PATH_REGEX = %r{^(?<project_gid>\d+)?/?(?<task_gid>\d+)?$}.freeze
 
         def self.from_ids(project_gid = nil, task_gid = nil)
           path = project_gid ? [project_gid, *task_gid].join("/") : ""

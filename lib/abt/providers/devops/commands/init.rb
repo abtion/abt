@@ -52,18 +52,22 @@ module Abt
           def project_url
             @project_url ||= begin
               loop do
-                url = cli.prompt.text([
-                  "Please provide the URL for the devops project",
-                  "For instance https://{organization}.visualstudio.com/{project} or https://dev.azure.com/{organization}/{project}",
-                  "",
-                  "Enter URL"
-                ].join("\n"))
+                url = cli.prompt.text(project_url_prompt_text)
 
                 break url if AZURE_DEV_URL_REGEX =~ url || VS_URL_REGEX =~ url
 
                 warn("Invalid URL")
               end
             end
+          end
+
+          def project_url_prompt_text
+            <<~TXT
+              Please provide the URL for the devops project
+              For instance https://{organization}.visualstudio.com/{project} or https://dev.azure.com/{organization}/{project}
+
+              Enter URL
+            TXT
           end
         end
       end

@@ -10,7 +10,9 @@ module Abt
           end
 
           def self.description
-            "Start tracker for current or specified task. Add a relevant ARI to link the time entry, e.g. `abt track harvest asana`"
+            <<~TXT
+              Start tracker for current or specified task. Add a relevant ARI to link the time entry, e.g. `abt track harvest asana`
+            TXT
           end
 
           def self.flags

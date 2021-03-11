@@ -9,7 +9,8 @@ module Abt
         BOARD_ID_REGEX = /(?<board_id>[a-z0-9\-]+)/.freeze
         WORK_ITEM_ID_REGEX = /(?<work_item_id>\d+)/.freeze
 
-        PATH_REGEX = %r{^(#{ORGANIZATION_NAME_REGEX}/#{PROJECT_NAME_REGEX}/#{BOARD_ID_REGEX})?(/#{WORK_ITEM_ID_REGEX})?}.freeze
+        PATH_REGEX =
+          %r{^(#{ORGANIZATION_NAME_REGEX}/#{PROJECT_NAME_REGEX}/#{BOARD_ID_REGEX})?(/#{WORK_ITEM_ID_REGEX})?}.freeze
 
         def self.from_ids(organization_id = nil, project_name = nil, board_id = nil, work_item_id = nil)
           return new unless organization_id && project_name && board_id

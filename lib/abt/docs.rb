@@ -20,7 +20,7 @@ module Abt
         }
       end
 
-      def extended_examples
+      def extended_examples # rubocop:disable Metrics/MethodLength
         {
           "Tracking meetings (without switching current task setting):" => {
             "abt pick asana -d | abt track harvest" => "Track on asana meeting task",
@@ -38,8 +38,10 @@ module Abt
           },
           "Flags:" => {
             'abt start harvest -c "comment"' => "Add command flags after ARIs",
-            'abt start harvest -c "comment" -- asana' => "Use -- to end a list of flags, so that it can be followed by another ARI",
-            'abt pick harvest | abt start -c "comment"' => "Flags placed directly after a command applies to the piped in ARI"
+            'abt start harvest -c "comment" -- asana' =>
+              "Use -- to end a list of flags, so that it can be followed by another ARI",
+            'abt pick harvest | abt start -c "comment"' =>
+              "Flags placed directly after a command applies to the piped in ARI"
           }
         }
       end
@@ -48,15 +50,7 @@ module Abt
         @providers ||= begin
           providers = {}
 
-          global_command_names = Abt::Cli::GlobalCommands.command_names
-          providers["Global"] = global_command_names.each_with_object({}) do |name, definition|
-            command_class = Abt::Cli::GlobalCommands.command_class(name)
-            full_name = "abt #{name}"
-
-            if command_class.respond_to?(:usage) && command_class.respond_to?(:description)
-              definition[full_name] = [command_class.usage, command_class.description]
-            end
-          end
+          providers["Global"] = global_command_definitions
 
           Abt.schemes.sort.each_with_object(providers) do |scheme, definition|
             definition[scheme] = command_definitions(scheme)
@@ -68,6 +62,18 @@ module Abt
 
       private
 
+      def global_command_definitions
+        global_command_names = Abt::Cli::GlobalCommands.command_names
+        global_command_names.each_with_object({}) do |name, definition|
+          command_class = Abt::Cli::GlobalCommands.command_class(name)
+          full_name = "abt #{name}"
+
+          if command_class.respond_to?(:usage) && command_class.respond_to?(:description)
+            definition[full_name] = [command_class.usage.strip, command_class.description.strip]
+          end
+        end
+      end
+
       def command_definitions(scheme)
         provider = Abt.scheme_provider(scheme)
         provider.command_names.each_with_object({}) do |name, definition|
@@ -75,7 +81,7 @@ module Abt
           full_name = "abt #{name} #{scheme}"
 
           if command_class.respond_to?(:usage) && command_class.respond_to?(:description)
-            definition[full_name] = [command_class.usage, command_class.description]
+            definition[full_name] = [command_class.usage.strip, command_class.description.strip]
           end
         end
       end

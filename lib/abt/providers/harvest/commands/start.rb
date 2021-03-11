@@ -12,7 +12,9 @@ module Abt
           end
 
           def self.description
-            "Alias for: `abt track harvest`. Meant to used in combination with other ARIs, e.g. `abt start harvest asana`"
+            <<~TXT
+              Alias for: `abt track harvest`. Meant to used in combination with other ARIs, e.g. `abt start harvest asana`
+            TXT
           end
         end
       end
