@@ -1,25 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe Abt::Cli::Prompt do
-  describe "#read_user_input" do
-    it "gets user input through /dev/tty" do
-      prompt = Abt::Cli::Prompt.new(output: StringIO.new)
-      input = instance_double(IO)
-
-      allow(prompt).to receive(:open).and_yield(input)
-      allow(input).to receive(:gets).and_return("input\n")
-
-      expect(prompt.send(:read_user_input)).to eq("input")
-      expect(prompt).to have_received(:open).with("/dev/tty")
-      expect(input).to have_received(:gets)
-    end
-  end
-
   describe "#text" do
     it "prints the specified question and returns the user input" do
       output = StringIO.new
       prompt = Abt::Cli::Prompt.new(output: output)
-      allow(prompt).to receive(:read_user_input).and_return("input")
+      allow(Abt::Helpers).to receive(:read_user_input).and_return("input")
 
       expect(prompt.text("Input some text here")).to eq("input")
       expect(output.string).to eq("Input some text here: ")
@@ -30,7 +16,7 @@ RSpec.describe Abt::Cli::Prompt do
     it "prints the question followed by (y / n) prompt" do
       output = StringIO.new
       prompt = Abt::Cli::Prompt.new(output: output)
-      allow(prompt).to receive(:read_user_input).and_return("y")
+      allow(Abt::Helpers).to receive(:read_user_input).and_return("y")
 
       prompt.boolean("Do this?")
 
@@ -40,7 +26,7 @@ RSpec.describe Abt::Cli::Prompt do
     context 'when user inputs "y"' do
       it "returns true" do
         prompt = Abt::Cli::Prompt.new(output: StringIO.new)
-        allow(prompt).to receive(:read_user_input).and_return("y")
+        allow(Abt::Helpers).to receive(:read_user_input).and_return("y")
 
         expect(prompt.boolean("Do this?")).to be(true)
       end
@@ -49,7 +35,7 @@ RSpec.describe Abt::Cli::Prompt do
     context 'when user inputs "n"' do
       it "returns false" do
         prompt = Abt::Cli::Prompt.new(output: StringIO.new)
-        allow(prompt).to receive(:read_user_input).and_return("n")
+        allow(Abt::Helpers).to receive(:read_user_input).and_return("n")
 
         expect(prompt.boolean("Do this?")).to be(false)
       end
@@ -59,7 +45,7 @@ RSpec.describe Abt::Cli::Prompt do
       it "keeps prompting until it receives y or n" do
         output = StringIO.new
         prompt = Abt::Cli::Prompt.new(output: output)
-        allow(prompt).to receive(:read_user_input).and_return("x", "wrong", "y")
+        allow(Abt::Helpers).to receive(:read_user_input).and_return("x", "wrong", "y")
 
         expect(prompt.boolean("Do this?")).to be(true)
         expect(output.string).to eq([
@@ -69,7 +55,7 @@ RSpec.describe Abt::Cli::Prompt do
           "(y / n): "
         ].join("\n"))
 
-        expect(prompt).to have_received(:read_user_input).thrice
+        expect(Abt::Helpers).to have_received(:read_user_input).thrice
       end
     end
   end
@@ -78,7 +64,7 @@ RSpec.describe Abt::Cli::Prompt do
     it "prints the specified question, available options and a prompt" do
       output = StringIO.new
       prompt = Abt::Cli::Prompt.new(output: output)
-      allow(prompt).to receive(:read_user_input).and_return("1")
+      allow(Abt::Helpers).to receive(:read_user_input).and_return("1")
 
       option1 = { "name" => "First" }
       option2 = { "name" => "Second" }
@@ -96,12 +82,24 @@ RSpec.describe Abt::Cli::Prompt do
 
     it "returns the picked option" do
       prompt = Abt::Cli::Prompt.new(output: StringIO.new)
-      allow(prompt).to receive(:read_user_input).and_return("1")
+      allow(Abt::Helpers).to receive(:read_user_input).and_return("1")
 
       option1 = { "name" => "First" }
       option2 = { "name" => "Second" }
 
       expect(prompt.choice("Pick an option", [option1, option2])).to be(option1)
+    end
+
+    context "when invalid option is selected" do
+      it "keeps prompting until it receives a valid option" do
+        prompt = Abt::Cli::Prompt.new(output: StringIO.new)
+        allow(Abt::Helpers).to receive(:read_user_input).and_return("w", "x", "d", "0", "3", "2")
+
+        option1 = { "name" => "First" }
+        option2 = { "name" => "Second" }
+
+        expect(prompt.choice("Pick an option", [option1, option2])).to be(option2)
+      end
     end
 
     context "when an empty list of options is provided" do
@@ -113,33 +111,11 @@ RSpec.describe Abt::Cli::Prompt do
       end
     end
 
-    context "when nil_option is not present (or false)" do
-      context "when an invalid option is picked" do
-        it "prompts for user input until it gets a valid value" do
-          output = StringIO.new
-          prompt = Abt::Cli::Prompt.new(output: output)
-          allow(prompt).to receive(:read_user_input).and_return("qwe", "ert", "1")
-
-          option = { "name" => "Option" }
-
-          expect(prompt.choice("Pick an option", [option])).to eq(option)
-          expect(output.string).to eq([
-            "Pick an option:",
-            "(1) Option",
-            "(1): Invalid selection",
-            "(1): Invalid selection",
-            "(1): Selected: (1) Option",
-            ""
-          ].join("\n"))
-        end
-      end
-    end
-
     context "when nil_option is present" do
       it "prints nil option" do
         output = StringIO.new
         prompt = Abt::Cli::Prompt.new(output: output)
-        allow(prompt).to receive(:read_user_input).and_return("1")
+        allow(Abt::Helpers).to receive(:read_user_input).and_return("1")
 
         prompt.choice("Pick an option", [{ "name" => "Option" }], nil_option: ["x", "e(x)it"])
 
@@ -156,10 +132,10 @@ RSpec.describe Abt::Cli::Prompt do
         end
       end
 
-      context "when an invalid option is picked" do
+      context "when nil ioption is picked" do
         it "returns nil" do
           prompt = Abt::Cli::Prompt.new(output: StringIO.new)
-          allow(prompt).to receive(:read_user_input).and_return("qwe")
+          allow(Abt::Helpers).to receive(:read_user_input).and_return("q")
 
           expect(prompt.choice("Pick an option", [{ "name" => "Option" }], nil_option: true)).to eq(nil)
         end

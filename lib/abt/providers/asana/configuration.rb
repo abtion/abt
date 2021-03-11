@@ -26,7 +26,7 @@ module Abt
           @workspace_gid ||= begin
             current = git_global["workspaceGid"]
             if current.nil?
-              prompt_workspace["gid"]
+              prompt_workspace_gid
             else
               current
             end
@@ -92,20 +92,28 @@ module Abt
           cli.prompt.choice(message, sections)
         end
 
-        def prompt_workspace
-          cli.warn("Fetching workspaces...")
-          workspaces = api.get_paged("workspaces", opt_fields: "name")
-          if workspaces.empty?
-            cli.abort("Your asana access token does not have access to any workspaces")
-          elsif workspaces.one?
+        def prompt_workspace_gid
+          cli.abort("Your asana access token does not have access to any workspaces") if workspaces.empty?
+
+          if workspaces.one?
             workspace = workspaces.first
             cli.warn("Selected Asana workspace: #{workspace['name']}")
           else
-            workspace = cli.prompt.choice("Select Asana workspace", workspaces)
+            workspace = pick_workspace
           end
 
           git_global["workspaceGid"] = workspace["gid"]
-          workspace
+        end
+
+        def pick_workspace
+          cli.prompt.choice("Select Asana workspace", workspaces)
+        end
+
+        def workspaces
+          @workspaces ||= begin
+            cli.warn("Fetching workspaces...")
+            api.get_paged("workspaces", opt_fields: "name")
+          end
         end
 
         def api

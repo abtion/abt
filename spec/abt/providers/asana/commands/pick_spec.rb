@@ -2,7 +2,6 @@
 
 RSpec.describe(Abt::Providers::Asana::Commands::Pick, :asana) do
   context "when local config is available" do
-    let(:asana_credentials) { { "accessToken" => "access_token" } }
     let(:local_git) { GitConfigMock.new }
     let(:global_git) { GitConfigMock.new(data: asana_credentials) }
 
@@ -49,7 +48,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Pick, :asana) do
 
       thr = Thread.new do
         cli = Abt::Cli.new(argv: argv, input: input, err_output: err_output, output: output)
-        allow(cli.prompt).to receive(:read_user_input) { input.gets.strip }
+        allow(Abt::Helpers).to receive(:read_user_input) { input.gets.strip }
 
         cli.perform
       end
@@ -119,7 +118,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Pick, :asana) do
         cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: output)
 
         # Rig the cli to select option 1 for both section and task
-        allow(cli.prompt).to receive(:read_user_input).and_return("1", "1")
+        allow(Abt::Helpers).to receive(:read_user_input).and_return("1", "1")
 
         cli.perform
 

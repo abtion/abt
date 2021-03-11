@@ -20,7 +20,7 @@ module Abt
           end
 
           def perform
-            abort("Must be run inside a git repository") unless config.local_available?
+            require_local_config!
             require_board!
 
             warn("#{project_name} - #{board['name']}")
@@ -30,24 +30,30 @@ module Abt
 
             return if flags[:"dry-run"]
 
-            config.path = Path.from_ids(organization_name, project_name, board_id, work_item["id"])
+            update_config(work_item)
           end
 
           private
 
+          def update_config(work_item)
+            config.path = Path.from_ids(
+              organization_name: organization_name,
+              project_name: project_name,
+              board_id: board_id,
+              work_item_id: work_item["id"]
+            )
+          end
+
           def select_work_item
-            loop do
-              column = cli.prompt.choice("Which column?", columns)
-              warn("Fetching work items...")
-              work_items = work_items_in_column(column)
+            column = cli.prompt.choice("Which column?", columns)
+            warn("Fetching work items...")
+            work_items = work_items_in_column(column)
 
-              if work_items.length.zero?
-                warn("Section is empty")
-                next
-              end
-
-              work_item = cli.prompt.choice("Select a work item", work_items, nil_option: true)
-              return work_item if work_item
+            if work_items.length.zero?
+              warn("Section is empty")
+              select_work_item
+            else
+              cli.prompt.choice("Select a work item", work_items, nil_option: true) || select_work_item
             end
           end
 

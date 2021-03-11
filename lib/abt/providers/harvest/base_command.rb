@@ -19,6 +19,10 @@ module Abt
 
         private
 
+        def require_local_config!
+          abort("Must be run inside a git repository") unless config.local_available?
+        end
+
         def require_project!
           return if project_id
 

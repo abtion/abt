@@ -16,15 +16,6 @@ module Abt
           def perform
             require_work_item!
 
-            body = {
-              notes: notes,
-              external_reference: {
-                id: work_item["id"],
-                group_id: "AzureDevOpsWorkItem",
-                permalink: work_item["url"]
-              }
-            }
-
             puts Oj.dump(body, mode: :json)
           rescue HttpError::NotFoundError
             args = [organization_name, project_name, board_id, work_item_id].compact
@@ -37,6 +28,17 @@ module Abt
           end
 
           private
+
+          def body
+            {
+              notes: notes,
+              external_reference: {
+                id: work_item["id"],
+                group_id: "AzureDevOpsWorkItem",
+                permalink: work_item["url"]
+              }
+            }
+          end
 
           def notes
             [

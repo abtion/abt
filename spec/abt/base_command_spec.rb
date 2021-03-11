@@ -2,7 +2,7 @@
 
 RSpec.describe Abt::BaseCommand do
   describe "flags" do
-    context "subclass" do
+    describe "subclass" do
       it "requires .usage to be implemented" do
         command = Class.new(Abt::BaseCommand)
 

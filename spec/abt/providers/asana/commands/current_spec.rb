@@ -2,7 +2,6 @@
 
 RSpec.describe(Abt::Providers::Asana::Commands::Current, :asana) do
   context "when local config is available" do
-    let(:asana_credentials) { { "accessToken" => "access_token" } }
     let(:local_git) { GitConfigMock.new }
     let(:global_git) { GitConfigMock.new(data: asana_credentials) }
 

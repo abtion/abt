@@ -18,6 +18,12 @@ module Abt
             require_task!
             print_task(project_gid, task)
 
+            maybe_move_task
+          end
+
+          private
+
+          def maybe_move_task
             if task_already_in_finalized_section?
               warn("Task already in section: #{current_task_section['name']}")
             else
@@ -25,8 +31,6 @@ module Abt
               move_task
             end
           end
-
-          private
 
           def task_already_in_finalized_section?
             !task_section_membership.nil?

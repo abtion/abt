@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
-  let(:asana_credentials) do
-    {
-      "accessToken" => "access_token",
-      "workspaceGid" => "workspace_gid"
-    }
-  end
   let(:local_git) { GitConfigMock.new(data: { "wipSectionGid" => wip_section_id }) }
   let(:global_git) { GitConfigMock.new(data: asana_credentials) }
 
@@ -15,17 +9,19 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
   let(:wip_section_id) { "1003" }
   let(:task_id) { "1004" }
 
-  let(:stub_user_request) do
+  def stub_user_request
     stub_asana_request(global_git, :get, "users/me")
       .with(query: { opt_fields: "name" })
       .to_return(body: Oj.dump({ data: { gid: user_id, name: "Name of user" } }, mode: :json))
   end
-  let(:stub_project_request) do
+
+  def stub_project_request
     stub_asana_request(global_git, :get, "projects/#{project_id}")
       .with(query: { opt_fields: "name" })
       .to_return(body: Oj.dump({ data: { gid: project_id, name: "Project" } }, mode: :json))
   end
-  let(:stub_task_request) do
+
+  def stub_task_request
     stub_asana_request(global_git, :get, "tasks/#{task_id}")
       .with(query: { opt_fields: "name,memberships.section.name,assignee.name,permalink_url" })
       .to_return(body: Oj.dump({ data: { gid: task_id,
@@ -35,17 +31,20 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
                                          permalink_url: "https://ta.sk/#{task_id}/URL" } },
                                mode: :json))
   end
-  let(:stub_wip_section_request) do
+
+  def stub_wip_section_request
     stub_asana_request(global_git, :get, "sections/#{wip_section_id}")
       .with(query: { opt_fields: "name" })
       .to_return(body: Oj.dump({ data: { gid: wip_section_id, name: "WIP" } }, mode: :json))
   end
-  let(:stub_add_to_wip_section_request) do
+
+  def stub_add_to_wip_section_request
     stub_asana_request(global_git, :post, "sections/#{wip_section_id}/addTask")
       .with(body: { data: { task: task_id } })
       .to_return(body: Oj.dump({ data: {} }, mode: :json))
   end
-  let(:stub_reassign_request) do
+
+  def stub_reassign_request
     stub_asana_request(global_git, :put, "tasks/#{task_id}")
       .with(body: { data: { assignee: user_id } })
       .to_return(body: Oj.dump({ data: {} }, mode: :json))
@@ -191,7 +190,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
 
       thr = Thread.new do
         cli = Abt::Cli.new(argv: argv, input: input, err_output: err_output, output: output)
-        allow(cli.prompt).to receive(:read_user_input) { input.gets.strip }
+        allow(Abt::Helpers).to receive(:read_user_input) { input.gets.strip }
 
         cli.perform
       end
@@ -247,7 +246,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
     end
   end
 
-  context "task is outside of current project" do
+  context "when task is outside of current project" do
     it "does not move the task - since the WIP section is stored per git repo" do
       stub_user_request
       stub_project_request

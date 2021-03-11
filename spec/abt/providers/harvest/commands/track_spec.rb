@@ -3,10 +3,7 @@
 RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
   let(:project_id) { "27701618" }
   let(:task_id) { "14628589" }
-  let(:user_id) { "1111" }
-  let(:harvest_credentials) do
-    { "accessToken" => "access_token", "accountId" => "account_id", "userId" => user_id }
-  end
+  let(:user_id) { harvest_credentials["userId"] }
   let(:local_git) { GitConfigMock.new }
   let(:global_git) { GitConfigMock.new(data: harvest_credentials) }
 
@@ -34,7 +31,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
 
     thr = Thread.new do
       cli = Abt::Cli.new(argv: argv, input: input, err_output: err_output, output: output)
-      allow(cli.prompt).to receive(:read_user_input) { input.gets.strip }
+      allow(Abt::Helpers).to receive(:read_user_input) { input.gets.strip }
 
       cli.perform
     end

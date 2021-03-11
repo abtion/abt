@@ -61,8 +61,6 @@ module Abt
           end
 
           def branch_names_from_aris
-            other_aris = cli.aris - [ari]
-
             abort("You must provide an additional ARI that responds to: branch-name. E.g., asana") if other_aris.empty?
 
             input = StringIO.new(cli.aris.to_s)
@@ -70,6 +68,10 @@ module Abt
             Abt::Cli.new(argv: ["branch-name"], output: output, input: input).perform
 
             output.string.lines.map(&:strip).compact
+          end
+
+          def other_aris
+            @other_aris ||= cli.aris - [ari]
           end
         end
       end

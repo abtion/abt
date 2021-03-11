@@ -20,23 +20,27 @@ module Abt
           end
 
           def perform
-            abort("Must be run inside a git repository") unless config.local_available?
+            require_local_config!
             require_project!
 
             warn(project["name"])
-            task = cli.prompt.choice("Select a task", tasks)
+            task = pick_task
 
             print_task(project, task)
 
             return if flags[:"dry-run"]
 
-            config.path = Path.from_ids(project_id, task["id"])
+            config.path = Path.from_ids(project_id: project_id, task_id: task["id"])
           end
 
           private
 
           def project
             project_assignment["project"]
+          end
+
+          def pick_task
+            cli.prompt.choice("Select a task", tasks)
           end
 
           def tasks

@@ -12,4 +12,17 @@ RSpec.describe Abt::Helpers do
       expect(Abt::Helpers.command_to_const("work-items")).to eq("WorkItems")
     end
   end
+
+  describe ".read_user_input" do
+    it "gets user input through /dev/tty" do
+      input = instance_double(IO)
+
+      allow(Abt::Helpers).to receive(:open).and_yield(input)
+      allow(input).to receive(:gets).and_return("input\n")
+
+      expect(Abt::Helpers.read_user_input).to eq("input")
+      expect(Abt::Helpers).to have_received(:open).with("/dev/tty")
+      expect(input).to have_received(:gets)
+    end
+  end
 end

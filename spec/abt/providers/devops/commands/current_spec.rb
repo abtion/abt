@@ -107,8 +107,10 @@ RSpec.describe(Abt::Providers::Devops::Commands::Current, :devops) do
 
         expect do
           cli.perform
-        end.to raise_error(Abt::Cli::Abort,
-                           "Board could not be found, ensure that settings for organization, project, and board are correct")
+        end.to raise_error(
+          Abt::Cli::Abort,
+          "Board could not be found, ensure that settings for organization, project, and board are correct"
+        )
       end
     end
 

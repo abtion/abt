@@ -20,6 +20,10 @@ module Abt
 
         private
 
+        def require_local_config!
+          abort("Must be run inside a git repository") unless config.local_available?
+        end
+
         def require_project!
           abort("No current/specified project. Did you initialize Asana?") if project_gid.nil?
         end

@@ -23,7 +23,7 @@ RSpec.describe(Abt::Providers::Harvest::Configuration, :harvest) do
 
         thr = Thread.new do
           cli = Abt::Cli.new(argv: [], input: input, err_output: err_output, output: null_stream)
-          allow(cli.prompt).to receive(:read_user_input) { input.gets.strip }
+          allow(Abt::Helpers).to receive(:read_user_input) { input.gets.strip }
 
           config = Abt::Providers::Harvest::Configuration.new(cli: cli)
 
@@ -57,7 +57,7 @@ RSpec.describe(Abt::Providers::Harvest::Configuration, :harvest) do
 
         thr = Thread.new do
           cli = Abt::Cli.new(argv: [], input: input, err_output: err_output, output: null_stream)
-          allow(cli.prompt).to receive(:read_user_input) { input.gets.strip }
+          allow(Abt::Helpers).to receive(:read_user_input) { input.gets.strip }
 
           config = Abt::Providers::Harvest::Configuration.new(cli: cli)
 

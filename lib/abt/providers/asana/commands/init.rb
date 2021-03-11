@@ -14,12 +14,12 @@ module Abt
           end
 
           def perform
-            abort("Must be run inside a git repository") unless config.local_available?
+            require_local_config!
 
             projects # Load projects up front to make it obvious that searches are instant
             project = cli.prompt.search("Select a project", projects)
 
-            config.path = Path.from_ids(project["gid"])
+            config.path = Path.from_ids(project_gid: project["gid"])
 
             print_project(project)
           end

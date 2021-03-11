@@ -11,7 +11,7 @@ module Abt
 
       def text(question)
         output.print("#{question.strip}: ")
-        read_user_input
+        Abt::Helpers.read_user_input
       end
 
       def boolean(text)
@@ -20,12 +20,10 @@ module Abt
         loop do
           output.print("(y / n): ")
 
-          case read_user_input
+          case Abt::Helpers.read_user_input
           when "y", "Y" then return true
           when "n", "N" then return false
-          else
-            output.puts "Invalid choice"
-          end
+          else output.puts "Invalid choice" end
         end
       end
 
@@ -40,7 +38,7 @@ module Abt
         end
 
         print_options(options)
-        select_options(options, nil_option)
+        select_option(options, nil_option)
       end
 
       def search(text, options)
@@ -60,40 +58,37 @@ module Abt
         end
       end
 
-      def select_options(options, nil_option)
-        loop do
-          number = read_option_number(options.length, nil_option)
-          if number.nil?
-            return nil if nil_option
+      def select_option(options, nil_option)
+        number = prompt_valid_option_number(options, nil_option)
 
-            next
-          end
+        return nil if number.nil?
 
-          option = options[number - 1]
-
-          output.puts "Selected: (#{number}) #{option['name']}"
-          return option
-        end
+        option = options[number - 1]
+        output.puts "Selected: (#{number}) #{option['name']}"
+        option
       end
 
-      def read_option_number(options_length, nil_option)
-        str = "("
-        str += options_length > 1 ? "1-#{options_length}" : "1"
-        str += nil_option_string(nil_option)
-        str += "): "
-        output.print(str)
-
-        input = read_user_input
+      def prompt_valid_option_number(options, nil_option)
+        output.print(options_info(options, nil_option))
+        input = Abt::Helpers.read_user_input
 
         return nil if nil_option && input == nil_option_character(nil_option)
 
         option_number = input.to_i
-        if option_number <= 0 || option_number > options_length
-          output.puts "Invalid selection"
-          return nil
-        end
+        return option_number if (1..options.length).cover?(option_number)
 
-        option_number
+        output.puts "Invalid selection"
+
+        # Prompt again if the selection was invalid
+        prompt_valid_option_number(options, nil_option)
+      end
+
+      def options_info(options, nil_option)
+        str = "("
+        str += options.length > 1 ? "1-#{options.length}" : "1"
+        str += nil_option_string(nil_option)
+        str += "): "
+        str
       end
 
       def nil_option_string(nil_option)
@@ -113,10 +108,6 @@ module Abt
         return nil_option if nil_option.is_a?(String)
 
         nil_option[1]
-      end
-
-      def read_user_input
-        open(tty_path, &:gets).strip # rubocop:disable Security/Open
       end
 
       def get_search_result(options)
@@ -140,16 +131,6 @@ module Abt
 
       def sanitize_string(string)
         string.downcase.gsub(/[^\w]/, "")
-      end
-
-      def tty_path
-        @tty_path ||= begin
-          candidates = ["/dev/tty", "CON:"] # Unix: '/dev/tty', Windows: 'CON:'
-          selected = candidates.find { |candidate| File.exist?(candidate) }
-          raise Abort, "Unable to prompt for user input" if selected.nil?
-
-          selected
-        end
       end
     end
   end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe(Abt::Providers::Harvest::Commands::Projects, :harvest) do
-  let(:harvest_credentials) { { "accessToken" => "access_token", "accountId" => "account_id" } }
   let(:local_git) { GitConfigMock.new }
   let(:global_git) { GitConfigMock.new(data: harvest_credentials) }
 

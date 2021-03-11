@@ -2,7 +2,6 @@
 
 RSpec.describe(Abt::Providers::Harvest::Commands::Pick, :harvest) do
   context "when local config is available" do
-    let(:harvest_credentials) { { "accessToken" => "access_token", "accountId" => "account_id" } }
     let(:local_git) { GitConfigMock.new }
     let(:global_git) { GitConfigMock.new(data: harvest_credentials) }
 
@@ -32,7 +31,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Pick, :harvest) do
 
       thr = Thread.new do
         cli = Abt::Cli.new(argv: argv, input: input, err_output: err_output, output: output)
-        allow(cli.prompt).to receive(:read_user_input) { input.gets.strip }
+        allow(Abt::Helpers).to receive(:read_user_input) { input.gets.strip }
 
         cli.perform
       end
@@ -67,7 +66,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Pick, :harvest) do
         argv = %w[pick harvest -d]
 
         cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: output)
-        allow(cli.prompt).to receive(:read_user_input).and_return("1") # Rig the cli to select option 1
+        allow(Abt::Helpers).to receive(:read_user_input).and_return("1") # Rig the cli to select option 1
 
         cli.perform
 

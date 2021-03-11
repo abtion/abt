@@ -6,7 +6,7 @@ require_relative "../lib/abt"
 begin
   Abt::Cli.new.perform
 rescue Abt::Cli::Abort => e
-  abort(e.message)
+  abort(e.message.strip)
 rescue Interrupt
   abort("Aborted")
 end

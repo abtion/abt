@@ -2,7 +2,6 @@
 
 RSpec.describe(Abt::Providers::Harvest::Commands::Current, :harvest) do
   context "when local config is available" do
-    let(:harvest_credentials) { { "accessToken" => "access_token", "accountId" => "account_id" } }
     let(:local_git) { GitConfigMock.new }
     let(:global_git) { GitConfigMock.new(data: harvest_credentials) }
 

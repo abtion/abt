@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe(Abt::Providers::Harvest::Commands::Stop, :harvest) do
-  let(:user_id) { "1111" }
-  let(:harvest_credentials) do
-    { "accessToken" => "access_token", "accountId" => "account_id", "userId" => user_id }
-  end
+  let(:user_id) { harvest_credentials["userId"] }
   let(:global_git) { GitConfigMock.new(data: harvest_credentials) }
 
   before do

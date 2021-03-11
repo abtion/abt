@@ -12,10 +12,10 @@ module Abt
         PATH_REGEX =
           %r{^(#{ORGANIZATION_NAME_REGEX}/#{PROJECT_NAME_REGEX}/#{BOARD_ID_REGEX})?(/#{WORK_ITEM_ID_REGEX})?}.freeze
 
-        def self.from_ids(organization_id = nil, project_name = nil, board_id = nil, work_item_id = nil)
-          return new unless organization_id && project_name && board_id
+        def self.from_ids(organization_name: nil, project_name: nil, board_id: nil, work_item_id: nil)
+          return new unless organization_name && project_name && board_id
 
-          new([organization_id, project_name, board_id, *work_item_id].join("/"))
+          new([organization_name, project_name, board_id, *work_item_id].join("/"))
         end
 
         def initialize(path = "")

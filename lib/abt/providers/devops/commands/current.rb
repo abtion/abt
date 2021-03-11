@@ -14,8 +14,7 @@ module Abt
           end
 
           def perform
-            abort("Must be run inside a git repository") unless config.local_available?
-
+            require_local_config!
             require_board!
             ensure_valid_configuration!
 

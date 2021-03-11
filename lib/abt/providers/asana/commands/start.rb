@@ -42,17 +42,23 @@ module Abt
           end
 
           def update_assignee_if_needed
-            current_assignee = task["assignee"]
-
             if current_assignee.nil?
               warn("Assigning task to user: #{current_user['name']}")
               update_assignee
             elsif current_assignee["gid"] == current_user["gid"]
               warn("You are already assigned to this task")
-            elsif cli.prompt.boolean("Task is assigned to: #{current_assignee['name']}, take over?")
+            elsif should_reassign?
               warn("Reassigning task to user: #{current_user['name']}")
               update_assignee
             end
+          end
+
+          def current_assignee
+            task["assignee"]
+          end
+
+          def should_reassign?
+            cli.prompt.boolean("Task is assigned to: #{current_assignee['name']}, take over?")
           end
 
           def move_if_needed

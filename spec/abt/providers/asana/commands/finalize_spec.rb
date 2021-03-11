@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe(Abt::Providers::Asana::Commands::Finalize, :asana) do
-  let(:asana_credentials) do
-    {
-      "accessToken" => "access_token",
-      "workspaceGid" => "workspace_gid"
-    }
-  end
   let(:local_git) { GitConfigMock.new(data: { "finalizedSectionGid" => finalized_section_id }) }
   let(:global_git) { GitConfigMock.new(data: asana_credentials) }
 
@@ -15,7 +9,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Finalize, :asana) do
   let(:finalized_section_id) { "1003" }
   let(:task_id) { "1004" }
 
-  let(:stub_task_request) do
+  def stub_task_request
     stub_asana_request(global_git, :get, "tasks/#{task_id}")
       .with(query: { opt_fields: "name,memberships.section.name,permalink_url" })
       .to_return(body: Oj.dump({ data: { gid: task_id,
@@ -24,13 +18,15 @@ RSpec.describe(Abt::Providers::Asana::Commands::Finalize, :asana) do
                                          permalink_url: "https://ta.sk/#{task_id}/URL" } },
                                mode: :json))
   end
-  let(:stub_finalized_section_request) do
+
+  def stub_finalized_section_request
     stub_asana_request(global_git, :get, "sections/#{finalized_section_id}")
       .with(query: { opt_fields: "name" })
       .to_return(body: Oj.dump({ data: { gid: finalized_section_id, name: "Finalized" } },
                                mode: :json))
   end
-  let(:stub_add_to_finalized_section_request) do
+
+  def stub_add_to_finalized_section_request
     stub_asana_request(global_git, :post, "sections/#{finalized_section_id}/addTask")
       .with(body: { data: { task: task_id } })
       .to_return(body: Oj.dump({ data: {} }, mode: :json))
@@ -102,7 +98,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Finalize, :asana) do
     end
   end
 
-  context "task is outside of current project" do
+  context "when task is outside of current project" do
     it "aborts with correct error message" do
       stub_asana_request(global_git, :get, "tasks/#{task_id}")
         .with(query: { opt_fields: "name,memberships.section.name,permalink_url" })

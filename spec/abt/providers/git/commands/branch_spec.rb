@@ -44,7 +44,7 @@ RSpec.describe Abt::Providers::Git::Commands::Branch do
 
       thr = Thread.new do
         cli = Abt::Cli.new(argv: %w[branch git asana], input: input, err_output: err_output)
-        allow(cli.prompt).to receive(:read_user_input) { input.gets.strip }
+        allow(Abt::Helpers).to receive(:read_user_input) { input.gets.strip }
 
         cli.perform
       end
@@ -74,7 +74,7 @@ RSpec.describe Abt::Providers::Git::Commands::Branch do
 
         thr = Thread.new do
           cli = Abt::Cli.new(argv: %w[branch git asana], input: input, err_output: err_output)
-          allow(cli.prompt).to receive(:read_user_input) { input.gets.strip }
+          allow(Abt::Helpers).to receive(:read_user_input) { input.gets.strip }
 
           cli.perform
         end

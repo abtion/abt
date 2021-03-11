@@ -143,7 +143,7 @@ RSpec.describe Abt::Cli do
         @command = command
 
         def self.command_class(command_name)
-          return @command if command_name == "command"
+          return @command if command_name == "command" # rubocop:disable RSpec/InstanceVariable
         end
       end
 
@@ -237,7 +237,7 @@ RSpec.describe Abt::Cli do
           @command = provider1_command
 
           def self.command_class(command_name)
-            return @command if command_name == "command"
+            return @command if command_name == "command"  # rubocop:disable RSpec/InstanceVariable
           end
         end
 
@@ -251,7 +251,7 @@ RSpec.describe Abt::Cli do
           @command = provider2_command
 
           def self.command_class(command_name)
-            return @command if command_name == "command"
+            return @command if command_name == "command"  # rubocop:disable RSpec/InstanceVariable
           end
         end
 
@@ -284,7 +284,7 @@ RSpec.describe Abt::Cli do
     context "when command uses exit_with_message" do
       it "outputs the message without exiting early" do
         command = Class.new do
-          def initialize(ari:, cli:)
+          def initialize(cli:, **)
             @cli = cli
           end
 
@@ -296,7 +296,7 @@ RSpec.describe Abt::Cli do
           @command = command
 
           def self.command_class(command_name)
-            return @command if command_name == "command"
+            return @command if command_name == "command" # rubocop:disable RSpec/InstanceVariable
           end
         end
 

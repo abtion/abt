@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe(Abt::Providers::Asana::Commands::Add, :asana) do
-  let(:asana_credentials) { { "accessToken" => "access_token", "workspaceGid" => "workspace_gid" } }
   let(:local_git) { GitConfigMock.new }
   let(:global_git) { GitConfigMock.new(data: asana_credentials) }
 
@@ -39,7 +38,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Add, :asana) do
 
     thr = Thread.new do
       cli = Abt::Cli.new(argv: argv, input: input, err_output: err_output, output: output)
-      allow(cli.prompt).to receive(:read_user_input) { input.gets.strip }
+      allow(Abt::Helpers).to receive(:read_user_input) { input.gets.strip }
 
       cli.perform
     end
@@ -82,7 +81,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Add, :asana) do
 
       thr = Thread.new do
         cli = Abt::Cli.new(argv: argv, input: input, err_output: err_output, output: output)
-        allow(cli.prompt).to receive(:read_user_input) { input.gets.strip }
+        allow(Abt::Helpers).to receive(:read_user_input) { input.gets.strip }
 
         cli.perform
       end

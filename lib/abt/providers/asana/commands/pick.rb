@@ -20,18 +20,17 @@ module Abt
           end
 
           def perform
-            abort("Must be run inside a git repository") unless config.local_available?
+            require_local_config!
             require_project!
 
             warn(project["name"])
-
             task = select_task
 
             print_task(project, task)
 
             return if flags[:"dry-run"]
 
-            config.path = Path.from_ids(project_gid, task["gid"])
+            config.path = Path.from_ids(project_gid: project_gid, task_gid: task["gid"])
           end
 
           private
@@ -41,18 +40,15 @@ module Abt
           end
 
           def select_task
-            loop do
-              section = cli.prompt.choice("Which section?", sections)
-              warn("Fetching tasks...")
-              tasks = tasks_in_section(section)
+            section = cli.prompt.choice("Which section?", sections)
+            warn("Fetching tasks...")
+            tasks = tasks_in_section(section)
 
-              if tasks.length.zero?
-                warn("Section is empty")
-                next
-              end
-
-              task = cli.prompt.choice("Select a task", tasks, nil_option: true)
-              return task if task
+            if tasks.length.zero?
+              warn("Section is empty")
+              select_task
+            else
+              cli.prompt.choice("Select a task", tasks, nil_option: true) || select_task
             end
           end
 

@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module HarvestHelpers
+  def harvest_credentials
+    { "accessToken" => "access_token", "accountId" => "account_id", "userId" => "user_id" }
+  end
+
   def stub_get_project_assignments(git_config, project_assignments)
     # Create a page per project assignment to force our pagination code into action
     project_assignments.each_with_index do |project_assignment, index|

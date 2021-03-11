@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe(Abt::Providers::Asana::Commands::Tasks, :asana) do
-  let(:asana_credentials) { { "accessToken" => "access_token", "workspaceGid" => "workspace_gid" } }
   let(:global_git) { GitConfigMock.new(data: asana_credentials) }
   let(:local_git) { GitConfigMock.new }
 

@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module AsanaHelpers
+  def asana_credentials
+    { "accessToken" => "access_token", "workspaceGid" => "workspace_gid" }
+  end
+
   def stub_asana_request(git_config, verb, path, *rest)
     path = "https://app.asana.com/api/1.0/#{path}"
     stub_request(verb, path, *rest).with(headers: request_headers_for_git_config(git_config))

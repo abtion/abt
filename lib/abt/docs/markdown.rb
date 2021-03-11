@@ -50,8 +50,7 @@ module Abt
         def example_commands
           lines = []
 
-          examples = Docs.basic_examples.merge(Docs.extended_examples)
-          examples.each_with_index do |(title, commands), index|
+          complete_examples.each_with_index do |(title, commands), index|
             lines << "" unless index.zero?
             lines << title
 
@@ -82,6 +81,10 @@ module Abt
           end
 
           lines.join("\n")
+        end
+
+        def complete_examples
+          Docs.basic_examples.merge(Docs.extended_examples)
         end
 
         def inflector

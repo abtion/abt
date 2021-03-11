@@ -17,7 +17,13 @@ module Abt
             require_task!
             ensure_current_is_valid!
 
-            body = {
+            puts Oj.dump(body, mode: :json)
+          end
+
+          private
+
+          def body
+            {
               notes: task["name"],
               external_reference: {
                 id: task_gid.to_i,
@@ -25,11 +31,7 @@ module Abt
                 permalink: task["permalink_url"]
               }
             }
-
-            puts Oj.dump(body, mode: :json)
           end
-
-          private
 
           def ensure_current_is_valid!
             abort("Invalid task gid: #{task_gid}") if task.nil?

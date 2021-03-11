@@ -17,11 +17,14 @@ module Abt
           end
 
           def perform
-            abort("Must be run inside a git repository") unless config.local_available?
-
+            require_local_config!
             board = cli.prompt.choice("Select a project work board", boards)
 
-            config.path = Path.from_ids(organization_name, project_name, board["id"])
+            config.path = Path.from_ids(
+              organization_name: organization_name,
+              project_name: project_name,
+              board_id: board["id"]
+            )
             print_board(organization_name, project_name, board)
           end
 

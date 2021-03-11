@@ -42,8 +42,7 @@ module Abt
           end
 
           def create_time_entry
-            body = time_entry_base_data
-            body[:hours] = flags[:time] if flags.key?(:time)
+            body = time_entry_data
 
             result = api.post("time_entries", Oj.dump(body, mode: :json))
 
@@ -52,47 +51,62 @@ module Abt
             result
           end
 
+          def time_entry_data
+            body = time_entry_base_data
+
+            maybe_add_external_link(body)
+            maybe_add_comment(body)
+            maybe_add_time(body)
+
+            body
+          end
+
           def time_entry_base_data
-            body = {
+            {
               project_id: project_id,
               task_id: task_id,
               user_id: config.user_id,
               spent_date: Date.today.iso8601
             }
+          end
 
+          def maybe_add_external_link(body)
             if external_link_data
               warn(<<~TXT)
                 Linking to:
-                  #{external_link_data[:notes]}
-                  #{external_link_data[:external_reference][:permalink]}
+                #{external_link_data[:notes]}
+                #{external_link_data[:external_reference][:permalink]}
               TXT
               body.merge!(external_link_data)
             else
               warn("No external link provided")
             end
+          end
 
+          def maybe_add_comment(body)
             body[:notes] = flags[:comment] if flags.key?(:comment)
             body[:notes] ||= cli.prompt.text("Fill in comment (optional)")
-            body
+          end
+
+          def maybe_add_time(body)
+            body[:hours] = flags[:time] if flags.key?(:time)
           end
 
           def external_link_data
-            @external_link_data ||= begin
-              lines = call_harvest_time_entry_data_for_other_aris
+            return @external_link_data if instance_variable_defined?(:@external_link_data)
 
-              if lines.empty?
-                nil
-              else
-                if lines.length > 1
-                  abort("Got reference data from multiple scheme providers, only one is supported at a time")
-                end
+            lines = fetch_link_data_lines
 
-                Oj.load(lines.first, symbol_keys: true)
-              end
+            return @external_link_data = nil if lines.empty?
+
+            if lines.length > 1
+              abort("Got reference data from multiple scheme providers, only one is supported at a time")
             end
+
+            @external_link_data = Oj.load(lines.first, symbol_keys: true)
           end
 
-          def call_harvest_time_entry_data_for_other_aris
+          def fetch_link_data_lines
             other_aris = cli.aris - [ari]
             return [] if other_aris.empty?
 
