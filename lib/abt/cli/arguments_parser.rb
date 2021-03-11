@@ -13,12 +13,8 @@ module Abt
         result = AriList.new
         rest = arguments.dup
 
-        # If the arguments start with "-" it means that we are parsing flags for a global command
-        if rest.any? && rest.first[0] == "-"
-          flags = take_flags(rest)
-
-          return [Ari.new(flags: flags)]
-        end
+        # If the first arg is a flag, it's for a global command
+        result << Ari.new(flags: take_flags(rest)) if flag?(rest.first)
 
         until rest.empty?
           (scheme, path) = rest.shift.split(":")
