@@ -62,7 +62,7 @@ module Abt
 
           def section
             @section ||= cli.prompt.choice("Add to section?", sections,
-                                           ["q", "Don't add to section"])
+                                           nil_option: ["q", "Don't add to section"])
           end
 
           def sections

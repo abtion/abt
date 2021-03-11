@@ -51,7 +51,7 @@ module Abt
                 next
               end
 
-              task = cli.prompt.choice("Select a task", tasks, true)
+              task = cli.prompt.choice("Select a task", tasks, nil_option: true)
               return task if task
             end
           end

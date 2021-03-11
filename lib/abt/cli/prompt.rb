@@ -29,7 +29,7 @@ module Abt
         end
       end
 
-      def choice(text, options, nil_option = false)
+      def choice(text, options, nil_option: false)
         output.puts "#{text}:"
 
         if options.length.zero?
@@ -127,7 +127,7 @@ module Abt
         end
 
         output.puts("Showing the 10 first matches") if matches.size > 10
-        choice("Select a match", matches[0...10], true)
+        choice("Select a match", matches[0...10], nil_option: true)
       end
 
       def matches_for_string(string, options)

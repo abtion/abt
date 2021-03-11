@@ -46,7 +46,7 @@ module Abt
                 next
               end
 
-              work_item = cli.prompt.choice("Select a work item", work_items, true)
+              work_item = cli.prompt.choice("Select a work item", work_items, nil_option: true)
               return work_item if work_item
             end
           end
