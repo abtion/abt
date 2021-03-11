@@ -4,7 +4,7 @@ module Abt
   module Providers
     module Harvest
       class Path < String
-        PATH_REGEX = %r{^(?<project_id>\d+)?(/(?<task_id>\d+))?$}.freeze
+        PATH_REGEX = %r{^(?<project_id>\d+)?/?(?<task_id>\d+)?$}.freeze
 
         def self.from_ids(project_id = nil, task_id = nil)
           path = project_id ? [project_id, *task_id].join("/") : ""

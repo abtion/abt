@@ -43,7 +43,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Init, :harvest) do
 
       input.puts("Proj")
 
-      expect(err_output.gets).to eq("Select a project:\n")
+      expect(err_output.gets).to eq("Select a match:\n")
       expect(err_output.gets).to eq("(1) Abtion > Project\n")
       expect(err_output.gets).to eq("(1, q: back): ")
 

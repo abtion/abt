@@ -44,6 +44,15 @@ module Abt
         select_options(options, nil_option)
       end
 
+      def search(text, options)
+        output.puts text
+
+        loop do
+          choice = get_search_result(options)
+          break choice unless choice.nil?
+        end
+      end
+
       private
 
       def print_options(options)
@@ -109,6 +118,29 @@ module Abt
 
       def read_user_input
         open(tty_path, &:gets).strip # rubocop:disable Security/Open
+      end
+
+      def get_search_result(options)
+        matches = matches_for_string(text("Enter search"), options)
+        if matches.empty?
+          output.puts("No matches")
+          return
+        end
+
+        output.puts("Showing the 10 first matches") if matches.size > 10
+        choice("Select a match", matches[0...10], true)
+      end
+
+      def matches_for_string(string, options)
+        search_string = sanitize_string(string)
+
+        options.select do |option|
+          sanitize_string(option["name"]).include?(search_string)
+        end
+      end
+
+      def sanitize_string(string)
+        string.downcase.gsub(/[^\w]/, "")
       end
 
       def tty_path

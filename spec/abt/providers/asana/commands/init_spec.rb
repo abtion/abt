@@ -57,7 +57,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Init, :asana) do
 
       input.puts("Proj")
 
-      expect(err_output.gets).to eq("Select a project:\n")
+      expect(err_output.gets).to eq("Select a match:\n")
       expect(err_output.gets).to eq("(1) Project 1\n")
       expect(err_output.gets).to eq("(2) Project 2\n")
       expect(err_output.gets).to eq("(1-2, q: back): ")
