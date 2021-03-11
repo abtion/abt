@@ -77,7 +77,7 @@ RSpec/ExampleLength:
   Enabled: false
 
 RSpec/MultipleExpectations:
-  Max: 5
+  Enabled: false # This is incompatible with the way we are testing commands with user input
 
 RSpec/LeadingSubject:
   Enabled: false
