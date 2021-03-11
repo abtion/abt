@@ -25,7 +25,6 @@ module Abt
           when "n", "N" then return false
           else
             output.puts "Invalid choice"
-            next
           end
         end
       end
