@@ -15,7 +15,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::BranchName, :devops) do
     stub_devops_request(global_git, "org-name", "project-name", :get, "wit/workitems")
       .with(query: { ids: "22222" })
       .to_return(body: Oj.dump({ value: [{ id: 11_111,
-                                           fields: { 'System.Title': "Work Item \#$\#$ name" } }] },
+                                           fields: { 'System.Title': " Work Item \#$\#$ name." } }] },
                                mode: :json))
   end
 

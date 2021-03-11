@@ -23,7 +23,7 @@ module Abt
           private
 
           def name
-            task["name"].downcase.gsub(/[^\w]+/, "-")
+            task["name"].downcase.gsub(/[^\w]+/, "-").gsub(/(^-|-$)/, "")
           end
 
           def ensure_current_is_valid!

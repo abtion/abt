@@ -33,7 +33,7 @@ module Abt
             str = work_item["id"]
             str += "-"
             str += work_item["name"].downcase.gsub(/[^\w]/, "-")
-            str.squeeze("-")
+            str.squeeze("-").gsub(/(^-|-$)/, "")
           end
 
           def work_item

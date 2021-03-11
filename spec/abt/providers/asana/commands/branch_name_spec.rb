@@ -12,7 +12,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::BranchName, :asana) do
     stub_asana_request(global_git, :get, "tasks/22222")
       .with(query: { opt_fields: "name,memberships.project" })
       .to_return(body: Oj.dump({ data: { gid: "22222",
-                                         name: "A long task \#$\#$ name",
+                                         name: " A long task \#$\#$ name.",
                                          memberships: [{ project: { gid: "11111" } }] } },
                                mode: :json))
   end
