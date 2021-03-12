@@ -1,26 +1,28 @@
 # frozen_string_literal: true
 
 RSpec.describe(Abt::Providers::Devops::Commands::BranchName, :devops) do
-  let(:devops_credentials) do
-    { "organizations.org-name.username" => "username",
-      "organizations.org-name.accessToken" => "accessToken" }
-  end
   let(:local_git) { GitConfigMock.new }
   let(:global_git) { GitConfigMock.new(data: devops_credentials) }
+  let(:board_id) { "abc123" }
+  let(:work_item_id) { 222_222 }
 
   before do
     allow(Abt::GitConfig).to receive(:new).with("local", "abt.devops").and_return(local_git)
     allow(Abt::GitConfig).to receive(:new).with("global", "abt.devops").and_return(global_git)
+  end
 
+  def stub_work_items
     stub_devops_request(global_git, "org-name", "project-name", :get, "wit/workitems")
-      .with(query: { ids: "22222" })
-      .to_return(body: Oj.dump({ value: [{ id: 11_111,
+      .with(query: { ids: work_item_id.to_s })
+      .to_return(body: Oj.dump({ value: [{ id: work_item_id,
                                            fields: { 'System.Title': " Work Item \#$\#$ name." } }] },
                                mode: :json))
   end
 
   it "prints a git branch name suggestion for the work item" do
-    local_git["path"] = "org-name/project-name/11111/22222"
+    stub_work_items
+
+    local_git["path"] = "org-name/project-name/#{board_id}/#{work_item_id}"
 
     err_output = StringIO.new
     output = StringIO.new
@@ -36,13 +38,13 @@ RSpec.describe(Abt::Providers::Devops::Commands::BranchName, :devops) do
     TXT
 
     expect(output.string).to eq(<<~TXT)
-      11111-work-item-name
+      #{work_item_id}-work-item-name
     TXT
   end
 
   context "when ARI doesn't include a work item" do
     it "aborts with correct message" do
-      local_git["path"] = "org-name/project-name/11111"
+      local_git["path"] = "org-name/project-name/#{board_id}"
 
       err_output = StringIO.new
       output = StringIO.new
@@ -65,7 +67,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::BranchName, :devops) do
         .with(query: { ids: "00000" })
         .to_return(status: 404)
 
-      local_git["path"] = "org-name/project-name/11111/00000"
+      local_git["path"] = "org-name/project-name/#{board_id}/00000"
 
       err_output = StringIO.new
       output = StringIO.new
@@ -77,7 +79,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::BranchName, :devops) do
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, [
         "Unable to find work item for configuration:",
-        "devops:org-name/project-name/11111/00000"
+        "devops:org-name/project-name/#{board_id}/00000"
       ].join("\n"))
     end
   end

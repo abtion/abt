@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 module DevopsHelpers
+  def devops_credentials
+    { "organizations.org-name.username" => "username",
+      "organizations.org-name.accessToken" => "accessToken" }
+  end
+
   def stub_devops_request(global_git, organization_name, project_name, *stub_request_args)
     headers = { "Content-Type" => "application/json", "Accept" => "application/json; api-version=6.0" }
 
