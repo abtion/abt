@@ -105,3 +105,6 @@ RSpec/MessageChain:
 
 RSpec/InstanceVariable:
   AssignmentOnly: false
+
+RSpec/FactoryBot:
+  Enabled: false
