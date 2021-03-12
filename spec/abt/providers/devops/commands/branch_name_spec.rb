@@ -42,6 +42,25 @@ RSpec.describe(Abt::Providers::Devops::Commands::BranchName, :devops) do
     TXT
   end
 
+  context "when ARI doesn't include a board" do
+    it "aborts with correct message" do
+      local_git["path"] = "org-name/project-name"
+
+      err_output = StringIO.new
+      output = StringIO.new
+      argv = %w[branch-name devops]
+
+      allow(output).to receive(:isatty).and_return(true)
+
+      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+
+      expect { cli.perform }.to(
+        raise_error(Abt::Cli::Abort,
+                    "No current/specified board. Did you initialize DevOps and pick a work item?")
+      )
+    end
+  end
+
   context "when ARI doesn't include a work item" do
     it "aborts with correct message" do
       local_git["path"] = "org-name/project-name/#{board_id}"
