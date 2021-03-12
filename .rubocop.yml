@@ -79,6 +79,9 @@ RSpec/ExampleLength:
 RSpec/MultipleExpectations:
   Enabled: false # This is incompatible with the way we are testing commands with user input
 
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
+
 RSpec/LeadingSubject:
   Enabled: false
 
