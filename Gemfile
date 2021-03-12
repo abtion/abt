@@ -8,11 +8,9 @@ group :test do
   gem "byebug"
   gem "rspec"
   gem "simplecov"
+  gem "webmock", "~> 3.11"
 end
 
 gem "rubocop"
-
-gem "webmock", "~> 3.11"
-
 gem "rubocop-performance"
 gem "rubocop-rspec"
