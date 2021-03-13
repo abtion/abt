@@ -47,7 +47,15 @@ module Abt
 
           return git_global[access_token_key] unless git_global[access_token_key].nil?
 
-          git_global[access_token_key] = cli.prompt.text(access_token_prompt_text)
+          git_global[access_token_key] = cli.prompt.text(<<~TXT)
+            Please provide your personal access token for the DevOps organization (#{organization_name}).
+            If you don't have one, follow the guide here: https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate
+
+            The token MUST have "Read" permission for Work Items
+            Future features will likely require "Write" or "Manage
+
+            Enter access token"
+          TXT
         end
 
         private
@@ -58,18 +66,6 @@ module Abt
 
         def git_global
           @git_global ||= GitConfig.new("global", "abt.devops")
-        end
-
-        def access_token_prompt_text
-          <<~TXT
-            Please provide your personal access token for the DevOps organization (#{organization_name}).
-            If you don't have one, follow the guide here: https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate
-
-            The token MUST have "Read" permission for Work Items
-            Future features will likely require "Write" or "Manage
-
-            Enter access token"
-          TXT
         end
       end
     end
