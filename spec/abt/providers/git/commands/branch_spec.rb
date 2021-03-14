@@ -14,7 +14,7 @@ RSpec.describe Abt::Providers::Git::Commands::Branch do
                                                                               thread_double(true))
 
     err_output = StringIO.new
-    cli = Abt::Cli.new(argv: %w[branch git asana], input: null_tty, err_output: err_output)
+    cli = Abt::Cli.new(argv: %w[branch git asana], input: null_tty, err_output: err_output, output: null_tty)
     cli.perform
 
     expect(Open3).to have_received(:popen3).with("git switch branch-name")
@@ -43,7 +43,7 @@ RSpec.describe Abt::Providers::Git::Commands::Branch do
       err_output = QueueIO.new
 
       thr = Thread.new do
-        cli = Abt::Cli.new(argv: %w[branch git asana], input: input, err_output: err_output)
+        cli = Abt::Cli.new(argv: %w[branch git asana], input: input, err_output: err_output, output: null_tty)
         allow(Abt::Helpers).to receive(:read_user_input) { input.gets.strip }
 
         cli.perform
@@ -73,7 +73,7 @@ RSpec.describe Abt::Providers::Git::Commands::Branch do
         err_output = QueueIO.new
 
         thr = Thread.new do
-          cli = Abt::Cli.new(argv: %w[branch git asana], input: input, err_output: err_output)
+          cli = Abt::Cli.new(argv: %w[branch git asana], input: input, err_output: err_output, output: null_tty)
           allow(Abt::Helpers).to receive(:read_user_input) { input.gets.strip }
 
           cli.perform
