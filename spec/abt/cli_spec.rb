@@ -157,6 +157,7 @@ RSpec.describe Abt::Cli do
       err_output = StringIO.new
       cli_instance = Abt::Cli.new(argv: ["command", "provider:path", "--1", "--2"],
                                   input: null_tty,
+                                  output: null_tty,
                                   err_output: err_output)
       cli_instance.perform
 
@@ -187,7 +188,7 @@ RSpec.describe Abt::Cli do
 
     context "when no provider implements the command" do
       it 'aborts with "No providers found for command and ARI(s)"' do
-        cli = Abt::Cli.new(argv: ["invalid-command", "asana:111/222"], input: null_tty)
+        cli = Abt::Cli.new(argv: ["invalid-command", "asana:111/222"], input: null_tty, output: null_tty)
 
         expect do
           cli.perform
