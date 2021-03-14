@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Abt::Providers::Devops::Api do
   context "when request returns a 403 status" do
     it "raises a ForbiddenError" do
