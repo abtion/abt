@@ -30,7 +30,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Current, :harvest) do
 
       allow(output).to receive(:isatty).and_return(true)
 
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
       cli.perform
 
       expect(err_output.string).to eq(<<~TXT)
@@ -52,7 +52,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Current, :harvest) do
 
         allow(output).to receive(:isatty).and_return(true)
 
-        cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+        cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
         cli.perform
 
         expect(err_output.string).to eq(<<~TXT)
@@ -75,7 +75,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Current, :harvest) do
 
         allow(output).to receive(:isatty).and_return(true)
 
-        cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+        cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
         cli.perform
 
         expect(err_output.string).to include("Configuration updated")
@@ -93,7 +93,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Current, :harvest) do
 
         allow(output).to receive(:isatty).and_return(true)
 
-        cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+        cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
 
         expect { cli.perform }.to raise_error(Abt::Cli::Abort, "Invalid project: 00000")
       end
@@ -109,7 +109,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Current, :harvest) do
 
         allow(output).to receive(:isatty).and_return(true)
 
-        cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+        cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
 
         expect { cli.perform }.to raise_error(Abt::Cli::Abort, "Invalid task: 00000")
       end
@@ -123,7 +123,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Current, :harvest) do
       allow(Abt::GitConfig).to receive(:new).and_call_original
       allow(Abt::GitConfig).to receive(:new).with("local", "abt.harvest").and_return(local_git)
 
-      cli = Abt::Cli.new(argv: %w[current harvest], output: null_stream)
+      cli = Abt::Cli.new(argv: %w[current harvest], input: null_tty, output: null_stream)
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, "Must be run inside a git repository")
     end

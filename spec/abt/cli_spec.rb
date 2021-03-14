@@ -7,7 +7,7 @@ RSpec.describe Abt::Cli do
 
       output = StringIO.new
       err_output = StringIO.new
-      cli = Abt::Cli.new(argv: [], err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: [], input: null_tty, err_output: err_output, output: output)
 
       cli.perform
 
@@ -23,7 +23,7 @@ RSpec.describe Abt::Cli do
           stub_const("Abt::VERSION", "1.1.1")
 
           output = StringIO.new
-          cli = Abt::Cli.new(argv: [command_name], output: output)
+          cli = Abt::Cli.new(argv: [command_name], input: null_tty, output: output)
           cli.perform
 
           expect(output.string).to eq("1.1.1\n")
@@ -36,7 +36,7 @@ RSpec.describe Abt::Cli do
         it "writes cli help to output" do
           output = StringIO.new
 
-          cli = Abt::Cli.new(argv: [command_name], output: output)
+          cli = Abt::Cli.new(argv: [command_name], input: null_tty, output: output)
           cli.perform
 
           expect(output.string).to eq(Abt::Docs::Cli.help)
@@ -48,7 +48,7 @@ RSpec.describe Abt::Cli do
       it "writes cli examples to output" do
         output = StringIO.new
 
-        cli = Abt::Cli.new(argv: ["examples"], output: output)
+        cli = Abt::Cli.new(argv: ["examples"], input: null_tty, output: output)
         cli.perform
 
         expect(output.string).to eq(Abt::Docs::Cli.examples)
@@ -59,7 +59,7 @@ RSpec.describe Abt::Cli do
       it "writes cli commands to output" do
         output = StringIO.new
 
-        cli = Abt::Cli.new(argv: ["commands"], output: output)
+        cli = Abt::Cli.new(argv: ["commands"], input: null_tty, output: output)
         cli.perform
 
         expect(output.string).to eq(Abt::Docs::Cli.commands)
@@ -70,7 +70,7 @@ RSpec.describe Abt::Cli do
       it "writes markdown readme to output" do
         output = StringIO.new
 
-        cli = Abt::Cli.new(argv: ["readme"], output: output)
+        cli = Abt::Cli.new(argv: ["readme"], input: null_tty, output: output)
         cli.perform
 
         expect(output.string).to eq(Abt::Docs::Markdown.readme)
@@ -91,7 +91,7 @@ RSpec.describe Abt::Cli do
 
         output = StringIO.new
 
-        cli = Abt::Cli.new(argv: ["share"], output: output, err_output: null_stream)
+        cli = Abt::Cli.new(argv: ["share"], input: null_tty, output: output, err_output: null_stream)
         cli.perform
 
         expect(output.string).to eq("asana:111/111 harvest:333/333\n")
@@ -102,7 +102,7 @@ RSpec.describe Abt::Cli do
       it "works correctly" do
         output = StringIO.new
 
-        cli = Abt::Cli.new(argv: ["readme", "-h"], output: output, err_output: null_stream)
+        cli = Abt::Cli.new(argv: ["readme", "-h"], input: null_tty, output: output, err_output: null_stream)
         cli.perform
 
         expect(output.string).to include(Abt::Cli::GlobalCommands::Readme.usage)
@@ -113,7 +113,7 @@ RSpec.describe Abt::Cli do
 
   context "when no ARI given" do
     it "aborts with correct message" do
-      cli = Abt::Cli.new(argv: ["command"])
+      cli = Abt::Cli.new(argv: ["command"], input: null_tty)
 
       expect do
         cli.perform
@@ -156,6 +156,7 @@ RSpec.describe Abt::Cli do
 
       err_output = StringIO.new
       cli_instance = Abt::Cli.new(argv: ["command", "provider:path", "--1", "--2"],
+                                  input: null_tty,
                                   err_output: err_output)
       cli_instance.perform
 
@@ -186,7 +187,7 @@ RSpec.describe Abt::Cli do
 
     context "when no provider implements the command" do
       it 'aborts with "No providers found for command and ARI(s)"' do
-        cli = Abt::Cli.new(argv: ["invalid-command", "asana:111/222"])
+        cli = Abt::Cli.new(argv: ["invalid-command", "asana:111/222"], input: null_tty)
 
         expect do
           cli.perform
@@ -198,6 +199,7 @@ RSpec.describe Abt::Cli do
       it "drops subsequent commands and prints a warning" do
         err_output = StringIO.new
         cli = Abt::Cli.new(argv: ["share", "asana:111", "asana:222/333"],
+                           input: null_tty,
                            err_output: err_output,
                            output: null_stream)
 
@@ -216,7 +218,9 @@ RSpec.describe Abt::Cli do
 
     context "when at least one provider implements the command" do
       it "does not abort" do
-        cli = Abt::Cli.new(argv: ["share", "asana:111/222", "git"], output: null_stream,
+        cli = Abt::Cli.new(argv: ["share", "asana:111/222", "git"],
+                           input: null_tty,
+                           output: null_stream,
                            err_output: null_stream)
 
         expect do
@@ -264,7 +268,7 @@ RSpec.describe Abt::Cli do
         err_output = StringIO.new
         argv = ["command", "provider1:path1", "--1", "--", "provider2:path2", "--2"]
 
-        cli_instance = Abt::Cli.new(argv: argv, err_output: err_output)
+        cli_instance = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output)
         cli_instance.perform
 
         expect(provider1_command).to have_received(:new) do |ari:, cli:|
@@ -304,6 +308,7 @@ RSpec.describe Abt::Cli do
 
         output = StringIO.new
         cli_instance = Abt::Cli.new(argv: ["command", "provider:path"],
+                                    input: null_tty,
                                     err_output: null_stream,
                                     output: output)
         cli_instance.perform
@@ -317,7 +322,7 @@ RSpec.describe Abt::Cli do
     it "prints a line to err_output" do
       err_output = StringIO.new
 
-      cli = Abt::Cli.new(err_output: err_output)
+      cli = Abt::Cli.new(input: null_tty, err_output: err_output)
       cli.warn("test")
 
       expect(err_output.string).to eq("test\n")
@@ -328,7 +333,7 @@ RSpec.describe Abt::Cli do
     it "prints a line to output" do
       output = StringIO.new
 
-      cli = Abt::Cli.new(output: output)
+      cli = Abt::Cli.new(input: null_tty, output: output)
       cli.puts("test")
 
       expect(output.string).to eq("test\n")
@@ -339,7 +344,7 @@ RSpec.describe Abt::Cli do
     it "prints a string to output" do
       output = StringIO.new
 
-      cli = Abt::Cli.new(output: output)
+      cli = Abt::Cli.new(input: null_tty, output: output)
       cli.print("test")
 
       expect(output.string).to eq("test")
@@ -348,7 +353,7 @@ RSpec.describe Abt::Cli do
 
   describe "#abort" do
     it "raises an Abt::Cli::Abort with the given message" do
-      cli = Abt::Cli.new
+      cli = Abt::Cli.new(input: null_tty)
 
       expect do
         cli.abort("Error!")
@@ -358,7 +363,7 @@ RSpec.describe Abt::Cli do
 
   describe "#exit_with_message" do
     it "raises an Abt::Cli::Abort with the given message" do
-      cli = Abt::Cli.new
+      cli = Abt::Cli.new(input: null_tty)
 
       expect do
         cli.exit_with_message("Exit!")

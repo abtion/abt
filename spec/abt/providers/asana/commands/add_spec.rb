@@ -113,7 +113,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Add, :asana) do
   context "when no path current/specified project" do
     it "aborts with correct error message" do
       argv = %w[add asana]
-      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to(
         raise_error(Abt::Cli::Abort, "No current/specified project. Did you initialize Asana?")

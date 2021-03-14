@@ -14,7 +14,7 @@ RSpec.describe Abt::Providers::Git::Commands::Branch do
                                                                               thread_double(true))
 
     err_output = StringIO.new
-    cli = Abt::Cli.new(argv: %w[branch git asana], err_output: err_output)
+    cli = Abt::Cli.new(argv: %w[branch git asana], input: null_tty, err_output: err_output)
     cli.perform
 
     expect(Open3).to have_received(:popen3).with("git switch branch-name")
@@ -95,7 +95,7 @@ RSpec.describe Abt::Providers::Git::Commands::Branch do
   context "when no additional ARI was provided" do
     it "aborts with a correct error message" do
       err_output = StringIO.new
-      cli = Abt::Cli.new(argv: %w[branch git], err_output: err_output)
+      cli = Abt::Cli.new(argv: %w[branch git], input: null_tty, err_output: err_output)
 
       expect { cli.perform }.to(
         raise_error(Abt::Cli::Abort,
@@ -107,7 +107,7 @@ RSpec.describe Abt::Providers::Git::Commands::Branch do
   context "when none of the provided ARIs responds to branch-name" do
     it "aborts with a correct error message" do
       err_output = StringIO.new
-      cli = Abt::Cli.new(argv: %w[branch git invalid-provider], err_output: err_output)
+      cli = Abt::Cli.new(argv: %w[branch git invalid-provider], input: null_tty, err_output: err_output)
 
       expect { cli.perform }.to(
         raise_error do |error|
@@ -124,7 +124,7 @@ RSpec.describe Abt::Providers::Git::Commands::Branch do
       stub_command_output("devops", "branch-name", "devops-branch-name")
 
       err_output = StringIO.new
-      cli = Abt::Cli.new(argv: %w[branch git asana devops], err_output: err_output)
+      cli = Abt::Cli.new(argv: %w[branch git asana devops], input: null_tty, err_output: err_output)
 
       expect { cli.perform }.to(
         raise_error do |error|

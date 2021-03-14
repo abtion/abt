@@ -136,7 +136,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
         output = StringIO.new
         argv = %w[pick devops -d]
 
-        cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: output)
+        cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: output)
 
         # Rig the cli to select option 1 for both section and task
         allow(Abt::Helpers).to receive(:read_user_input).and_return("1", "1")
@@ -150,7 +150,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
 
     context "when no board has been selected yet" do
       it "aborts with correct message" do
-        cli = Abt::Cli.new(argv: %w[pick devops], output: null_stream)
+        cli = Abt::Cli.new(argv: %w[pick devops], input: null_tty, output: null_stream)
 
         expect do
           cli.perform
@@ -167,7 +167,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
       allow(Abt::GitConfig).to receive(:new).and_call_original
       allow(Abt::GitConfig).to receive(:new).with("local", "abt.devops").and_return(local_git)
 
-      cli = Abt::Cli.new(argv: %w[pick devops], output: null_stream)
+      cli = Abt::Cli.new(argv: %w[pick devops], input: null_tty, output: null_stream)
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, "Must be run inside a git repository")
     end

@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 module CommandHelpers
+  def null_tty
+    stream = StringIO.new
+    allow(stream).to receive(:isatty).and_return(true)
+    stream
+  end
+
   def null_stream
     stream = StringIO.new
     allow(stream).to receive(:isatty).and_return(false)

@@ -20,7 +20,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Clear, :devops) do
 
     allow(output).to receive(:isatty).and_return(true)
 
-    cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+    cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
     cli.perform
 
     expect(err_output.string).to eq(<<~TXT)
@@ -44,7 +44,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Clear, :devops) do
 
       allow(output).to receive(:isatty).and_return(true)
 
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
       cli.perform
 
       expect(err_output.string).to eq(<<~TXT)
@@ -69,7 +69,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Clear, :devops) do
 
       allow(output).to receive(:isatty).and_return(true)
 
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
       cli.perform
 
       expect(err_output.string).to eq(<<~TXT)
@@ -88,7 +88,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Clear, :devops) do
       global_git["accessToken"] = "333333"
 
       argv = %w[clear devops -a -g]
-      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to(
         raise_error(Abt::Cli::Abort, "Flags --global and --all cannot be used at the same time")

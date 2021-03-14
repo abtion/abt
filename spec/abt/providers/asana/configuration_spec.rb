@@ -59,7 +59,7 @@ RSpec.describe(Abt::Providers::Asana::Configuration, :asana) do
 
         err_output = StringIO.new
 
-        cli = Abt::Cli.new(argv: [], err_output: err_output, output: null_stream)
+        cli = Abt::Cli.new(argv: [], input: null_tty, err_output: err_output, output: null_stream)
 
         config = Abt::Providers::Asana::Configuration.new(cli: cli)
 
@@ -117,7 +117,7 @@ RSpec.describe(Abt::Providers::Asana::Configuration, :asana) do
 
           err_output = StringIO.new
 
-          cli = Abt::Cli.new(argv: [], err_output: err_output, output: null_stream)
+          cli = Abt::Cli.new(argv: [], input: null_tty, err_output: err_output, output: null_stream)
 
           config = Abt::Providers::Asana::Configuration.new(cli: cli)
 
