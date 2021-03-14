@@ -28,7 +28,7 @@ RSpec.describe Abt::Providers::Devops::Api do
                 basic_auth: %w[username access_token])
           .to_return(status: 403, body: conditional_access_policy_body.strip)
 
-        cli = Abt::Cli.new
+        cli = Abt::Cli.new(input: null_tty)
         api = Abt::Providers::Devops::Api.new(organization_name: "org-name",
                                               project_name: "project-name",
                                               username: "username",

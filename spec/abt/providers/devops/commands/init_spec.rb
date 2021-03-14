@@ -66,7 +66,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Init, :devops) do
 
           allow(Abt::Helpers).to receive(:read_user_input).and_return(url, "1")
 
-          cli = Abt::Cli.new(argv: %w[init devops], err_output: null_stream, output: output)
+          cli = Abt::Cli.new(argv: %w[init devops], input: null_tty, err_output: null_stream, output: output)
           cli.perform
 
           expect(output.string).to eq("devops:org-name/project-name/abc111 # Board 1\n")
@@ -81,7 +81,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Init, :devops) do
 
           allow(Abt::Helpers).to receive(:read_user_input).and_return(url, "1")
 
-          cli = Abt::Cli.new(argv: %w[init devops], err_output: null_stream, output: output)
+          cli = Abt::Cli.new(argv: %w[init devops], input: null_tty, err_output: null_stream, output: output)
           cli.perform
 
           expect(output.string).to eq("devops:org-name/project-name/abc111 # Board 1\n")
@@ -98,7 +98,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Init, :devops) do
       allow(Abt::GitConfig).to receive(:new).and_call_original
       allow(Abt::GitConfig).to receive(:new).with("local", "abt.devops").and_return(local_git)
 
-      cli = Abt::Cli.new(argv: %w[init devops], output: null_stream)
+      cli = Abt::Cli.new(argv: %w[init devops], input: null_tty, output: null_stream)
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, "Must be run inside a git repository")
     end

@@ -39,7 +39,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::WorkItems, :devops) do
 
       allow(output).to receive(:isatty).and_return(true)
 
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
       cli.perform
 
       expect(err_output.string).to eq(<<~TXT)
@@ -58,7 +58,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::WorkItems, :devops) do
 
   context "when no board specified" do
     it "aborts with correct message" do
-      cli = Abt::Cli.new(argv: %w[work-items devops], output: null_stream)
+      cli = Abt::Cli.new(argv: %w[work-items devops], input: null_tty, output: null_stream)
 
       expect do
         cli.perform

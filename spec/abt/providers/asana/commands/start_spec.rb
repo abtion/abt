@@ -70,7 +70,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
 
     allow(output).to receive(:isatty).and_return(true)
 
-    cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+    cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
     cli.perform
 
     expect(err_output.string).to eq(<<~TXT)
@@ -109,7 +109,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
 
       allow(output).to receive(:isatty).and_return(true)
 
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
       cli.perform
 
       expect(err_output.string).to eq(<<~TXT)
@@ -148,7 +148,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
 
       allow(output).to receive(:isatty).and_return(true)
 
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
       cli.perform
 
       expect(err_output.string).to eq(<<~TXT)
@@ -227,7 +227,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
 
       allow(output).to receive(:isatty).and_return(true)
 
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
       cli.perform
 
       expect(err_output.string).to eq(<<~TXT)
@@ -269,7 +269,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
 
       allow(output).to receive(:isatty).and_return(true)
 
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
       cli.perform
 
       expect(err_output.string).to eq(<<~TXT)
@@ -288,7 +288,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
   context "when no current/specified task" do
     it "aborts with correct error message" do
       argv = %w[start asana]
-      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to(
         raise_error(Abt::Cli::Abort,

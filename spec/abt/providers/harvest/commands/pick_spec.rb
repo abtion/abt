@@ -65,7 +65,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Pick, :harvest) do
         output = StringIO.new
         argv = %w[pick harvest -d]
 
-        cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: output)
+        cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: output)
         allow(Abt::Helpers).to receive(:read_user_input).and_return("1") # Rig the cli to select option 1
 
         cli.perform
@@ -77,7 +77,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Pick, :harvest) do
 
     context "when no project has been selected yet" do
       it 'aborts with "No current/specified project. Did you initialize Harvest?"' do
-        cli = Abt::Cli.new(argv: %w[pick harvest], output: null_stream)
+        cli = Abt::Cli.new(argv: %w[pick harvest], input: null_tty, output: null_stream)
 
         expect do
           cli.perform
@@ -94,7 +94,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Pick, :harvest) do
       allow(Abt::GitConfig).to receive(:new).and_call_original
       allow(Abt::GitConfig).to receive(:new).with("local", "abt.harvest").and_return(local_git)
 
-      cli = Abt::Cli.new(argv: %w[pick harvest], output: null_stream)
+      cli = Abt::Cli.new(argv: %w[pick harvest], input: null_tty, output: null_stream)
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, "Must be run inside a git repository")
     end

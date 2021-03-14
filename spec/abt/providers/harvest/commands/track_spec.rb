@@ -57,7 +57,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
       output = StringIO.new
       argv = ["track", "harvest:#{project_id}/#{task_id}", "-c", "Note"]
 
-      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: output)
       cli.perform
 
       expect(output.string).to eq("harvest:27701618/14628589 # Project > Task 1\n")
@@ -75,7 +75,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
       comment_to_avoid_prompt = ["-c", "Note"]
       argv = ["track", "harvest:#{project_id}/#{task_id}", "-t", "1:30", *comment_to_avoid_prompt]
 
-      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: output)
       cli.perform
 
       expect(output.string).to eq("harvest:27701618/14628589 # Project > Task 1\n")
@@ -97,7 +97,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
         flags = ["-t", "1:30", "-r", *comment_to_avoid_prompt]
         argv = ["track", "harvest:#{project_id}/#{task_id}", *flags]
 
-        cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: output)
+        cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: output)
         cli.perform
 
         expect(output.string).to eq("harvest:27701618/14628589 # Project > Task 1\n")
@@ -115,7 +115,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
       comment_to_avoid_prompt = ["-c", "Note"]
       argv = ["track", "harvest:#{project_id}/#{task_id}", "-s", *comment_to_avoid_prompt]
 
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: null_stream)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: null_stream)
 
       expect(local_git["path"]).to be_nil
 
@@ -141,7 +141,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
         flags = ["-t", "1:30", "-r", *comment_to_avoid_prompt]
         argv = ["track", "harvest:#{project_id}/#{task_id}", *flags]
 
-        cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: output)
+        cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: output)
         cli.perform
 
         expect(output.string).to eq("harvest:27701618/14628589 # Project > Task 1\n")
@@ -163,7 +163,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
       output = StringIO.new
       argv = ["track", "harvest:#{project_id}/#{task_id}", "asana:1111/2222"]
 
-      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: output)
       cli.perform
 
       expect(output.string).to eq("harvest:27701618/14628589 # Project > Task 1\n")
@@ -177,7 +177,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
         output = StringIO.new
         argv = ["track", "harvest:#{project_id}/#{task_id}", "asana", "devops"]
 
-        cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: output)
+        cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: output)
 
         expect do
           cli.perform
@@ -194,7 +194,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
 
       comment_to_avoid_prompt = ["-c", "Note"]
       argv = ["track", "harvest:#{project_id}/#{task_id}", *comment_to_avoid_prompt]
-      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, "Invalid task")
     end
@@ -202,7 +202,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
 
   context "when missing project_id" do
     it "aborts with correct error message" do
-      cli = Abt::Cli.new(argv: %w[track harvest], output: null_stream)
+      cli = Abt::Cli.new(argv: %w[track harvest], input: null_tty, output: null_stream)
 
       expect do
         cli.perform
@@ -213,7 +213,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
 
   context "when missing project_task" do
     it "aborts with correct error message" do
-      cli = Abt::Cli.new(argv: %w[track harvest:27701618], output: null_stream)
+      cli = Abt::Cli.new(argv: %w[track harvest:27701618], input: null_tty, output: null_stream)
 
       expect do
         cli.perform

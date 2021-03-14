@@ -31,7 +31,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Stop, :harvest) do
 
     allow(output).to receive(:isatty).and_return(true)
 
-    cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+    cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
     cli.perform
 
     expect(err_output.string).to eq(<<~TXT)
@@ -55,7 +55,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Stop, :harvest) do
                                  }, mode: :json))
 
       argv = %w[stop harvest]
-      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, "No running time entry")
     end
@@ -69,7 +69,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Stop, :harvest) do
         .to_return(status: 500)
 
       argv = %w[stop harvest]
-      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, "Unable to fetch running time entry")
     end
@@ -90,7 +90,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Stop, :harvest) do
         .to_return(status: 500)
 
       argv = %w[stop harvest]
-      cli = Abt::Cli.new(argv: argv, err_output: null_stream, output: null_stream)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, "Unable to stop time entry")
     end

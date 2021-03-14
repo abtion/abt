@@ -31,7 +31,7 @@ RSpec.describe Abt::BaseCommand do
           end
         end
 
-        cli = Abt::Cli.new
+        cli = Abt::Cli.new(input: null_tty)
         ari = Abt::Ari.new(scheme: "provider")
         command_instance = command.new(cli: cli, ari: ari)
 
@@ -58,7 +58,7 @@ RSpec.describe Abt::BaseCommand do
           end
         end
 
-        cli = Abt::Cli.new
+        cli = Abt::Cli.new(input: null_tty)
         ari = Abt::Ari.new(scheme: "provider", flags: ["--invalid-flag"])
 
         expect do

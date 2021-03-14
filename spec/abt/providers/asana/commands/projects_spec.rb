@@ -33,7 +33,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Projects, :asana) do
 
     allow(output).to receive(:isatty).and_return(true)
 
-    cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+    cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
     cli.perform
 
     expect(err_output.string).to eq(<<~TXT)

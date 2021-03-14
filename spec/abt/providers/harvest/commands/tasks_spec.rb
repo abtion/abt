@@ -30,7 +30,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Tasks, :harvest) do
 
       allow(output).to receive(:isatty).and_return(true)
 
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
       cli.perform
 
       expect(err_output.string).to eq(<<~TXT)
@@ -47,7 +47,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Tasks, :harvest) do
 
   context "when no project specified" do
     it "aborts with correct message" do
-      cli = Abt::Cli.new(argv: %w[tasks harvest], output: null_stream)
+      cli = Abt::Cli.new(argv: %w[tasks harvest], input: null_tty, output: null_stream)
 
       expect do
         cli.perform

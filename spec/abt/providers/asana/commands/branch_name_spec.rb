@@ -20,12 +20,10 @@ RSpec.describe(Abt::Providers::Asana::Commands::BranchName, :asana) do
     local_git["path"] = "11111/22222"
 
     err_output = StringIO.new
-    output = StringIO.new
+    output = null_tty
     argv = %w[branch-name asana]
 
-    allow(output).to receive(:isatty).and_return(true)
-
-    cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+    cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
     cli.perform
 
     expect(err_output.string).to eq(<<~TXT)
@@ -42,13 +40,8 @@ RSpec.describe(Abt::Providers::Asana::Commands::BranchName, :asana) do
     it "aborts with correct message" do
       local_git["path"] = "11111"
 
-      err_output = StringIO.new
-      output = StringIO.new
       argv = %w[branch-name asana]
-
-      allow(output).to receive(:isatty).and_return(true)
-
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to(
         raise_error(Abt::Cli::Abort, "No current/specified task. Did you pick an Asana task?")
@@ -64,13 +57,8 @@ RSpec.describe(Abt::Providers::Asana::Commands::BranchName, :asana) do
 
       local_git["path"] = "11111/00000"
 
-      err_output = StringIO.new
-      output = StringIO.new
       argv = %w[branch-name asana]
-
-      allow(output).to receive(:isatty).and_return(true)
-
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, "Invalid task gid: 00000")
     end
@@ -84,13 +72,8 @@ RSpec.describe(Abt::Providers::Asana::Commands::BranchName, :asana) do
 
       local_git["path"] = "00000/33333"
 
-      err_output = StringIO.new
-      output = StringIO.new
       argv = %w[branch-name asana]
-
-      allow(output).to receive(:isatty).and_return(true)
-
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to(
         raise_error(Abt::Cli::Abort, "Invalid or unmatching project gid: 00000")

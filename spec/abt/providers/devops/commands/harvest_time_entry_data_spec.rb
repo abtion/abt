@@ -30,7 +30,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) 
 
     allow(output).to receive(:isatty).and_return(true)
 
-    cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+    cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
     cli.perform
 
     expect(err_output.string).to eq(<<~TXT)
@@ -57,7 +57,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) 
 
       allow(output).to receive(:isatty).and_return(true)
 
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
 
       expect { cli.perform }.to(
         raise_error(Abt::Cli::Abort,
@@ -76,7 +76,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) 
 
       allow(output).to receive(:isatty).and_return(true)
 
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
 
       expect { cli.perform }.to(
         raise_error(Abt::Cli::Abort,
@@ -99,7 +99,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) 
 
       allow(output).to receive(:isatty).and_return(true)
 
-      cli = Abt::Cli.new(argv: argv, err_output: err_output, output: output)
+      cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, [
         "Unable to find work item for configuration:",
