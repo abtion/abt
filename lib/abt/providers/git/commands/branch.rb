@@ -61,13 +61,15 @@ module Abt
           end
 
           def branch_names_from_aris
+            return @branch_names_from_aris if instance_variable_defined?(:@branch_names_from_aris)
+
             abort("You must provide an additional ARI that responds to: branch-name. E.g., asana") if other_aris.empty?
 
             input = StringIO.new(cli.aris.to_s)
             output = StringIO.new
             Abt::Cli.new(argv: ["branch-name"], output: output, input: input).perform
 
-            output.string.lines.map(&:strip).compact
+            @branch_names_from_aris = output.string.lines.map(&:strip).compact
           end
 
           def other_aris
