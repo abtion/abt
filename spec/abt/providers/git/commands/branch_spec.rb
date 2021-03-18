@@ -51,9 +51,9 @@ RSpec.describe Abt::Providers::Git::Commands::Branch do
 
       expect(err_output.gets).to eq("===== BRANCH git =====\n")
       expect(err_output.gets).to eq("No such branch: branch-name\n")
-      expect(err_output.gets).to eq("Create branch? (y/n): ")
+      expect(err_output.gets).to eq("Create branch? (Y/n): ")
 
-      input.puts("y")
+      input.puts("")
 
       expect(err_output.gets).to eq("Switched to branch-name\n")
 
@@ -81,7 +81,7 @@ RSpec.describe Abt::Providers::Git::Commands::Branch do
 
         expect(err_output.gets).to eq("===== BRANCH git =====\n")
         expect(err_output.gets).to eq("No such branch: branch-name\n")
-        expect(err_output.gets).to eq("Create branch? (y/n): ")
+        expect(err_output.gets).to eq("Create branch? (Y/n): ")
 
         input.puts("n")
 
