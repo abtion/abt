@@ -94,8 +94,8 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
       expect(err_output.gets).to eq("Selected: (1) WIP\n")
       expect(err_output.gets).to eq("Fetching work items...\n")
       expect(err_output.gets).to eq("Select a work item:\n")
-      expect(err_output.gets).to eq("(1) Work Item A\n")
-      expect(err_output.gets).to eq("(2) Work Item B\n")
+      expect(err_output.gets).to eq("(1) #11111 Work Item A\n")
+      expect(err_output.gets).to eq("(2) #22222 Work Item B\n")
       expect(err_output.gets).to eq("(1-2, q: back): ")
 
       input.puts("q")
@@ -110,13 +110,13 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
       expect(err_output.gets).to eq("Selected: (1) WIP\n")
       expect(err_output.gets).to eq("Fetching work items...\n")
       expect(err_output.gets).to eq("Select a work item:\n")
-      expect(err_output.gets).to eq("(1) Work Item A\n")
-      expect(err_output.gets).to eq("(2) Work Item B\n")
+      expect(err_output.gets).to eq("(1) #11111 Work Item A\n")
+      expect(err_output.gets).to eq("(2) #22222 Work Item B\n")
       expect(err_output.gets).to eq("(1-2, q: back): ")
 
       input.puts("1")
 
-      expect(err_output.gets).to eq("Selected: (1) Work Item A\n")
+      expect(err_output.gets).to eq("Selected: (1) #11111 Work Item A\n")
       expect(output.gets).to eq("devops:org-name/project-name/#{board_id}/11111 # Work Item A\n")
       expect(err_output.gets).to eq("https://org-name.visualstudio.com/project-name/_workitems/edit/11111\n")
 

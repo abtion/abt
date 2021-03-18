@@ -53,8 +53,20 @@ module Abt
               warn("Section is empty")
               select_work_item
             else
-              cli.prompt.choice("Select a work item", work_items, nil_option: true) || select_work_item
+              prompt_work_item(work_items) || select_work_item
             end
+          end
+
+          def prompt_work_item(work_items)
+            options = work_items.map do |work_item|
+              {
+                "id" => work_item["id"],
+                "name" => "##{work_item['id']} #{work_item['name']}"
+              }
+            end
+
+            choice = cli.prompt.choice("Select a work item", options, nil_option: true)
+            choice && work_items.find { |work_item| work_item["id"] == choice["id"] }
           end
 
           def work_items_in_column(column)
