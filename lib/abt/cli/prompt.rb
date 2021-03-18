@@ -14,17 +14,20 @@ module Abt
         Abt::Helpers.read_user_input
       end
 
-      def boolean(text)
-        output.puts text
+      def boolean(text, default: nil)
+        choices = [default == true ? "Y" : "y",
+                   default == false ? "N" : "n"].join("/")
 
-        loop do
-          output.print("(y / n): ")
+        output.print("#{text} (#{choices}): ")
 
-          case Abt::Helpers.read_user_input
-          when "y", "Y" then return true
-          when "n", "N" then return false
-          else output.puts "Invalid choice" end
-        end
+        input = Abt::Helpers.read_user_input.downcase
+
+        return true if input == "y"
+        return false if input == "n"
+        return default if input.empty? && !default.nil?
+
+        output.puts "Invalid choice"
+        boolean(text, default: default)
       end
 
       def choice(text, options, nil_option: false)

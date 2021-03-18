@@ -13,14 +13,14 @@ RSpec.describe Abt::Cli::Prompt do
   end
 
   describe "#boolean" do
-    it "prints the question followed by (y / n) prompt" do
+    it "prints the question followed by (y/n) prompt" do
       output = StringIO.new
       prompt = Abt::Cli::Prompt.new(output: output)
       allow(Abt::Helpers).to receive(:read_user_input).and_return("y")
 
       prompt.boolean("Do this?")
 
-      expect(output.string).to eq("Do this?\n(y / n): ")
+      expect(output.string).to eq("Do this? (y/n): ")
     end
 
     context 'when user inputs "y"' do
@@ -41,6 +41,31 @@ RSpec.describe Abt::Cli::Prompt do
       end
     end
 
+    context "when default is specified" do
+      it "capitalizes the default option" do
+        output = StringIO.new
+        prompt = Abt::Cli::Prompt.new(output: output)
+        allow(Abt::Helpers).to receive(:read_user_input).and_return("", "")
+
+        prompt.boolean("Do this?", default: true)
+        expect(output.string).to eq("Do this? (Y/n): ")
+
+        output.truncate(0)
+        output.rewind
+
+        prompt.boolean("Do this?", default: false)
+        expect(output.string).to eq("Do this? (y/N): ")
+      end
+
+      it "uses the default if the input is blank" do
+        prompt = Abt::Cli::Prompt.new(output: null_stream)
+        allow(Abt::Helpers).to receive(:read_user_input).and_return("", "")
+
+        expect(prompt.boolean("Do this?", default: true)).to be(true)
+        expect(prompt.boolean("Do this?", default: false)).to be(false)
+      end
+    end
+
     context "when user inputs something else" do
       it "keeps prompting until it receives y or n" do
         output = StringIO.new
@@ -49,10 +74,9 @@ RSpec.describe Abt::Cli::Prompt do
 
         expect(prompt.boolean("Do this?")).to be(true)
         expect(output.string).to eq([
-          "Do this?",
-          "(y / n): Invalid choice",
-          "(y / n): Invalid choice",
-          "(y / n): "
+          "Do this? (y/n): Invalid choice",
+          "Do this? (y/n): Invalid choice",
+          "Do this? (y/n): "
         ].join("\n"))
 
         expect(Abt::Helpers).to have_received(:read_user_input).thrice

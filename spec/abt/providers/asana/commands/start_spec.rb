@@ -197,8 +197,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Start, :asana) do
 
       expect(err_output.gets).to eq("===== START asana =====\n")
       expect(err_output.gets).to eq("https://ta.sk/#{task_id}/URL\n")
-      expect(err_output.gets).to eq("Task is assigned to: Another assigned user, take over?\n")
-      expect(err_output.gets).to eq("(y / n): ")
+      expect(err_output.gets).to eq("Task is assigned to: Another assigned user, take over? (y/n): ")
 
       input.puts("y")
 
