@@ -15,7 +15,7 @@ module Abt
         end
 
         def path
-          Path.new(local_available? && git["path"] || "")
+          Path.new(local_available? && git["path"] || directory_config["path"] || "")
         end
 
         def path=(new_path)
@@ -36,13 +36,17 @@ module Abt
         def wip_section_gid
           return nil unless local_available?
 
-          @wip_section_gid ||= git["wipSectionGid"] || prompt_wip_section["gid"]
+          @wip_section_gid ||= git["wipSectionGid"] ||
+                               directory_config["wip_section_gid"] ||
+                               prompt_wip_section["gid"]
         end
 
         def finalized_section_gid
           return nil unless local_available?
 
-          @finalized_section_gid ||= git["finalizedSectionGid"] || prompt_finalized_section["gid"]
+          @finalized_section_gid ||= git["finalizedSectionGid"] ||
+                                     directory_config["finalized_section_gid"] ||
+                                     prompt_finalized_section["gid"]
         end
 
         def clear_local(verbose: true)
@@ -65,6 +69,10 @@ module Abt
         end
 
         private
+
+        def directory_config
+          Abt.directory_config.fetch("asana", {})
+        end
 
         def git
           @git ||= GitConfig.new("local", "abt.asana")

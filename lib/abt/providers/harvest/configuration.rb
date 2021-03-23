@@ -15,7 +15,7 @@ module Abt
         end
 
         def path
-          Path.new(local_available? && git["path"] || "")
+          Path.new(local_available? && git["path"] || Abt.directory_config.dig("harvest", "path") || "")
         end
 
         def path=(new_path)

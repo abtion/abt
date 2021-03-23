@@ -6,6 +6,7 @@ require "oj"
 require "open3"
 require "stringio"
 require "optparse"
+require "yaml"
 
 Dir.glob("#{File.dirname(File.absolute_path(__FILE__))}/abt/*.rb").sort.each do |file|
   require file
@@ -21,5 +22,9 @@ module Abt
   def self.scheme_provider(scheme)
     const_name = Helpers.command_to_const(scheme)
     Providers.const_get(const_name) if Providers.const_defined?(const_name)
+  end
+
+  def self.directory_config
+    @directory_config ||= Abt::DirectoryConfig.new
   end
 end
