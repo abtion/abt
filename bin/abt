@@ -8,5 +8,5 @@ begin
 rescue Abt::Cli::Abort => e
   abort(e.message.strip)
 rescue Interrupt
-  abort("Aborted")
+  exit 130
 end
