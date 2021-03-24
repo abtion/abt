@@ -4,3 +4,10 @@ asana:
   finalized_section_gid: "1199576095622762"
 harvest:
   path: "26520415/14628589"
+aliases:
+  start: "$0 pick asana | $0 start harvest $@"
+  finalize: "$0 finalize asana harvest $@"
+  stop: "$0 stop harvest"
+  continue: "$0 track asana harvest $@"
+  current: "$0 current asana"
+  meet: "$0 track harvest:26520415/14628590 $@"

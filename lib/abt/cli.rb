@@ -26,11 +26,10 @@ module Abt
         @command = "help"
       end
 
-      if global_command?
-        process_global_command
-      else
-        process_aris
-      end
+      return process_alias if alias?
+      return process_global_command if global_command?
+
+      process_aris
     end
 
     def print_ari(scheme, path, description = nil)
@@ -64,6 +63,23 @@ module Abt
     end
 
     private
+
+    def alias?
+      command[0] == "@"
+    end
+
+    def process_alias
+      matching_alias = Abt.directory_config.dig("aliases", command[1..-1])
+
+      abort("No such alias #{command}") if matching_alias.nil?
+
+      with_args = matching_alias.sub("$@", remaining_args.join(" "))
+      with_program_name = with_args.gsub("$0", $PROGRAM_NAME).strip
+      humanized = with_args.gsub("$0", "abt").strip
+
+      warn(humanized)
+      system(with_program_name)
+    end
 
     def global_command?
       return true if aris.empty?

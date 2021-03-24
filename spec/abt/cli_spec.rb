@@ -16,6 +16,41 @@ RSpec.describe Abt::Cli do
     end
   end
 
+  describe "aliases" do
+    around do |example|
+      org_program_name = $PROGRAM_NAME
+      $PROGRAM_NAME = "bin/abt"
+
+      example.call
+
+      $PROGRAM_NAME = org_program_name
+    end
+
+    it "executes aliases from directory configuration" do
+      cli = Abt::Cli.new(argv: ["@start", "--flag"], input: null_tty, err_output: null_stream, output: null_stream)
+
+      allow(Abt.directory_config).to receive(:dig).with("aliases", "start").and_return("$0 start asana harvest $@")
+      allow(cli).to receive(:warn)
+      allow(cli).to receive(:system)
+
+      cli.perform
+
+      expect(cli).to have_received(:warn).with("abt start asana harvest --flag")
+      expect(cli).to have_received(:system).with("bin/abt start asana harvest --flag")
+    end
+
+    context "when no such alias" do
+      it "aborts with correct message" do
+        cli = Abt::Cli.new(argv: ["@start", "--flag"], input: null_tty, err_output: null_stream, output: null_stream)
+
+        allow(Abt.directory_config).to receive(:dig).with("aliases", "start").and_return(nil)
+        allow(cli).to receive(:warn)
+
+        expect { cli.perform }.to raise_error(Abt::Cli::Abort, "No such alias @start")
+      end
+    end
+  end
+
   describe "global commands" do
     ["--version", "-v", "version"].each do |command_name|
       describe command_name do
