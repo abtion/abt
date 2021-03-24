@@ -12,7 +12,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Tasks, :asana) do
   context "when project specified" do
     before do
       stub_asana_request(global_git, :get, "projects/11111")
-        .with(query: { opt_fields: "name" })
+        .with(query: { opt_fields: "name,permalink_url" })
         .to_return(body: Oj.dump({ data: { gid: "11111", name: "Project" } }, mode: :json))
 
       stub_asana_request(global_git, :get, "tasks")
@@ -36,6 +36,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Tasks, :asana) do
 
       expect(err_output.string).to eq(<<~TXT)
         ===== TASKS asana:11111 =====
+        Fetching project...
         Fetching tasks...
       TXT
 
@@ -53,7 +54,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Tasks, :asana) do
       expect do
         cli.perform
       end.to raise_error(Abt::Cli::Abort,
-                         "No current/specified project. Did you initialize Asana?")
+                         "No current/specified project. Did you forget to run `pick`?")
     end
   end
 end

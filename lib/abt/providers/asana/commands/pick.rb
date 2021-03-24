@@ -10,65 +10,35 @@ module Abt
           end
 
           def self.description
-            "Pick task for current git repository"
+            "Pick a task and - unless told not to - make it current"
           end
 
           def self.flags
             [
-              ["-d", "--dry-run", "Keep existing configuration"]
+              ["-d", "--dry-run", "Keep existing configuration"],
+              ["-c", "--clean", "Don't reuse project configuration"]
             ]
           end
 
           def perform
-            require_local_config!
-            require_project!
-
-            warn(project["name"])
-            task = select_task
+            pick!
 
             print_task(project, task)
 
             return if flags[:"dry-run"]
 
-            config.path = Path.from_ids(project_gid: project_gid, task_gid: task["gid"])
+            if config.local_available?
+              config.path = Path.from_gids(project_gid: project["gid"], task_gid: task["gid"])
+            else
+              warn("No local configuration to update - will function as dry run")
+            end
           end
 
           private
 
-          def project
-            @project ||= api.get("projects/#{project_gid}", opt_fields: "name")
-          end
-
-          def select_task
-            section = cli.prompt.choice("Which section?", sections)
-            warn("Fetching tasks...")
-            tasks = tasks_in_section(section)
-
-            if tasks.length.zero?
-              warn("Section is empty")
-              select_task
-            else
-              cli.prompt.choice("Select a task", tasks, nil_option: true) || select_task
-            end
-          end
-
-          def tasks_in_section(section)
-            tasks = api.get_paged(
-              "tasks",
-              section: section["gid"],
-              opt_fields: "name,completed,permalink_url"
-            )
-
-            # The below filtering is the best we can do with Asanas api, see this:
-            # https://forum.asana.com/t/tasks-query-completed-since-is-broken-for-sections/21461
-            tasks.reject { |task| task["completed"] }
-          end
-
-          def sections
-            @sections ||= begin
-              warn("Fetching sections...")
-              api.get_paged("projects/#{project_gid}/sections", opt_fields: "name")
-            end
+          def pick!
+            prompt_project! if project_gid.nil? || flags[:clean]
+            prompt_task!
           end
         end
       end

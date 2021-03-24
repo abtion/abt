@@ -6,7 +6,7 @@ module Abt
       class Path < String
         PATH_REGEX = %r{^(?<project_gid>\d+)?/?(?<task_gid>\d+)?$}.freeze
 
-        def self.from_ids(project_gid: nil, task_gid: nil)
+        def self.from_gids(project_gid: nil, task_gid: nil)
           path = project_gid ? [project_gid, *task_gid].join("/") : ""
           new(path)
         end

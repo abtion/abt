@@ -23,14 +23,9 @@ module Abt
 
           private
 
-          def project
-            @project ||= begin
-              api.get("projects/#{project_gid}", opt_fields: "name")
-            end
-          end
-
           def tasks
             @tasks ||= begin
+              project
               warn("Fetching tasks...")
               tasks = api.get_paged("tasks", project: project["gid"], opt_fields: "name,completed")
               tasks.reject { |task| task["completed"] }

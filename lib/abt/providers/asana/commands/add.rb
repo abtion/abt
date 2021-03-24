@@ -56,10 +56,6 @@ module Abt
             @notes ||= cli.prompt.text("Enter task notes")
           end
 
-          def project
-            @project ||= api.get("projects/#{project_gid}", opt_fields: "name")
-          end
-
           def section
             @section ||= cli.prompt.choice("Add to section?", sections,
                                            nil_option: ["q", "Don't add to section"])

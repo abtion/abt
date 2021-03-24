@@ -9,7 +9,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Add, :asana) do
     allow(Abt::GitConfig).to receive(:new).with("global", "abt.asana").and_return(global_git)
 
     stub_asana_request(global_git, :get, "projects/11111")
-      .with(query: { opt_fields: "name" })
+      .with(query: { opt_fields: "name,permalink_url" })
       .to_return(body: Oj.dump({ data: { gid: "11111", name: "Project" } }, mode: :json))
 
     stub_asana_request(global_git, :get, "projects/11111/sections")
@@ -116,7 +116,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Add, :asana) do
       cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to(
-        raise_error(Abt::Cli::Abort, "No current/specified project. Did you initialize Asana?")
+        raise_error(Abt::Cli::Abort, "No current/specified project. Did you forget to run `pick`?")
       )
     end
   end

@@ -25,12 +25,42 @@ module Abt
         end
 
         def require_project!
-          abort("No current/specified project. Did you initialize Asana?") if project_gid.nil?
+          abort("No current/specified project. Did you forget to run `pick`?") if project_gid.nil?
         end
 
         def require_task!
-          abort("No current/specified project. Did you initialize Asana and pick a task?") if project_gid.nil?
-          abort("No current/specified task. Did you pick an Asana task?") if task_gid.nil?
+          require_project!
+          abort("No current/specified task. Did you forget to run `pick`?") if task_gid.nil?
+        end
+
+        def prompt_project!
+          result = Services::ProjectPicker.call(cli: cli, config: config)
+          @path = result.path
+          @project = result.project
+        end
+
+        def prompt_task!
+          result = Services::TaskPicker.call(cli: cli, path: path, config: config, project: project)
+          @path = result.path
+          @task = result.task
+        end
+
+        def task
+          @task ||= begin
+            warn("Fetching task...")
+            api.get("tasks/#{task_gid}", opt_fields: "name,permalink_url")
+          rescue Abt::HttpError::NotFoundError
+            nil
+          end
+        end
+
+        def project
+          @project ||= begin
+            warn("Fetching project...")
+            api.get("projects/#{project_gid}", opt_fields: "name,permalink_url")
+          rescue Abt::HttpError::NotFoundError
+            nil
+          end
         end
 
         def print_project(project)

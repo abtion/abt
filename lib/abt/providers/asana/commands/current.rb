@@ -36,24 +36,6 @@ module Abt
             abort("Invalid project: #{project_gid}") if project.nil?
             abort("Invalid task: #{task_gid}") if task_gid && task.nil?
           end
-
-          def project
-            @project ||= begin
-              warn("Fetching project...")
-              api.get("projects/#{project_gid}", opt_fields: "name,permalink_url")
-            rescue Abt::HttpError::NotFoundError
-              nil
-            end
-          end
-
-          def task
-            @task ||= begin
-              warn("Fetching task...")
-              api.get("tasks/#{task_gid}", opt_fields: "name,permalink_url")
-            rescue Abt::HttpError::NotFoundError
-              nil
-            end
-          end
         end
       end
     end

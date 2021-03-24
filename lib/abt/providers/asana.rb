@@ -2,6 +2,7 @@
 
 Dir.glob("#{File.expand_path(__dir__)}/asana/*.rb").sort.each { |file| require file }
 Dir.glob("#{File.expand_path(__dir__)}/asana/commands/*.rb").sort.each { |file| require file }
+Dir.glob("#{File.expand_path(__dir__)}/asana/services/*.rb").sort.each { |file| require file }
 
 module Abt
   module Providers

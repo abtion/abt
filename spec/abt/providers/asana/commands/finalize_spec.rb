@@ -127,7 +127,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Finalize, :asana) do
 
       expect { cli.perform }.to(
         raise_error(Abt::Cli::Abort,
-                    "No current/specified project. Did you initialize Asana and pick a task?")
+                    "No current/specified project. Did you forget to run `pick`?")
       )
     end
   end

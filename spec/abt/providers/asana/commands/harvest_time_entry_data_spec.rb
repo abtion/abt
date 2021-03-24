@@ -49,7 +49,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::HarvestTimeEntryData, :asana) do
       cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to(
-        raise_error(Abt::Cli::Abort, "No current/specified task. Did you pick an Asana task?")
+        raise_error(Abt::Cli::Abort, "No current/specified task. Did you forget to run `pick`?")
       )
     end
   end
