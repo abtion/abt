@@ -5,20 +5,19 @@ Dir.glob("#{File.expand_path(__dir__)}/cli/*.rb").sort.each do |file|
 end
 
 module Abt
-  class Cli
+  class Cli # rubocop:disable Metrics/ClassLength
     class Abort < StandardError; end
 
     class Exit < StandardError; end
 
-    attr_reader :command, :aris, :input, :output, :err_output, :prompt
+    attr_reader :command, :remaining_args, :input, :output, :err_output, :prompt
 
     def initialize(argv: ARGV, input: $stdin, output: $stdout, err_output: $stderr)
-      (@command, *remaining_args) = argv
+      (@command, *@remaining_args) = argv
       @input = input
       @output = output
       @err_output = err_output
       @prompt = Abt::Cli::Prompt.new(output: err_output)
-      @aris = ArgumentsParser.new(sanitized_piped_args + remaining_args).parse
     end
 
     def perform
@@ -58,6 +57,10 @@ module Abt
 
     def exit_with_message(message)
       raise Exit, message
+    end
+
+    def aris
+      @aris ||= ArgumentsParser.new(sanitized_piped_args + remaining_args).parse
     end
 
     private

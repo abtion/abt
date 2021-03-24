@@ -124,9 +124,10 @@ RSpec.describe Abt::Cli do
     context "when no argument given through input IO" do
       it 'aborts with "No input from pipe"' do
         piped_argument = StringIO.new("")
+        cli = Abt::Cli.new(argv: ["share", "asana:111/222"], input: piped_argument)
 
         expect do
-          Abt::Cli.new(argv: ["share", "asana:111/222"], input: piped_argument)
+          cli.perform
         end.to raise_error(Abt::Cli::Abort, "No input from pipe")
       end
     end
