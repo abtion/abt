@@ -10,7 +10,6 @@ module Abt
       def basic_examples
         {
           "Getting started:" => {
-            "abt init asana harvest" => "Setup asana and harvest project for local git repo",
             "abt pick harvest" => "Pick harvest task. This will likely stay the same throughout the project",
             "abt pick asana | abt start harvest" => "Pick asana task and start tracking time",
             "abt stop harvest" => "Stop time tracker",
