@@ -5,6 +5,10 @@ RSpec.describe(Abt::Providers::Devops::Commands::BranchName, :devops) do
   let(:global_git) { GitConfigMock.new(data: devops_credentials) }
   let(:board_id) { "abc123" }
   let(:work_item_id) { 222_222 }
+  let(:work_item) do
+    { id: work_item_id,
+      fields: { 'System.Title': " Work Item \#$\#$ name." } }
+  end
 
   before do
     allow(Abt::GitConfig).to receive(:new).with("local", "abt.devops").and_return(local_git)
@@ -14,8 +18,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::BranchName, :devops) do
   def stub_work_items
     stub_devops_request(global_git, "org-name", "project-name", :get, "wit/workitems")
       .with(query: { ids: work_item_id.to_s })
-      .to_return(body: Oj.dump({ value: [{ id: work_item_id,
-                                           fields: { 'System.Title': " Work Item \#$\#$ name." } }] },
+      .to_return(body: Oj.dump({ value: [work_item] },
                                mode: :json))
   end
 
@@ -54,10 +57,10 @@ RSpec.describe(Abt::Providers::Devops::Commands::BranchName, :devops) do
 
       cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
 
-      expect { cli.perform }.to(
-        raise_error(Abt::Cli::Abort,
-                    "No current/specified board. Did you initialize DevOps and pick a work item?")
-      )
+      expect { cli.perform }.to raise_error do |error|
+        expect(error).to be_a(Abt::Cli::Abort)
+        expect(error.message).to include("No current/specified board")
+      end
     end
   end
 
@@ -73,10 +76,10 @@ RSpec.describe(Abt::Providers::Devops::Commands::BranchName, :devops) do
 
       cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
 
-      expect { cli.perform }.to(
-        raise_error(Abt::Cli::Abort,
-                    "No current/specified work item. Did you pick a DevOps work item?")
-      )
+      expect { cli.perform }.to raise_error do |error|
+        expect(error).to be_a(Abt::Cli::Abort)
+        expect(error.message).to include("No current/specified work item")
+      end
     end
   end
 
@@ -96,10 +99,10 @@ RSpec.describe(Abt::Providers::Devops::Commands::BranchName, :devops) do
 
       cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
 
-      expect { cli.perform }.to raise_error(Abt::Cli::Abort, [
-        "Unable to find work item for configuration:",
-        "devops:org-name/project-name/#{board_id}/00000"
-      ].join("\n"))
+      expect { cli.perform }.to raise_error(Abt::Cli::Abort, <<~TXT)
+        Unable to find work item for configuration:
+        devops:org-name/project-name/#{board_id}/00000
+      TXT
     end
   end
 end

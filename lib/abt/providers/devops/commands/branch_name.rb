@@ -16,15 +16,16 @@ module Abt
           def perform
             require_work_item!
 
-            puts name
-          rescue HttpError::NotFoundError
-            args = [organization_name, project_name, board_id, work_item_id].compact
+            if work_item
+              puts name
+            else
+              args = [organization_name, project_name, board_id, work_item_id].compact
 
-            error_message = [
-              "Unable to find work item for configuration:",
-              "devops:#{args.join('/')}"
-            ].join("\n")
-            abort(error_message)
+              abort(<<~TXT)
+                Unable to find work item for configuration:
+                devops:#{args.join('/')}
+              TXT
+            end
           end
 
           private
@@ -34,13 +35,6 @@ module Abt
             str += "-"
             str += work_item["name"].downcase.gsub(/[^\w]/, "-")
             str.squeeze("-").gsub(/(^-|-$)/, "")
-          end
-
-          def work_item
-            @work_item ||= begin
-              work_item = api.get_paged("wit/workitems", ids: work_item_id)[0]
-              sanitize_work_item(work_item)
-            end
           end
         end
       end

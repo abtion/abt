@@ -15,25 +15,32 @@ module Abt
 
           def self.flags
             [
-              ["-d", "--dry-run", "Keep existing configuration"]
+              ["-d", "--dry-run", "Keep existing configuration"],
+              ["-c", "--clean", "Don't reuse project/board configuration"]
             ]
           end
 
           def perform
-            require_local_config!
-            require_board!
+            pick!
 
-            warn("#{project_name} - #{board['name']}")
-
-            work_item = select_work_item
             print_work_item(organization_name, project_name, board, work_item)
 
             return if flags[:"dry-run"]
 
-            update_config(work_item)
+            if config.local_available?
+              update_config(work_item)
+            else
+              warn("No local configuration to update - will function as dry run")
+            end
           end
 
           private
+
+          def pick!
+            prompt_project! if project_name.nil? || flags[:clean]
+            prompt_board! if board_id.nil? || flags[:clean]
+            prompt_work_item!
+          end
 
           def update_config(work_item)
             config.path = Path.from_ids(
@@ -42,52 +49,6 @@ module Abt
               board_id: board_id,
               work_item_id: work_item["id"]
             )
-          end
-
-          def select_work_item
-            column = cli.prompt.choice("Which column?", columns)
-            warn("Fetching work items...")
-            work_items = work_items_in_column(column)
-
-            if work_items.length.zero?
-              warn("Section is empty")
-              select_work_item
-            else
-              prompt_work_item(work_items) || select_work_item
-            end
-          end
-
-          def prompt_work_item(work_items)
-            options = work_items.map do |work_item|
-              {
-                "id" => work_item["id"],
-                "name" => "##{work_item['id']} #{work_item['name']}"
-              }
-            end
-
-            choice = cli.prompt.choice("Select a work item", options, nil_option: true)
-            choice && work_items.find { |work_item| work_item["id"] == choice["id"] }
-          end
-
-          def work_items_in_column(column)
-            work_items = api.work_item_query(
-              <<~WIQL
-                SELECT [System.Id]
-                FROM WorkItems
-                WHERE [System.BoardColumn] = '#{column['name']}'
-                ORDER BY [Microsoft.VSTS.Common.BacklogPriority] ASC
-              WIQL
-            )
-
-            work_items.map { |work_item| sanitize_work_item(work_item) }
-          end
-
-          def columns
-            board["columns"]
-          end
-
-          def board
-            @board ||= api.get("work/boards/#{board_id}")
           end
         end
       end

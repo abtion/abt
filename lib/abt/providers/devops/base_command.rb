@@ -24,29 +24,49 @@ module Abt
         end
 
         def require_board!
-          return if organization_name && project_name && board_id
+          return if board_id && organization_name && project_name
 
-          abort("No current/specified board. Did you initialize DevOps?")
+          abort("No current/specified board. Did you forget to `pick`?")
         end
 
         def require_work_item!
-          unless organization_name && project_name && board_id
-            abort("No current/specified board. Did you initialize DevOps and pick a work item?")
-          end
-
+          require_board!
           return if work_item_id
 
-          abort("No current/specified work item. Did you pick a DevOps work item?")
+          abort("No current/specified work item. Did you forget to `pick`?")
         end
 
-        def sanitize_work_item(work_item)
-          return nil if work_item.nil?
+        def prompt_project!
+          @path = Services::ProjectPicker.call(cli: cli).path
+        end
 
-          work_item.merge(
-            "id" => work_item["id"].to_s,
-            "name" => work_item["fields"]["System.Title"],
-            "url" => api.url_for_work_item(work_item)
-          )
+        def prompt_board!
+          result = Services::BoardPicker.call(cli: cli, path: path, config: config)
+          @path = result.path
+          @board = result.board
+        end
+
+        def prompt_work_item!
+          result = Services::WorkItemPicker.call(cli: cli, path: path, config: config, board: board)
+          @path = result.path
+          @work_item = result.work_item
+        end
+
+        def board
+          @board ||= begin
+            api.get("work/boards/#{board_id}")
+          rescue HttpError::NotFoundError
+            nil
+          end
+        end
+
+        def work_item
+          @work_item ||= begin
+            work_item = api.get_paged("wit/workitems", ids: work_item_id)[0]
+            api.sanitize_work_item(work_item)
+          rescue HttpError::NotFoundError
+            nil
+          end
         end
 
         def print_board(organization_name, project_name, board)

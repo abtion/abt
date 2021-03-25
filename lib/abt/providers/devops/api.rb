@@ -73,6 +73,16 @@ module Abt
           "#{base_url}/_boards/board/#{rfc_3986_encode_path_segment(board['name'])}"
         end
 
+        def sanitize_work_item(work_item)
+          return nil if work_item.nil?
+
+          work_item.merge(
+            "id" => work_item["id"].to_s,
+            "name" => work_item["fields"]["System.Title"],
+            "url" => url_for_work_item(work_item)
+          )
+        end
+
         def connection
           @connection ||= Faraday.new(api_endpoint) do |connection|
             connection.basic_auth(username, access_token)

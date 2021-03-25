@@ -42,8 +42,6 @@ RSpec.describe(Abt::Providers::Devops::Commands::Current, :devops) do
 
       expect(err_output.string).to eq(<<~TXT)
         ===== CURRENT devops =====
-        Fetching board...
-        Fetching work item...
         https://org-name.visualstudio.com/project-name/_workitems/edit/#{work_item_id}
       TXT
 
@@ -69,7 +67,6 @@ RSpec.describe(Abt::Providers::Devops::Commands::Current, :devops) do
 
         expect(err_output.string).to eq(<<~TXT)
           ===== CURRENT devops =====
-          Fetching board...
           https://org-name.visualstudio.com/project-name/_boards/board/Board
         TXT
 

@@ -59,10 +59,10 @@ RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) 
 
       cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
 
-      expect { cli.perform }.to(
-        raise_error(Abt::Cli::Abort,
-                    "No current/specified board. Did you initialize DevOps and pick a work item?")
-      )
+      expect { cli.perform }.to raise_error do |error|
+        expect(error).to be_a(Abt::Cli::Abort)
+        expect(error.message).to include("No current/specified board")
+      end
     end
   end
 
@@ -78,10 +78,10 @@ RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) 
 
       cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
 
-      expect { cli.perform }.to(
-        raise_error(Abt::Cli::Abort,
-                    "No current/specified work item. Did you pick a DevOps work item?")
-      )
+      expect { cli.perform }.to raise_error do |error|
+        expect(error).to be_a(Abt::Cli::Abort)
+        expect(error.message).to include("No current/specified work item")
+      end
     end
   end
 
@@ -101,10 +101,10 @@ RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) 
 
       cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
 
-      expect { cli.perform }.to raise_error(Abt::Cli::Abort, [
-        "Unable to find work item for configuration:",
-        "devops:org-name/project-name/#{board_id}/00000"
-      ].join("\n"))
+      expect { cli.perform }.to raise_error(Abt::Cli::Abort, <<~TXT)
+        Unable to find work item for configuration:
+        devops:org-name/project-name/#{board_id}/00000
+      TXT
     end
   end
 end

@@ -14,7 +14,8 @@ module Abt
           end
 
           def perform
-            require_board!
+            prompt_project! unless project_name
+            prompt_board! unless board_id
 
             work_items.each do |work_item|
               print_work_item(organization_name, project_name, board, work_item)
@@ -32,12 +33,8 @@ module Abt
                   FROM WorkItems
                   ORDER BY [System.Title] ASC
                 WIQL
-              ).map { |work_item| sanitize_work_item(work_item) }
+              ).map { |work_item| api.sanitize_work_item(work_item) }
             end
-          end
-
-          def board
-            @board ||= api.get("work/boards/#{board_id}")
           end
         end
       end

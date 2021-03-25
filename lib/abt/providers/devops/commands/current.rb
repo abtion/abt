@@ -42,25 +42,6 @@ module Abt
             end
             abort("No such work item: ##{work_item_id}") if work_item_id && work_item.nil?
           end
-
-          def board
-            @board ||= begin
-              warn("Fetching board...")
-              api.get("work/boards/#{board_id}")
-            rescue HttpError::NotFoundError
-              nil
-            end
-          end
-
-          def work_item
-            @work_item ||= begin
-              warn("Fetching work item...")
-              work_item = api.get_paged("wit/workitems", ids: work_item_id)[0]
-              sanitize_work_item(work_item)
-            rescue HttpError::NotFoundError
-              nil
-            end
-          end
         end
       end
     end
