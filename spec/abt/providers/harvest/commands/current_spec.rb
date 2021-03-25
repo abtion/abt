@@ -35,6 +35,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Current, :harvest) do
 
       expect(err_output.string).to eq(<<~TXT)
         ===== CURRENT harvest =====
+        Fetching Harvest data...
       TXT
 
       expect(output.string).to eq(<<~TXT)
@@ -57,6 +58,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Current, :harvest) do
 
         expect(err_output.string).to eq(<<~TXT)
           ===== CURRENT harvest =====
+          Fetching Harvest data...
         TXT
 
         expect(output.string).to eq(<<~TXT)

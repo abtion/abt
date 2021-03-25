@@ -2,6 +2,7 @@
 
 Dir.glob("#{File.expand_path(__dir__)}/harvest/*.rb").sort.each { |file| require file }
 Dir.glob("#{File.expand_path(__dir__)}/harvest/commands/*.rb").sort.each { |file| require file }
+Dir.glob("#{File.expand_path(__dir__)}/harvest/services/*.rb").sort.each { |file| require file }
 
 module Abt
   module Providers

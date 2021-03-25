@@ -207,7 +207,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
       expect do
         cli.perform
       end.to raise_error(Abt::Cli::Abort,
-                         "No current/specified project. Did you initialize Harvest and pick a task?")
+                         "No current/specified project. Did you forget to run `pick`?")
     end
   end
 
@@ -218,7 +218,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Track, :harvest) do
       expect do
         cli.perform
       end.to raise_error(Abt::Cli::Abort,
-                         "No current/specified task. Did you pick a Harvest task?")
+                         "No current/specified task. Did you forget to run `pick`?")
     end
   end
 end

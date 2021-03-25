@@ -26,13 +26,55 @@ module Abt
         def require_project!
           return if project_id
 
-          abort("No current/specified project. Did you initialize Harvest?")
+          abort("No current/specified project. Did you forget to run `pick`?")
         end
 
         def require_task!
-          abort("No current/specified project. Did you initialize Harvest and pick a task?") unless project_id
+          require_project!
+          return if task_id
 
-          abort("No current/specified task. Did you pick a Harvest task?") if task_id.nil?
+          abort("No current/specified task. Did you forget to run `pick`?")
+        end
+
+        def prompt_project!
+          result = Services::ProjectPicker.call(cli: cli, project_assignments: project_assignments)
+          @path = result.path
+          @project = result.project
+        end
+
+        def prompt_task!
+          result = Services::TaskPicker.call(cli: cli, path: path, project_assignment: project_assignment)
+          @path = result.path
+          @task = result.task
+        end
+
+        def task
+          return @task if instance_variable_defined?(:@task)
+
+          @task = if project_assignment
+                    project_assignment["task_assignments"].map { |ta| ta["task"] }.find do |task|
+                      task["id"].to_s == task_id
+                    end
+                  end
+        end
+
+        def project
+          return @project if instance_variable_defined?(:@project)
+
+          @project = if project_assignment
+                       project_assignment["project"].merge("client" => project_assignment["client"])
+                     end
+        end
+
+        def project_assignment
+          @project_assignment ||= project_assignments.find { |pa| pa["project"]["id"].to_s == path.project_id }
+        end
+
+        def project_assignments
+          @project_assignments ||= begin
+            warn("Fetching Harvest data...")
+            api.get_paged("users/me/project_assignments")
+          end
         end
 
         def print_project(project)

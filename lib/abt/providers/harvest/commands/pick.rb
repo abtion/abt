@@ -15,46 +15,31 @@ module Abt
 
           def self.flags
             [
-              ["-d", "--dry-run", "Keep existing configuration"]
+              ["-d", "--dry-run", "Keep existing configuration"],
+              ["-c", "--clean", "Don't reuse project configuration"]
             ]
           end
 
           def perform
-            require_local_config!
-            require_project!
-
-            warn(project["name"])
-            task = pick_task
+            pick!
 
             print_task(project, task)
 
             return if flags[:"dry-run"]
 
-            config.path = Path.from_ids(project_id: project_id, task_id: task["id"])
+            unless config.local_available?
+              warn("No local configuration to update - will function as dry run")
+              return
+            end
+
+            config.path = Path.from_ids(project_id: project["id"], task_id: task["id"])
           end
 
           private
 
-          def project
-            project_assignment["project"]
-          end
-
-          def pick_task
-            cli.prompt.choice("Select a task", tasks)
-          end
-
-          def tasks
-            @tasks ||= project_assignment["task_assignments"].map { |ta| ta["task"] }
-          end
-
-          def project_assignment
-            @project_assignment ||= begin
-              project_assignments.find { |pa| pa["project"]["id"].to_s == project_id }
-            end
-          end
-
-          def project_assignments
-            @project_assignments ||= api.get_paged("users/me/project_assignments")
+          def pick!
+            prompt_project! if project_id.nil? || flags[:clean]
+            prompt_task!
           end
         end
       end

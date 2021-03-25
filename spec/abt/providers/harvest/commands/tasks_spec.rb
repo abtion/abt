@@ -35,7 +35,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Tasks, :harvest) do
 
       expect(err_output.string).to eq(<<~TXT)
         ===== TASKS harvest:27701618 =====
-        Fetching tasks...
+        Fetching Harvest data...
       TXT
 
       expect(output.string).to eq(<<~TXT)
@@ -52,7 +52,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Tasks, :harvest) do
       expect do
         cli.perform
       end.to raise_error(Abt::Cli::Abort,
-                         "No current/specified project. Did you initialize Harvest?")
+                         "No current/specified project. Did you forget to run `pick`?")
     end
   end
 end

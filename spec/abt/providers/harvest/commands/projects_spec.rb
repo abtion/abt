@@ -36,7 +36,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Projects, :harvest) do
 
     expect(err_output.string).to eq(<<~TXT)
       ===== PROJECTS harvest =====
-      Fetching projects...
+      Fetching Harvest data...
     TXT
 
     expect(output.string).to eq(<<~TXT)
