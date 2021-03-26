@@ -44,15 +44,4 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Tasks, :harvest) do
       TXT
     end
   end
-
-  context "when no project specified" do
-    it "aborts with correct message" do
-      cli = Abt::Cli.new(argv: %w[tasks harvest], input: null_tty, output: null_stream)
-
-      expect do
-        cli.perform
-      end.to raise_error(Abt::Cli::Abort,
-                         "No current/specified project. Did you forget to run `pick`?")
-    end
-  end
 end

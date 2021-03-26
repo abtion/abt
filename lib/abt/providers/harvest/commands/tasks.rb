@@ -14,7 +14,7 @@ module Abt
           end
 
           def perform
-            require_project!
+            prompt_project! unless project_id
 
             tasks.each do |task|
               print_task(project, task)
