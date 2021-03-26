@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    abt-cli (0.0.26)
+    abt-cli (0.0.27)
       dry-inflector (~> 0.2)
       faraday (~> 1.0)
       oj (~> 3.10)
