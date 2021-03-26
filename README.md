@@ -26,11 +26,10 @@ Definitions:
 - `<options>`: Optional flags for the command and ARI
 
 Getting started:
-- `abt init asana harvest`: Setup asana and harvest project for local git repo
 - `abt pick harvest`: Pick harvest task. This will likely stay the same throughout the project
 - `abt pick asana | abt start harvest`: Pick asana task and start tracking time
 - `abt stop harvest`: Stop time tracker
-- `abt start asana harvest`: Continue working, e.g., after a break
+- `abt track asana harvest`: Continue tracking time, e.g., after a break
 - `abt finalize asana`: Finalize the selected asana task
 
 Tracking meetings (without switching current task setting):
@@ -42,10 +41,14 @@ Many commands output ARIs that can be piped into other commands:
 - `abt tasks asana | grep -i <name of task> | abt start`
 
 Sharing ARIs:
-- `abt share asana harvest | tr "\n" " "`: Print current asana and harvest ARIs on a single line
-- `abt share asana harvest | tr "\n" " " | pbcopy`: Copy ARIs to clipboard (mac only)
-- `abt start <ARIs from coworker>`: Work on a task your coworker shared with you
-- `abt current <ARIs from coworker> | abt start`: Set task as current, then start it
+- `abt share`: Print current asana and harvest ARIs on a single line
+- `abt share | pbcopy`: Copy ARIs to clipboard (mac only)
+- `abt track <ARIs from coworker>`: Start tracking on the task your coworker shared with you
+- `abt current <ARIs from coworker> | abt track`: Set task as current, then start tracking
+
+One-off tracking on any project
+- `abt pick asana -dc -- harvest -dc | abt track`: Find a track any task on any project, without reusing/affecting previous settings
+- `abt pick asana harvest | abt track`: Can be used instead of the above when outside a git repo
 
 Flags:
 - `abt start harvest -c "comment"`: Add command flags after ARIs
@@ -75,8 +78,7 @@ Some commands have `[options]`. Run such a command with `--help` flag to view su
 | `abt current asana[:<project-gid>[/<task-gid>]]`               | Get or set project and or task for current git repository |
 | `abt finalize asana[:<project-gid>/<task-gid>]`                | Move current/specified task to section (column) for finalized tasks |
 | `abt harvest-time-entry-data asana[:<project-gid>/<task-gid>]` | Print Harvest time entry data for Asana task as json. Used by harvest start script. |
-| `abt init asana`                                               | Pick Asana project for current git repository |
-| `abt pick asana[:<project-gid>]`                               | Pick task for current git repository |
+| `abt pick asana[:<project-gid>]`                               | Pick a task and - unless told not to - make it current |
 | `abt projects asana`                                           | List all available projects - useful for piping into grep etc. |
 | `abt share asana[:<project-gid>[/<task-gid>]]`                 | Print project/task ARI |
 | `abt start asana[:<project-gid>/<task-gid>]`                   | Move current or specified task to WIP section (column) and assign it to you |
@@ -90,7 +92,6 @@ Some commands have `[options]`. Run such a command with `--help` flag to view su
 | `abt clear devops`                                                                                  | Clear DevOps configuration |
 | `abt current devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`               | Get or set DevOps configuration for current git repository |
 | `abt harvest-time-entry-data devops[:<organization-name>/<project-name>/<board-id>/<work-item-id>]` | Print Harvest time entry data for DevOps work item as json. Used by harvest start script. |
-| `abt init devops`                                                                                   | Pick DevOps board for current git repository |
 | `abt pick devops[:<organization-name>/<project-name>/<board-id>]`                                   | Pick work item for current git repository |
 | `abt share devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`                 | Print DevOps ARI |
 | `abt work-items devops`                                                                             | List all work items on board - useful for piping into grep etc. |
@@ -105,7 +106,6 @@ Some commands have `[options]`. Run such a command with `--help` flag to view su
 | :------ | :---------- |
 | `abt clear harvest`                                    | Clear harvest configuration |
 | `abt current harvest[:<project-id>[/<task-id>]]`       | Get or set project and or task for current git repository |
-| `abt init harvest`                                     | Pick Harvest project for current git repository |
 | `abt pick harvest[:<project-id>]`                      | Pick task for current git repository |
 | `abt projects harvest`                                 | List all available projects - useful for piping into grep etc. |
 | `abt share harvest[:<project-id>[/<task-id>]]`         | Print project/task ARI |

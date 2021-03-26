@@ -13,7 +13,7 @@ module Abt
             "abt pick harvest" => "Pick harvest task. This will likely stay the same throughout the project",
             "abt pick asana | abt start harvest" => "Pick asana task and start tracking time",
             "abt stop harvest" => "Stop time tracker",
-            "abt start asana harvest" => "Continue working, e.g., after a break",
+            "abt track asana harvest" => "Continue tracking time, e.g., after a break",
             "abt finalize asana" => "Finalize the selected asana task"
           }
         }
@@ -30,10 +30,15 @@ module Abt
             "abt tasks asana | grep -i <name of task> | abt start" => nil
           },
           "Sharing ARIs:" => {
-            'abt share asana harvest | tr "\n" " "' => "Print current asana and harvest ARIs on a single line",
-            'abt share asana harvest | tr "\n" " " | pbcopy' => "Copy ARIs to clipboard (mac only)",
-            "abt start <ARIs from coworker>" => "Work on a task your coworker shared with you",
-            "abt current <ARIs from coworker> | abt start" => "Set task as current, then start it"
+            "abt share" => "Print current asana and harvest ARIs on a single line",
+            "abt share | pbcopy" => "Copy ARIs to clipboard (mac only)",
+            "abt track <ARIs from coworker>" => "Start tracking on the task your coworker shared with you",
+            "abt current <ARIs from coworker> | abt track" => "Set task as current, then start tracking"
+          },
+          "One-off tracking on any project": {
+            "abt pick asana -dc -- harvest -dc | abt track" =>
+              "Find a track any task on any project, without reusing/affecting previous settings",
+            "abt pick asana harvest | abt track" => "Can be used instead of the above when outside a git repo"
           },
           "Flags:" => {
             'abt start harvest -c "comment"' => "Add command flags after ARIs",
