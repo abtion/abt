@@ -84,6 +84,57 @@ RSpec.describe Abt::Cli::Prompt do
     end
   end
 
+  describe "#search" do
+    it "allows searching larger collections" do
+      input = QueueIO.new
+      output = QueueIO.new
+      prompt = Abt::Cli::Prompt.new(output: output)
+
+      allow(Abt::Helpers).to receive(:read_user_input) { input.gets }
+
+      option1 = { "name" => "First" }
+      option2 = { "name" => "Second" }
+      option3 = { "name" => "Third" }
+      option4 = { "name" => "Fourth" }
+
+      thr = Thread.new do
+        result = prompt.search("Pick an option", [option1, option2, option3, option4])
+        expect(result).to eq(option3)
+      end
+
+      expect(output.gets).to eq("Pick an option\n")
+      expect(output.gets).to eq("Enter search: ")
+
+      input.print("Not a match")
+
+      expect(output.gets).to eq("No matches\n")
+      expect(output.gets).to eq("Enter search: ")
+
+      input.print("four")
+
+      expect(output.gets).to eq("Select a match:\n")
+      expect(output.gets).to eq("(1) Fourth\n")
+      expect(output.gets).to eq("(1, q: back): ")
+
+      input.print("q")
+
+      expect(output.gets).to eq("Enter search: ")
+
+      input.print("ir")
+
+      expect(output.gets).to eq("Select a match:\n")
+      expect(output.gets).to eq("(1) First\n")
+      expect(output.gets).to eq("(2) Third\n")
+      expect(output.gets).to eq("(1-2, q: back): ")
+
+      input.print("2")
+
+      expect(output.gets).to eq("Selected: (2) Third\n")
+
+      thr.join
+    end
+  end
+
   describe "#choice" do
     it "prints the specified question, available options and a prompt" do
       output = StringIO.new
