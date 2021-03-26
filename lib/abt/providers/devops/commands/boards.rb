@@ -14,8 +14,7 @@ module Abt
           end
 
           def perform
-            abort("No organization selected. Did you initialize DevOps?") if organization_name.nil?
-            abort("No project selected. Did you initialize DevOps?") if project_name.nil?
+            prompt_project! unless project_name
 
             boards.map do |board|
               print_board(organization_name, project_name, board)
