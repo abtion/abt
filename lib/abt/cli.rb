@@ -62,6 +62,10 @@ module Abt
       @aris ||= ArgumentsParser.new(sanitized_piped_args + remaining_args).parse
     end
 
+    def directory_config
+      @directory_config ||= Abt::DirectoryConfig.new
+    end
+
     private
 
     def alias?
@@ -69,7 +73,7 @@ module Abt
     end
 
     def process_alias
-      matching_alias = Abt.directory_config.dig("aliases", command[1..-1])
+      matching_alias = directory_config.dig("aliases", command[1..-1])
 
       abort("No such alias #{command}") if matching_alias.nil?
 

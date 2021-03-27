@@ -71,7 +71,7 @@ module Abt
         private
 
         def directory_config
-          Abt.directory_config.fetch("asana", {})
+          cli.directory_config.fetch("asana", {})
         end
 
         def git

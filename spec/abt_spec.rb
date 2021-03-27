@@ -20,10 +20,4 @@ RSpec.describe Abt do
       expect(Abt.scheme_provider("module-name")).to eq(scheme_provider)
     end
   end
-
-  describe ".configuration", :directory_config do
-    it "returns an instance of Abt::DirectoryConfig" do
-      expect(Abt.directory_config).to be_an(Abt::DirectoryConfig)
-    end
-  end
 end

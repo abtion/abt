@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require "tmpdir"
-
-RSpec.describe Abt::DirectoryConfig do
+RSpec.describe Abt::DirectoryConfig, :directory_config do
   it "contains file values" do
     Dir.mktmpdir do |git_root|
       Open3.popen3("git init #{git_root}") do |_i, _o, _e, thread|

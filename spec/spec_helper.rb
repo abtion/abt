@@ -2,6 +2,7 @@
 
 require "byebug"
 require "webmock/rspec"
+require "tmpdir"
 
 require_relative "./code_coverage"
 require_relative "../lib/abt"
@@ -21,7 +22,7 @@ RSpec.configure do |config|
   config.include(HarvestHelpers, :harvest)
 
   config.before do |example|
-    allow(Abt).to receive(:directory_config).and_return({}) unless example.metadata[:directory_config]
+    allow(Abt::DirectoryConfig).to receive(:new).and_return({}) unless example.metadata[:directory_config]
   end
 
   # rspec-expectations config goes here. You can use an alternate

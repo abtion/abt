@@ -23,8 +23,4 @@ module Abt
     const_name = Helpers.command_to_const(scheme)
     Providers.const_get(const_name) if Providers.const_defined?(const_name)
   end
-
-  def self.directory_config
-    @directory_config ||= Abt::DirectoryConfig.new
-  end
 end
