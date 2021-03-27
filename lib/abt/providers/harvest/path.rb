@@ -28,7 +28,7 @@ module Abt
         private
 
         def match
-          @match ||= PATH_REGEX.match(self)
+          @match ||= PATH_REGEX.match(to_s)
         end
       end
     end
