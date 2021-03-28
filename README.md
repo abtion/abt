@@ -83,6 +83,7 @@ Some commands have `[options]`. Run such a command with `--help` flag to view su
 | `abt share asana[:<project-gid>[/<task-gid>]]`                 | Print project/task ARI |
 | `abt start asana[:<project-gid>/<task-gid>]`                   | Move current or specified task to WIP section (column) and assign it to you |
 | `abt tasks asana`                                              | List available tasks on project - useful for piping into grep etc. |
+| `abt write-config asana[:<project-gid>]`                       | Write Asana settings to .abt.yml |
 
 ### Devops
 | Command | Description |
@@ -95,6 +96,7 @@ Some commands have `[options]`. Run such a command with `--help` flag to view su
 | `abt pick devops[:<organization-name>/<project-name>/<board-id>]`                                   | Pick work item for current git repository |
 | `abt share devops[:<organization-name>/<project-name>/<board-id>[/<work-item-id>]]`                 | Print DevOps ARI |
 | `abt work-items devops`                                                                             | List all work items on board - useful for piping into grep etc. |
+| `abt write-config devops[:<organization-name>/<project-name>/<board-id>]`                           | Write DevOps settings to .abt.yml |
 
 ### Git
 | Command | Description |
@@ -113,5 +115,6 @@ Some commands have `[options]`. Run such a command with `--help` flag to view su
 | `abt stop harvest`                                     | Stop running harvest tracker |
 | `abt tasks harvest`                                    | List available tasks on project - useful for piping into grep etc. |
 | `abt track harvest[:<project-id>/<task-id>] [options]` | Start tracker for current or specified task. Add a relevant ARI to link the time entry, e.g. `abt track harvest asana` |
+| `abt write-config harvest[:<project-id>[/<task-id>]]`  | Write Harvest settings to .abt.yml |
 
 #### This readme was generated with `abt readme > README.md`
