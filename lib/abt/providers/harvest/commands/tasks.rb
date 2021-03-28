@@ -24,9 +24,7 @@ module Abt
           private
 
           def tasks
-            @tasks ||= begin
-              project_assignment["task_assignments"].map { |ta| ta["task"] }
-            end
+            @tasks ||= project_assignment["task_assignments"].map { |ta| ta["task"] }
           end
         end
       end

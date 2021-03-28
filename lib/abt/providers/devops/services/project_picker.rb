@@ -37,15 +37,11 @@ module Abt
           private
 
           def project_name
-            @project_name ||= begin
-              project_url_match && project_url_match[:project]
-            end
+            @project_name ||= project_url_match && project_url_match[:project]
           end
 
           def organization_name
-            @organization_name ||= begin
-              project_url_match && project_url_match[:organization]
-            end
+            @organization_name ||= project_url_match && project_url_match[:organization]
           end
 
           def project_url_match
@@ -53,14 +49,12 @@ module Abt
           end
 
           def project_url
-            @project_url ||= begin
-              loop do
-                url = prompt_url
+            @project_url ||= loop do
+              url = prompt_url
 
-                break url if AZURE_DEV_URL_REGEX =~ url || VS_URL_REGEX =~ url
+              break url if AZURE_DEV_URL_REGEX =~ url || VS_URL_REGEX =~ url
 
-                cli.warn("Invalid URL")
-              end
+              cli.warn("Invalid URL")
             end
           end
 
