@@ -22,10 +22,8 @@ module Abt
           private
 
           def projects
-            @projects ||= begin
-              project_assignments.map do |project_assignment|
-                project_assignment["project"].merge("client" => project_assignment["client"])
-              end
+            @projects ||= project_assignments.map do |project_assignment|
+              project_assignment["project"].merge("client" => project_assignment["client"])
             end
           end
         end
