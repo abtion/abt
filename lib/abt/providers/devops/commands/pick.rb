@@ -28,7 +28,7 @@ module Abt
             return if flags[:"dry-run"]
 
             if config.local_available?
-              update_config(work_item)
+              config.path = path
             else
               warn("No local configuration to update - will function as dry run")
             end
@@ -40,15 +40,6 @@ module Abt
             prompt_project! if project_name.nil? || flags[:clean]
             prompt_board! if board_id.nil? || flags[:clean]
             prompt_work_item!
-          end
-
-          def update_config(work_item)
-            config.path = Path.from_ids(
-              organization_name: organization_name,
-              project_name: project_name,
-              board_id: board_id,
-              work_item_id: work_item["id"]
-            )
           end
         end
       end

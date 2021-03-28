@@ -81,7 +81,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Pick, :harvest) do
 
   context "when --clean flag added" do
     it "forces a new project to be selected" do
-      local_git["path"] = "12323213"
+      local_git["path"] = "12323213/234342343"
 
       output = StringIO.new
       err_output = StringIO.new
@@ -103,7 +103,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Pick, :harvest) do
 
   context "when dry-run" do
     it "doesn't update the configuration" do
-      local_git["path"] = "27701618"
+      local_git["path"] = "27701618/234342343"
 
       output = StringIO.new
       argv = %w[pick harvest -d]
@@ -114,7 +114,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Pick, :harvest) do
       cli.perform
 
       expect(output.string).to eq("harvest:27701618/14628589 # Project > Task 1\n")
-      expect(local_git["path"]).to eq("27701618")
+      expect(local_git["path"]).to eq("27701618/234342343")
     end
   end
 

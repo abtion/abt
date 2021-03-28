@@ -30,7 +30,7 @@ module Abt
           def call
             task = select_task
 
-            path_with_task = Path.new([path, task["gid"]].join("/"))
+            path_with_task = Path.from_gids(project_gid: path.project_gid, task_gid: task["gid"])
 
             Result.new(task: task, path: path_with_task)
           end

@@ -129,7 +129,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Pick, :asana) do
 
   context "when --clean flag added" do
     it "forces a new project to be selected" do
-      local_git["path"] = "11111"
+      local_git["path"] = "11111/22222"
 
       err_output = StringIO.new
       output = StringIO.new
@@ -150,7 +150,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Pick, :asana) do
 
   context "when dry-run" do
     it "doesn't update the configuration" do
-      local_git["path"] = "11111"
+      local_git["path"] = "11111/22222"
 
       output = StringIO.new
       argv = %w[pick asana -d]
@@ -163,7 +163,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Pick, :asana) do
       cli.perform
 
       expect(output.string).to eq("asana:11111/44444 # Task A\n")
-      expect(local_git["path"]).to eq("11111")
+      expect(local_git["path"]).to eq("11111/22222")
     end
   end
 

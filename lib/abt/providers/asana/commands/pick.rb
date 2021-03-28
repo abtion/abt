@@ -28,7 +28,7 @@ module Abt
             return if flags[:"dry-run"]
 
             if config.local_available?
-              config.path = Path.from_gids(project_gid: project["gid"], task_gid: task["gid"])
+              config.path = path
             else
               warn("No local configuration to update - will function as dry run")
             end

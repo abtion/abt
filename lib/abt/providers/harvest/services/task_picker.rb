@@ -29,7 +29,7 @@ module Abt
           def call
             task = cli.prompt.choice("Select a task from #{project['name']}", tasks)
 
-            path_with_task = Path.new([path, task["id"]].join("/"))
+            path_with_task = Path.from_ids(project_id: path.project_id, task_id: task["id"])
 
             Result.new(task: task, path: path_with_task)
           end

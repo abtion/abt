@@ -32,7 +32,7 @@ module Abt
               return
             end
 
-            config.path = Path.from_ids(project_id: project["id"], task_id: task["id"])
+            config.path = path
           end
 
           private

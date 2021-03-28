@@ -30,7 +30,12 @@ module Abt
           def call
             work_item = select_work_item
 
-            path_with_work_item = Path.new([path, work_item["id"]].join("/"))
+            path_with_work_item = Path.from_ids(
+              organization_name: path.organization_name,
+              project_name: path.project_name,
+              board_id: path.board_id,
+              work_item_id: work_item["id"]
+            )
 
             Result.new(work_item: work_item, path: path_with_work_item)
           end

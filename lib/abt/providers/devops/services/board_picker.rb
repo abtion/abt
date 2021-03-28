@@ -29,7 +29,11 @@ module Abt
           def call
             board = cli.prompt.choice("Select a project work board", boards)
 
-            path_with_board = Path.new([path, board["id"]].join("/"))
+            path_with_board = Path.from_ids(
+              organization_name: path.organization_name,
+              project_name: path.project_name,
+              board_id: board["id"]
+            )
 
             Result.new(board: board, path: path_with_board)
           end
