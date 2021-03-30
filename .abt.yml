@@ -12,3 +12,4 @@ aliases:
   continue: "$0 track asana harvest $@"
   current: "$0 current asana"
   meet: "$0 track harvest:26520415/14628590 $@"
+  branch: "$0 branch git asana"
