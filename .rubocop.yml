@@ -29,6 +29,7 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   Max: 25
   Exclude:
+    - "spec/spec_helper.rb"
     - "spec/**/*_spec.rb"
 
 Style/FrozenStringLiteralComment:

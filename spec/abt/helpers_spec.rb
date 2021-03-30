@@ -13,7 +13,7 @@ RSpec.describe Abt::Helpers do
     end
   end
 
-  describe ".read_user_input" do
+  describe ".read_user_input", :read_user_input do
     it "gets user input through /dev/tty" do
       input = instance_double(IO)
 

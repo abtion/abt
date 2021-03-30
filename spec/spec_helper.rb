@@ -23,6 +23,12 @@ RSpec.configure do |config|
 
   config.before do |example|
     allow(Abt::DirectoryConfig).to receive(:new).and_return({}) unless example.metadata[:directory_config]
+
+    unless example.metadata[:read_user_input]
+      allow(Abt::Helpers).to receive(:read_user_input) do
+        raise StandardError, "User input must be mocked in tests"
+      end
+    end
   end
 
   # rspec-expectations config goes here. You can use an alternate
