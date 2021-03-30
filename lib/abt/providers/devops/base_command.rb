@@ -8,7 +8,7 @@ module Abt
 
         attr_reader :config, :path
 
-        def_delegators(:@path, :organization_name, :project_name, :board_id, :work_item_id)
+        def_delegators(:@path, :organization_name, :project_name, :team_name, :board_name, :work_item_id)
 
         def initialize(ari:, cli:)
           super
@@ -24,7 +24,7 @@ module Abt
         end
 
         def require_board!
-          return if board_id && organization_name && project_name
+          return if board_name && organization_name && project_name && team_name
 
           abort("No current/specified board. Did you forget to `pick`?")
         end
@@ -36,12 +36,8 @@ module Abt
           abort("No current/specified work item. Did you forget to `pick`?")
         end
 
-        def prompt_project!
-          @path = Services::ProjectPicker.call(cli: cli).path
-        end
-
         def prompt_board!
-          result = Services::BoardPicker.call(cli: cli, path: path, config: config)
+          result = Services::BoardPicker.call(cli: cli, config: config)
           @path = result.path
           @board = result.board
         end
@@ -54,7 +50,7 @@ module Abt
 
         def board
           @board ||= begin
-            api.get("work/boards/#{board_id}")
+            api.get("#{project_name}/#{team_name}/_apis/work/boards/#{board_name}")
           rescue HttpError::NotFoundError
             nil
           end
@@ -62,33 +58,34 @@ module Abt
 
         def work_item
           @work_item ||= begin
-            work_item = api.get_paged("wit/workitems", ids: work_item_id)[0]
+            work_item = api.get_paged("_apis/wit/workitems", ids: work_item_id)[0]
             api.sanitize_work_item(work_item)
           rescue HttpError::NotFoundError
             nil
           end
         end
 
-        def print_board(organization_name, project_name, board)
-          path = "#{organization_name}/#{project_name}/#{board['id']}"
+        def print_board(organization_name, project_name, team_name, board)
+          board_name = Api.rfc_3986_encode_path_segment(board["name"])
+          path = "#{organization_name}/#{project_name}/#{team_name}/#{board_name}"
 
           cli.print_ari("devops", path, board["name"])
-          warn(api.url_for_board(board)) if cli.output.isatty
+          warn(api.url_for_board(project_name, team_name, board)) if cli.output.isatty
         end
 
-        def print_work_item(organization, project, board, work_item)
-          path = "#{organization}/#{project}/#{board['id']}/#{work_item['id']}"
+        def print_work_item(organization, project, team_name, board, work_item)
+          board_name = Api.rfc_3986_encode_path_segment(board["name"])
+          path = "#{organization}/#{project}/#{team_name}/#{board_name}/#{work_item['id']}"
 
           cli.print_ari("devops", path, work_item["name"])
           warn(work_item["url"]) if work_item.key?("url") && cli.output.isatty
         end
 
         def api
-          Abt::Providers::Devops::Api.new(organization_name: organization_name,
-                                          project_name: project_name,
-                                          username: config.username_for_organization(organization_name),
-                                          access_token: config.access_token_for_organization(organization_name),
-                                          cli: cli)
+          Api.new(organization_name: organization_name,
+                  username: config.username_for_organization(organization_name),
+                  access_token: config.access_token_for_organization(organization_name),
+                  cli: cli)
         end
       end
     end

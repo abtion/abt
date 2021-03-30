@@ -20,8 +20,7 @@ module Abt
           end
 
           def perform
-            prompt_project! if project_name.nil? || flags[:clean]
-            prompt_board! if board_id.nil? || flags[:clean]
+            prompt_board! if board_name.nil? || flags[:clean]
 
             update_directory_config!
 
@@ -35,7 +34,8 @@ module Abt
               "path" => Path.from_ids(
                 organization_name: organization_name,
                 project_name: project_name,
-                board_id: board_id
+                team_name: team_name,
+                board_name: board_name
               ).to_s
             }
             cli.directory_config.save!

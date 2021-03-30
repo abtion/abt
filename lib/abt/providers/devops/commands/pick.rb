@@ -23,7 +23,7 @@ module Abt
           def perform
             pick!
 
-            print_work_item(organization_name, project_name, board, work_item)
+            print_work_item(organization_name, project_name, team_name, board, work_item)
 
             return if flags[:"dry-run"]
 
@@ -37,8 +37,7 @@ module Abt
           private
 
           def pick!
-            prompt_project! if project_name.nil? || flags[:clean]
-            prompt_board! if board_id.nil? || flags[:clean]
+            prompt_board! if board_name.nil? || flags[:clean]
             prompt_work_item!
           end
         end

@@ -3,11 +3,9 @@
 RSpec.describe(Abt::Providers::Devops::Commands::WriteConfig, :devops, :directory_config) do
   let(:local_git) { GitConfigMock.new }
   let(:global_git) { GitConfigMock.new(data: devops_credentials) }
-  let(:board_id) { "abc123" }
+  let(:board_name) { "board" }
   let(:board) do
-    { id: board_id,
-      name: "Board 1",
-      columns: [{ name: "WIP" }, { name: "Empty" }] }
+    { name: board_name, columns: [{ name: "WIP" }, { name: "Empty" }] }
   end
 
   around do |example|
@@ -27,15 +25,18 @@ RSpec.describe(Abt::Providers::Devops::Commands::WriteConfig, :devops, :director
     allow(Abt::GitConfig).to receive(:new).with("local", "abt.devops").and_return(local_git)
     allow(Abt::GitConfig).to receive(:new).with("global", "abt.devops").and_return(global_git)
 
-    stub_devops_request(global_git, "org-name", "project-name", :get, "work/boards")
+    stub_devops_request(global_git, "org-name", :get, "_apis/projects/project-name/teams")
+      .to_return(body: Oj.dump({ value: [{ name: "team-name" }] }, mode: :json))
+
+    stub_devops_request(global_git, "org-name", :get, "project-name/team-name/_apis/work/boards")
       .to_return(body: Oj.dump({ value: [board, { id: "abc222", name: "Board 2", columns: [] }] }, mode: :json))
 
-    stub_devops_request(global_git, "org-name", "project-name", :get, "work/boards/#{board_id}")
+    stub_devops_request(global_git, "org-name", :get, "project-name/team-name/_apis/work/boards/#{board_name}")
       .to_return(body: Oj.dump(board, mode: :json))
   end
 
   it "stores the board configuration to the repo's .abt.yml" do
-    local_git["path"] = "org-name/project-name/#{board_id}/34234"
+    local_git["path"] = "org-name/project-name/team-name/#{board_name}/34234"
 
     err_output = StringIO.new
     argv = %w[write-config devops]
@@ -47,13 +48,13 @@ RSpec.describe(Abt::Providers::Devops::Commands::WriteConfig, :devops, :director
     expect(abt_file.read).to eq(<<~YML)
       ---
       devops:
-        path: org-name/project-name/#{board_id}
+        path: org-name/project-name/team-name/#{board_name}
     YML
   end
 
   context "when using --clean flag" do
-    it "prompts for project and task" do
-      local_git["path"] = "other-org-name/other-project-name/12345"
+    it "prompts for instance, project, team and board" do
+      local_git["path"] = "other-org-name/other-project-name/other-team-name/12345"
 
       input = QueueIO.new
       err_output = QueueIO.new
@@ -72,14 +73,22 @@ RSpec.describe(Abt::Providers::Devops::Commands::WriteConfig, :devops, :director
 
       input.puts("https://dev.azure.com/org-name/project-name")
 
+      expect(err_output.gets).to eq("Select a team:\n")
+      expect(err_output.gets).to eq("(1) team-name\n")
+      expect(err_output.gets).to eq("(1): ")
+
+      input.puts("1")
+
+      expect(err_output.gets).to eq("Selected: (1) team-name\n")
+
       expect(err_output.gets).to eq("Select a project work board:\n")
-      expect(err_output.gets).to eq("(1) Board 1\n")
+      expect(err_output.gets).to eq("(1) #{board_name}\n")
       expect(err_output.gets).to eq("(2) Board 2\n")
       expect(err_output.gets).to eq("(1-2): ")
 
       input.puts("1")
 
-      expect(err_output.gets).to eq("Selected: (1) Board 1\n")
+      expect(err_output.gets).to eq("Selected: (1) #{board_name}\n")
       expect(err_output.gets).to eq("DevOps configuration written to .abt.yml\n")
 
       thr.join
@@ -88,7 +97,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::WriteConfig, :devops, :director
       expect(abt_file.read).to eq(<<~YML)
         ---
         devops:
-          path: org-name/project-name/#{board_id}
+          path: org-name/project-name/team-name/#{board_name}
       YML
     end
   end
@@ -114,14 +123,22 @@ RSpec.describe(Abt::Providers::Devops::Commands::WriteConfig, :devops, :director
 
       input.puts("https://dev.azure.com/org-name/project-name")
 
+      expect(err_output.gets).to eq("Select a team:\n")
+      expect(err_output.gets).to eq("(1) team-name\n")
+      expect(err_output.gets).to eq("(1): ")
+
+      input.puts("1")
+
+      expect(err_output.gets).to eq("Selected: (1) team-name\n")
+
       expect(err_output.gets).to eq("Select a project work board:\n")
-      expect(err_output.gets).to eq("(1) Board 1\n")
+      expect(err_output.gets).to eq("(1) #{board_name}\n")
       expect(err_output.gets).to eq("(2) Board 2\n")
       expect(err_output.gets).to eq("(1-2): ")
 
       input.puts("1")
 
-      expect(err_output.gets).to eq("Selected: (1) Board 1\n")
+      expect(err_output.gets).to eq("Selected: (1) #{board_name}\n")
       expect(err_output.gets).to eq("DevOps configuration written to .abt.yml\n")
 
       thr.join
@@ -130,7 +147,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::WriteConfig, :devops, :director
       expect(abt_file.read).to eq(<<~YML)
         ---
         devops:
-          path: org-name/project-name/#{board_id}
+          path: org-name/project-name/team-name/#{board_name}
       YML
     end
   end

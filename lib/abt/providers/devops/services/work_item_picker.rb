@@ -33,7 +33,8 @@ module Abt
             path_with_work_item = Path.from_ids(
               organization_name: path.organization_name,
               project_name: path.project_name,
-              board_id: path.board_id,
+              team_name: path.team_name,
+              board_name: path.board_name,
               work_item_id: work_item["id"]
             )
 
@@ -79,14 +80,14 @@ module Abt
           end
 
           def columns
-            board["columns"] || api.get("work/boards/#{path.board_id}")["columns"]
+            board["columns"] ||
+              api.get("#{path.project_name}/#{path.team_name}/_apis/work/boards/#{path.board_name}")["columns"]
           end
 
           private
 
           def api
             Abt::Providers::Devops::Api.new(organization_name: path.organization_name,
-                                            project_name: path.project_name,
                                             username: config.username_for_organization(path.organization_name),
                                             access_token: config.access_token_for_organization(path.organization_name),
                                             cli: cli)

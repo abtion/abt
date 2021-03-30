@@ -3,10 +3,9 @@
 RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
   let(:local_git) { GitConfigMock.new }
   let(:global_git) { GitConfigMock.new(data: devops_credentials) }
-  let(:board_id) { "abc123" }
+  let(:board_name) { "board" }
   let(:board) do
-    { id: board_id,
-      name: "Board 1",
+    { name: board_name,
       columns: [{ name: "WIP" }, { name: "Empty" }] }
   end
 
@@ -15,13 +14,18 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
     allow(Abt::GitConfig).to receive(:new).with("global", "abt.devops").and_return(global_git)
   end
 
+  def stub_teams
+    stub_devops_request(global_git, "org-name", :get, "_apis/projects/project-name/teams")
+      .to_return(body: Oj.dump({ value: [{ name: "team-name" }] }, mode: :json))
+  end
+
   def stub_boards
-    stub_devops_request(global_git, "org-name", "project-name", :get, "work/boards")
+    stub_devops_request(global_git, "org-name", :get, "project-name/team-name/_apis/work/boards")
       .to_return(body: Oj.dump({ value: [board, { id: "abc222", name: "Board 2", columns: [] }] }, mode: :json))
   end
 
   def stub_board
-    stub_devops_request(global_git, "org-name", "project-name", :get, "work/boards/#{board_id}")
+    stub_devops_request(global_git, "org-name", :get, "project-name/team-name/_apis/work/boards/#{board_name}")
       .to_return(body: Oj.dump(board, mode: :json))
   end
 
@@ -33,15 +37,15 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
       ORDER BY [Microsoft.VSTS.Common.BacklogPriority] ASC
     WIQL
 
-    stub_devops_request(global_git, "org-name", "project-name", :post, "wit/wiql")
+    stub_devops_request(global_git, "org-name", :post, "_apis/wit/wiql")
       .with(body: { query: wiql })
       .to_return(body: Oj.dump({ workItems: [{ id: "11111" }, { id: "22222" }] }, mode: :json))
 
-    stub_devops_request(global_git, "org-name", "project-name", :get, "wit/workitems")
+    stub_devops_request(global_git, "org-name", :get, "_apis/wit/workitems")
       .with(query: { ids: "11111,22222" })
       .to_return(body: Oj.dump({ value: [
-        { id: "11111", fields: { "System.Title": "Work Item A" } },
-        { id: "22222", fields: { "System.Title": "Work Item B" } }
+        { id: "11111", fields: { "System.Title": "Work Item A", "System.TeamProject": "project-name" } },
+        { id: "22222", fields: { "System.Title": "Work Item B", "System.TeamProject": "project-name" } }
       ] }, mode: :json))
   end
 
@@ -53,7 +57,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
       ORDER BY [Microsoft.VSTS.Common.BacklogPriority] ASC
     WIQL
 
-    stub_devops_request(global_git, "org-name", "project-name", :post, "wit/wiql")
+    stub_devops_request(global_git, "org-name", :post, "_apis/wit/wiql")
       .with(body: { query: wiql })
       .to_return(body: Oj.dump({ workItems: [] }, mode: :json))
   end
@@ -63,7 +67,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
     stub_wip_column
     stub_empty_column
 
-    local_git["path"] = "org-name/project-name/#{board_id}"
+    local_git["path"] = "org-name/project-name/team-name/#{board_name}"
 
     input = QueueIO.new
     err_output = QueueIO.new
@@ -78,7 +82,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
     end
 
     expect(err_output.gets).to eq("===== PICK devops =====\n")
-    expect(err_output.gets).to eq("Which column in Board 1?:\n")
+    expect(err_output.gets).to eq("Which column in #{board_name}?:\n")
     expect(err_output.gets).to eq("(1) WIP\n")
     expect(err_output.gets).to eq("(2) Empty\n")
     expect(err_output.gets).to eq("(1-2): ")
@@ -89,7 +93,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
     expect(err_output.gets).to eq("Fetching work items...\n")
     expect(err_output.gets).to eq("Section is empty\n")
 
-    expect(err_output.gets).to eq("Which column in Board 1?:\n")
+    expect(err_output.gets).to eq("Which column in #{board_name}?:\n")
     expect(err_output.gets).to eq("(1) WIP\n")
     expect(err_output.gets).to eq("(2) Empty\n")
     expect(err_output.gets).to eq("(1-2): ")
@@ -105,7 +109,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
 
     input.puts("q")
 
-    expect(err_output.gets).to eq("Which column in Board 1?:\n")
+    expect(err_output.gets).to eq("Which column in #{board_name}?:\n")
     expect(err_output.gets).to eq("(1) WIP\n")
     expect(err_output.gets).to eq("(2) Empty\n")
     expect(err_output.gets).to eq("(1-2): ")
@@ -122,16 +126,17 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
     input.puts("1")
 
     expect(err_output.gets).to eq("Selected: (1) #11111 Work Item A\n")
-    expect(output.gets).to eq("devops:org-name/project-name/#{board_id}/11111 # Work Item A\n")
+    expect(output.gets).to eq("devops:org-name/project-name/team-name/#{board_name}/11111 # Work Item A\n")
     expect(err_output.gets).to eq("https://org-name.visualstudio.com/project-name/_workitems/edit/11111\n")
 
     thr.join
 
-    expect(local_git["path"]).to eq("org-name/project-name/#{board_id}/11111")
+    expect(local_git["path"]).to eq("org-name/project-name/team-name/#{board_name}/11111")
   end
 
   context "when no board has been selected" do
     it "prompts for a board and then the work item" do
+      stub_teams
       stub_boards
       stub_board
       stub_wip_column
@@ -146,6 +151,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
       cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
 
       allow(Abt::Helpers).to receive(:read_user_input).and_return("https://dev.azure.com/org-name/project-name",
+                                                                  "1", # Team
                                                                   "1", # Board
                                                                   "1", # Column
                                                                   "1") # Work item
@@ -153,19 +159,20 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
       cli.perform
 
       expect(err_output.string).to include("Please provide the URL for the devops project")
-      expect(output.string).to eq("devops:org-name/project-name/#{board_id}/11111 # Work Item A\n")
-      expect(local_git["path"]).to eq("org-name/project-name/#{board_id}/11111")
+      expect(output.string).to eq("devops:org-name/project-name/team-name/#{board_name}/11111 # Work Item A\n")
+      expect(local_git["path"]).to eq("org-name/project-name/team-name/#{board_name}/11111")
     end
   end
 
   context "when --clean flag added" do
     it "forces a board to be selected even though one was already set" do
+      stub_teams
       stub_boards
       stub_board
       stub_wip_column
       stub_empty_column
 
-      local_git["path"] = "org-name/project-name/#{board_id}"
+      local_git["path"] = "org-name/project-name/team-name/#{board_name}"
 
       output = StringIO.new
       err_output = StringIO.new
@@ -174,6 +181,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
       cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: err_output, output: output)
 
       allow(Abt::Helpers).to receive(:read_user_input).and_return("https://dev.azure.com/org-name/project-name",
+                                                                  "1", # Team
                                                                   "1", # Board
                                                                   "1", # Column
                                                                   "1") # Work item
@@ -181,8 +189,8 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
       cli.perform
 
       expect(err_output.string).to include("Please provide the URL for the devops project")
-      expect(output.string).to eq("devops:org-name/project-name/#{board_id}/11111 # Work Item A\n")
-      expect(local_git["path"]).to eq("org-name/project-name/#{board_id}/11111")
+      expect(output.string).to eq("devops:org-name/project-name/team-name/#{board_name}/11111 # Work Item A\n")
+      expect(local_git["path"]).to eq("org-name/project-name/team-name/#{board_name}/11111")
     end
   end
 
@@ -192,7 +200,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
       stub_wip_column
       stub_empty_column
 
-      local_git["path"] = "org-name/project-name/#{board_id}/00000"
+      local_git["path"] = "org-name/project-name/team-name/#{board_name}/00000"
 
       output = StringIO.new
       argv = %w[pick devops -d]
@@ -204,8 +212,8 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
 
       cli.perform
 
-      expect(output.string).to eq("devops:org-name/project-name/#{board_id}/11111 # Work Item A\n")
-      expect(local_git["path"]).to eq("org-name/project-name/#{board_id}/00000")
+      expect(output.string).to eq("devops:org-name/project-name/team-name/#{board_name}/11111 # Work Item A\n")
+      expect(local_git["path"]).to eq("org-name/project-name/team-name/#{board_name}/00000")
     end
   end
 
@@ -218,7 +226,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
       allow(local_git).to receive(:available?).and_return(false)
 
       output = StringIO.new
-      argv = ["pick", "devops:org-name/project-name/#{board_id}/00000"]
+      argv = ["pick", "devops:org-name/project-name/team-name/#{board_name}/00000"]
 
       cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: output)
 
@@ -227,7 +235,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Pick, :devops) do
 
       cli.perform
 
-      expect(output.string).to eq("devops:org-name/project-name/#{board_id}/11111 # Work Item A\n")
+      expect(output.string).to eq("devops:org-name/project-name/team-name/#{board_name}/11111 # Work Item A\n")
     end
   end
 end

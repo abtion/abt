@@ -30,9 +30,9 @@ module Abt
 
           def print_configuration
             if work_item_id.nil?
-              print_board(organization_name, project_name, board)
+              print_board(organization_name, project_name, team_name, board)
             else
-              print_work_item(organization_name, project_name, board, work_item)
+              print_work_item(organization_name, project_name, team_name, board, work_item)
             end
           end
 

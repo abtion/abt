@@ -4,15 +4,22 @@ module Abt
   module Providers
     module Devops
       class Api
+        # Shamelessly copied from ERB::Util.url_encode
+        # https://apidock.com/ruby/ERB/Util/url_encode
+        def self.rfc_3986_encode_path_segment(string)
+          string.to_s.b.gsub(/[^a-zA-Z0-9_\-.~]/) do |match|
+            format("%%%02X", match.unpack1("C"))
+          end
+        end
+
         VERBS = [:get, :post, :put].freeze
 
         CONDITIONAL_ACCESS_POLICY_ERROR_CODE = "VS403463"
 
         attr_reader :organization_name, :project_name, :username, :access_token, :cli
 
-        def initialize(organization_name:, project_name:, username:, access_token:, cli:)
+        def initialize(organization_name:, username:, access_token:, cli:)
           @organization_name = organization_name
-          @project_name = project_name
           @username = username
           @access_token = access_token
           @cli = cli
@@ -32,12 +39,12 @@ module Abt
         end
 
         def work_item_query(wiql)
-          response = post("wit/wiql", Oj.dump({ query: wiql }, mode: :json))
+          response = post("_apis/wit/wiql", Oj.dump({ query: wiql }, mode: :json))
           ids = response["workItems"].map { |work_item| work_item["id"] }
 
           work_items = []
           ids.each_slice(200) do |page_ids|
-            work_items += get_paged("wit/workitems", ids: page_ids.join(","))
+            work_items += get_paged("_apis/wit/workitems", ids: page_ids.join(","))
           end
 
           work_items
@@ -58,19 +65,17 @@ module Abt
         end
 
         def base_url
-          "https://#{organization_name}.visualstudio.com/#{project_name}"
-        end
-
-        def api_endpoint
-          "#{base_url}/_apis"
+          "https://#{organization_name}.visualstudio.com"
         end
 
         def url_for_work_item(work_item)
-          "#{base_url}/_workitems/edit/#{work_item['id']}"
+          project_name = self.class.rfc_3986_encode_path_segment(work_item["fields"]["System.TeamProject"])
+          "#{base_url}/#{project_name}/_workitems/edit/#{work_item['id']}"
         end
 
-        def url_for_board(board)
-          "#{base_url}/_boards/board/#{rfc_3986_encode_path_segment(board['name'])}"
+        def url_for_board(project_name, team_name, board)
+          board_name = self.class.rfc_3986_encode_path_segment(board["name"])
+          "#{base_url}/#{project_name}/_boards/board/t/#{team_name}/#{board_name}"
         end
 
         def sanitize_work_item(work_item)
@@ -84,7 +89,7 @@ module Abt
         end
 
         def connection
-          @connection ||= Faraday.new(api_endpoint) do |connection|
+          @connection ||= Faraday.new(base_url) do |connection|
             connection.basic_auth(username, access_token)
             connection.headers["Content-Type"] = "application/json"
             connection.headers["Accept"] = "application/json; api-version=6.0"
@@ -92,14 +97,6 @@ module Abt
         end
 
         private
-
-        # Shamelessly copied from ERB::Util.url_encode
-        # https://apidock.com/ruby/ERB/Util/url_encode
-        def rfc_3986_encode_path_segment(string)
-          string.to_s.b.gsub(/[^a-zA-Z0-9_\-.~]/) do |match|
-            format("%%%02X", match.unpack1("C"))
-          end
-        end
 
         def handle_denied_by_conditional_access_policy!(exception)
           raise exception unless exception.message.include?(CONDITIONAL_ACCESS_POLICY_ERROR_CODE)

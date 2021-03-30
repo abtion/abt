@@ -6,7 +6,7 @@ module DevopsHelpers
       "organizations.org-name.accessToken" => "accessToken" }
   end
 
-  def stub_devops_request(global_git, organization_name, project_name, *stub_request_args)
+  def stub_devops_request(global_git, organization_name, *stub_request_args)
     headers = { "Content-Type" => "application/json", "Accept" => "application/json; api-version=6.0" }
 
     basic_auth = [
@@ -15,7 +15,7 @@ module DevopsHelpers
     ]
 
     (method, path, *rest) = stub_request_args
-    path = "https://#{organization_name}.visualstudio.com/#{project_name}/_apis/#{path}"
+    path = "https://#{organization_name}.visualstudio.com/#{path}"
 
     stub_request(method, path, *rest).with(headers: headers, basic_auth: basic_auth)
   end

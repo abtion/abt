@@ -19,11 +19,9 @@ module Abt
             if work_item
               puts Oj.dump(body, mode: :json)
             else
-              args = [organization_name, project_name, board_id, work_item_id].compact
-
               abort(<<~TXT)
                 Unable to find work item for configuration:
-                devops:#{args.join('/')}
+                devops:#{path}
               TXT
             end
           end

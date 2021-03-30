@@ -14,11 +14,10 @@ module Abt
           end
 
           def perform
-            prompt_project! unless project_name
-            prompt_board! unless board_id
+            prompt_board! unless board_name
 
             work_items.each do |work_item|
-              print_work_item(organization_name, project_name, board, work_item)
+              print_work_item(organization_name, project_name, team_name, board, work_item)
             end
           end
 

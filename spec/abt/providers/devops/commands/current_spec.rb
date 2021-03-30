@@ -4,7 +4,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Current, :devops) do
   context "when local config is available" do
     let(:local_git) { GitConfigMock.new }
     let(:global_git) { GitConfigMock.new(data: devops_credentials) }
-    let(:board_id) { "abc123" }
+    let(:board_name) { "board" }
     let(:work_item_id) { 222_222 }
 
     before do
@@ -13,15 +13,16 @@ RSpec.describe(Abt::Providers::Devops::Commands::Current, :devops) do
     end
 
     def stub_board
-      stub_devops_request(global_git, "org-name", "project-name", :get, "work/boards/#{board_id}")
-        .to_return(body: Oj.dump({ id: board_id, name: "Board" }, mode: :json))
+      stub_devops_request(global_git, "org-name", :get, "project-name/team-name/_apis/work/boards/#{board_name}")
+        .to_return(body: Oj.dump({ name: board_name }, mode: :json))
     end
 
     def stub_work_items
-      stub_devops_request(global_git, "org-name", "project-name", :get, "wit/workitems")
+      stub_devops_request(global_git, "org-name", :get, "_apis/wit/workitems")
         .with(query: { ids: work_item_id.to_s })
         .to_return(body: Oj.dump({ value: [{ id: work_item_id,
-                                             fields: { 'System.Title': "Work Item" } }] },
+                                             fields: { "System.Title": "Work Item",
+                                                       "System.TeamProject": "project-name" } }] },
                                  mode: :json))
     end
 
@@ -29,7 +30,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Current, :devops) do
       stub_board
       stub_work_items
 
-      local_git["path"] = "org-name/project-name/#{board_id}/#{work_item_id}"
+      local_git["path"] = "org-name/project-name/team-name/#{board_name}/#{work_item_id}"
 
       err_output = StringIO.new
       output = StringIO.new
@@ -46,7 +47,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Current, :devops) do
       TXT
 
       expect(output.string).to eq(<<~TXT)
-        devops:org-name/project-name/#{board_id}/#{work_item_id} # Work Item
+        devops:org-name/project-name/team-name/#{board_name}/#{work_item_id} # Work Item
       TXT
     end
 
@@ -54,7 +55,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Current, :devops) do
       it "prints the current ARI with board title." do
         stub_board
 
-        local_git["path"] = "org-name/project-name/#{board_id}"
+        local_git["path"] = "org-name/project-name/team-name/#{board_name}"
 
         err_output = StringIO.new
         output = StringIO.new
@@ -67,11 +68,11 @@ RSpec.describe(Abt::Providers::Devops::Commands::Current, :devops) do
 
         expect(err_output.string).to eq(<<~TXT)
           ===== CURRENT devops =====
-          https://org-name.visualstudio.com/project-name/_boards/board/Board
+          https://org-name.visualstudio.com/project-name/_boards/board/t/team-name/board
         TXT
 
         expect(output.string).to eq(<<~TXT)
-          devops:org-name/project-name/#{board_id} # Board
+          devops:org-name/project-name/team-name/#{board_name} # board
         TXT
       end
     end
@@ -85,7 +86,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::Current, :devops) do
 
         err_output = StringIO.new
         output = StringIO.new
-        argv = ["current", "devops:org-name/project-name/#{board_id}/#{work_item_id}"]
+        argv = ["current", "devops:org-name/project-name/team-name/#{board_name}/#{work_item_id}"]
 
         allow(output).to receive(:isatty).and_return(true)
 
@@ -93,16 +94,16 @@ RSpec.describe(Abt::Providers::Devops::Commands::Current, :devops) do
         cli.perform
 
         expect(err_output.string).to include("Configuration updated")
-        expect(local_git["path"]).to eq("org-name/project-name/#{board_id}/#{work_item_id}")
+        expect(local_git["path"]).to eq("org-name/project-name/team-name/#{board_name}/#{work_item_id}")
       end
     end
 
     context "when the board is invalid" do
       it 'aborts with "Invalid board"' do
-        stub_devops_request(global_git, "org-name", "project-name", :get, "work/boards/00000")
+        stub_devops_request(global_git, "org-name", :get, "project-name/team-name/_apis/work/boards/00000")
           .to_return(status: 404)
 
-        local_git["path"] = "org-name/project-name/00000/#{work_item_id}"
+        local_git["path"] = "org-name/project-name/team-name/00000/#{work_item_id}"
 
         err_output = StringIO.new
         output = StringIO.new
@@ -124,11 +125,11 @@ RSpec.describe(Abt::Providers::Devops::Commands::Current, :devops) do
     context "when the work_item is invalid" do
       it 'aborts with "Invalid project"' do
         stub_board
-        stub_devops_request(global_git, "org-name", "project-name", :get, "wit/workitems")
+        stub_devops_request(global_git, "org-name", :get, "_apis/wit/workitems")
           .with(query: { ids: "00000" })
           .to_return(status: 404) # The DevOps API sends a 404 rather than an empty list
 
-        local_git["path"] = "org-name/project-name/#{board_id}/00000"
+        local_git["path"] = "org-name/project-name/team-name/#{board_name}/00000"
 
         err_output = StringIO.new
         output = StringIO.new

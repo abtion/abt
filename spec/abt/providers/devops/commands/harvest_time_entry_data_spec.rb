@@ -3,7 +3,7 @@
 RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) do
   let(:local_git) { GitConfigMock.new }
   let(:global_git) { GitConfigMock.new(data: devops_credentials) }
-  let(:board_id) { "abc123" }
+  let(:board_name) { "board" }
   let(:work_item_id) { 222_222 }
 
   before do
@@ -12,17 +12,18 @@ RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) 
   end
 
   def stub_work_items
-    stub_devops_request(global_git, "org-name", "project-name", :get, "wit/workitems")
+    stub_devops_request(global_git, "org-name", :get, "_apis/wit/workitems")
       .with(query: { ids: work_item_id.to_s })
       .to_return(body: Oj.dump({ value: [{ id: work_item_id,
-                                           fields: { 'System.Title': "Work Item \#$\#$ name" } }] },
+                                           fields: { 'System.Title': "Work Item \#$\#$ name",
+                                                     "System.TeamProject": "project-name" } }] },
                                mode: :json))
   end
 
   it "prints data that can be merged into a harvest time entry to link it to the work item" do
     stub_work_items
 
-    local_git["path"] = "org-name/project-name/#{board_id}/#{work_item_id}"
+    local_git["path"] = "org-name/project-name/team-name/#{board_name}/#{work_item_id}"
 
     err_output = StringIO.new
     output = StringIO.new
@@ -49,7 +50,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) 
 
   context "when ARI doesn't include a board" do
     it "aborts with correct message" do
-      local_git["path"] = "org-name/project-name"
+      local_git["path"] = "org-name/project-name/team-name"
 
       err_output = StringIO.new
       output = StringIO.new
@@ -68,7 +69,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) 
 
   context "when ARI doesn't include a work item" do
     it "aborts with correct message" do
-      local_git["path"] = "org-name/project-name/#{board_id}"
+      local_git["path"] = "org-name/project-name/team-name/#{board_name}"
 
       err_output = StringIO.new
       output = StringIO.new
@@ -87,11 +88,11 @@ RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) 
 
   context "when the work item is invalid" do
     it "aborts with correct message" do
-      stub_devops_request(global_git, "org-name", "project-name", :get, "wit/workitems")
+      stub_devops_request(global_git, "org-name", :get, "_apis/wit/workitems")
         .with(query: { ids: "00000" })
         .to_return(status: 404)
 
-      local_git["path"] = "org-name/project-name/#{board_id}/00000"
+      local_git["path"] = "org-name/project-name/team-name/#{board_name}/00000"
 
       err_output = StringIO.new
       output = StringIO.new
@@ -103,7 +104,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) 
 
       expect { cli.perform }.to raise_error(Abt::Cli::Abort, <<~TXT)
         Unable to find work item for configuration:
-        devops:org-name/project-name/#{board_id}/00000
+        devops:org-name/project-name/team-name/#{board_name}/00000
       TXT
     end
   end
