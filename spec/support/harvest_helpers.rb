@@ -5,6 +5,11 @@ module HarvestHelpers
     { "accessToken" => "access_token", "accountId" => "account_id", "userId" => "user_id" }
   end
 
+  def stub_harvest_request(git_config, verb, path, *rest)
+    path = "https://api.harvestapp.com/v2/#{path}"
+    stub_request(verb, path, *rest).with(headers: request_headers_for_git_config(git_config))
+  end
+
   def stub_get_project_assignments(git_config, project_assignments)
     # Create a page per project assignment to force our pagination code into action
     project_assignments.each_with_index do |project_assignment, index|
