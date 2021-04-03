@@ -10,9 +10,7 @@ RSpec.describe(Abt::Providers::Harvest::Commands::Stop, :harvest) do
   end
 
   it "stops the running harvest time entry and outputs it" do
-    stub_request(:get,
-                 "https://api.harvestapp.com/v2/time_entries?is_running=true&page=1&user_id=#{user_id}")
-      .with(headers: request_headers_for_git_config(global_git))
+    stub_harvest_request(global_git, :get, "time_entries?is_running=true&page=1&user_id=#{user_id}")
       .to_return(body: Oj.dump({
                                  time_entries: [{
                                    id: "11111",
