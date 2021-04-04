@@ -80,7 +80,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Clear, :asana) do
       cli = Abt::Cli.new(argv: argv, input: null_tty, err_output: null_stream, output: null_stream)
 
       expect { cli.perform }.to(
-        raise_error(Abt::Cli::Abort, "Flags --global and --all cannot be used at the same time")
+        raise_error(Abt::Cli::Abort, "Flags --global and --all cannot be used together")
       )
     end
   end
