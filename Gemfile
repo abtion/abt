@@ -12,5 +12,5 @@ group :test do
   gem "rubocop-performance"
   gem "rubocop-rspec"
   gem "simplecov"
-  gem "webmock", "~> 3.12"
+  gem "webmock", "~> 3.13"
 end
