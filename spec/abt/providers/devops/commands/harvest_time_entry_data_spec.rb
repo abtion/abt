@@ -15,7 +15,7 @@ RSpec.describe(Abt::Providers::Devops::Commands::HarvestTimeEntryData, :devops) 
     stub_devops_request(global_git, "org-name", :get, "_apis/wit/workitems")
       .with(query: { ids: work_item_id.to_s })
       .to_return(body: Oj.dump({ value: [{ id: work_item_id,
-                                           fields: { 'System.Title': "Work Item \#$\#$ name",
+                                           fields: { "System.Title": "Work Item \#$\#$ name",
                                                      "System.TeamProject": "project-name" } }] },
                                mode: :json))
   end
