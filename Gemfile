@@ -5,7 +5,7 @@ source "https://rubygems.org"
 gemspec
 
 group :test do
-  gem "bundler-audit", "~> 0.8.0"
+  gem "bundler-audit", "~> 0.9.0"
   gem "byebug"
   gem "rspec"
   gem "rubocop"
