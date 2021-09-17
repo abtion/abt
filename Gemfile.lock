@@ -42,7 +42,7 @@ GEM
     faraday-rack (1.0.0)
     hashdiff (1.0.1)
     multipart-post (2.1.1)
-    oj (3.13.6)
+    oj (3.13.7)
     parallel (1.21.0)
     parser (3.0.2.0)
       ast (~> 2.4.1)
