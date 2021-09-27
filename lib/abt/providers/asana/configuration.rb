@@ -15,7 +15,7 @@ module Abt
         end
 
         def path
-          Path.new(local_available? && git["path"] || directory_config["path"] || "")
+          Path.new((local_available? && git["path"]) || directory_config["path"] || "")
         end
 
         def path=(new_path)

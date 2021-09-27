@@ -15,8 +15,8 @@ module Abt
             raise Abt::Cli::Abort, "Invalid time: #{hh_mm_ss}, supported formats are: HH:MM, HH:MM:SS" if match.nil?
 
             match[:hours].to_i +
-              match[:minutes].to_i / 60.0 +
-              match[:seconds].to_i / 60.0 / 60.0
+              (match[:minutes].to_i / 60.0) +
+              (match[:seconds].to_i / 60.0 / 60.0)
           end
         end
       end
