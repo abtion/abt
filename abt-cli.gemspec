@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/abtion/abt"
-  spec.metadata["rubygems_mfa_required"] = true
+  spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir.glob("#{__dir__}/{bin,lib}/**/*.rb").sort.map do |file|
     file
