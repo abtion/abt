@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    abt-cli (0.0.31)
+    abt-cli (0.0.32)
       dry-inflector (~> 0.2)
       faraday (~> 1.0)
       oj (~> 3.10)
@@ -20,7 +20,7 @@ GEM
       rexml
     diff-lcs (1.4.4)
     docile (1.4.0)
-    dry-inflector (0.2.0)
+    dry-inflector (0.2.1)
     faraday (1.8.0)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
@@ -110,4 +110,4 @@ DEPENDENCIES
   webmock (~> 3.14)
 
 BUNDLED WITH
-   2.2.13
+   2.2.33
