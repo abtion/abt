@@ -45,7 +45,7 @@ module Abt
               cli.warn("Section is empty")
               select_task
             else
-              cli.prompt.choice("Select a task", tasks, nil_option: true) || select_task
+              cli.prompt.choice("Select a task", options_for_tasks(tasks), nil_option: true) || select_task
             end
           end
 
@@ -53,12 +53,32 @@ module Abt
             cli.prompt.choice("Which section in #{project['name']}?", sections)
           end
 
+          def options_for_tasks(tasks)
+            tasks.map do |task|
+              formatted_name = [
+                task["name"],
+                formatted_assignee(task)
+              ].compact.join(" ")
+
+              task.merge("name" => formatted_name)
+            end
+          end
+
+          def formatted_assignee(task)
+            name = task.dig("assignee", "name")
+
+            return unless name
+
+            initials = name.split.map(&:chr).join.upcase
+            "(#{initials}👤)"
+          end
+
           def tasks_in_section(section)
             cli.warn("Fetching tasks...")
             tasks = api.get_paged(
               "tasks",
               section: section["gid"],
-              opt_fields: "name,completed,permalink_url"
+              opt_fields: "name,completed,permalink_url,assignee.name"
             )
 
             # The below filtering is the best we can do with Asanas api, see this:

@@ -38,17 +38,17 @@ RSpec.describe(Abt::Providers::Asana::Commands::Pick, :asana) do
       ] }, mode: :json))
 
     stub_asana_request(global_git, :get, "tasks")
-      .with(query: { limit: 100, section: "22222", opt_fields: "name,completed,permalink_url" })
+      .with(query: { limit: 100, section: "22222", opt_fields: "name,completed,permalink_url,assignee.name" })
       .to_return(body: Oj.dump({ data: [
-        { gid: "44444", name: "Task A",
+        { gid: "44444", name: "Task A", assignee: { name: "Anders Andersen" },
           permalink_url: "https://ta.sk/44444/URL" },
-        { gid: "55555", name: "Task B",
+        { gid: "55555", name: "Task B", assignee: { name: "Boy Boyson" },
           permalink_url: "https://ta.sk/55555/URL" }
       ] }, mode: :json))
 
     # Empty section
     stub_asana_request(global_git, :get, "tasks")
-      .with(query: { limit: 100, section: "33333", opt_fields: "name,completed,permalink_url" })
+      .with(query: { limit: 100, section: "33333", opt_fields: "name,completed,permalink_url,assignee.name" })
       .to_return(body: Oj.dump({ data: [] }, mode: :json))
   end
 
@@ -91,14 +91,14 @@ RSpec.describe(Abt::Providers::Asana::Commands::Pick, :asana) do
     expect(err_output.gets).to eq("Selected: (1) Section A\n")
     expect(err_output.gets).to eq("Fetching tasks...\n")
     expect(err_output.gets).to eq("Select a task:\n")
-    expect(err_output.gets).to eq("(1) Task A\n")
-    expect(err_output.gets).to eq("(2) Task B\n")
+    expect(err_output.gets).to eq("(1) Task A (AA👤)\n")
+    expect(err_output.gets).to eq("(2) Task B (BB👤)\n")
     expect(err_output.gets).to eq("(1-2, q: back): ")
 
     input.puts("1")
 
-    expect(err_output.gets).to eq("Selected: (1) Task A\n")
-    expect(output.gets).to eq("asana:11111/44444 # Task A\n")
+    expect(err_output.gets).to eq("Selected: (1) Task A (AA👤)\n")
+    expect(output.gets).to eq("asana:11111/44444 # Task A (AA👤)\n")
     expect(err_output.gets).to eq("https://ta.sk/44444/URL\n")
 
     thr.join
@@ -122,7 +122,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Pick, :asana) do
       cli.perform
 
       expect(err_output.string).to include("Select a project")
-      expect(output.string).to eq("asana:11111/44444 # Task A\n")
+      expect(output.string).to eq("asana:11111/44444 # Task A (AA👤)\n")
       expect(local_git["path"]).to eq("11111/44444")
     end
   end
@@ -143,7 +143,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Pick, :asana) do
       cli.perform
 
       expect(err_output.string).to include("Select a project")
-      expect(output.string).to eq("asana:11111/44444 # Task A\n")
+      expect(output.string).to eq("asana:11111/44444 # Task A (AA👤)\n")
       expect(local_git["path"]).to eq("11111/44444")
     end
   end
@@ -162,7 +162,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Pick, :asana) do
 
       cli.perform
 
-      expect(output.string).to eq("asana:11111/44444 # Task A\n")
+      expect(output.string).to eq("asana:11111/44444 # Task A (AA👤)\n")
       expect(local_git["path"]).to eq("11111/22222")
     end
   end
@@ -181,7 +181,7 @@ RSpec.describe(Abt::Providers::Asana::Commands::Pick, :asana) do
 
       cli.perform
 
-      expect(output.string).to eq("asana:11111/44444 # Task A\n")
+      expect(output.string).to eq("asana:11111/44444 # Task A (AA👤)\n")
     end
   end
 end
