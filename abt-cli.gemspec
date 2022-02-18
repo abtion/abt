@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency("dry-inflector", "~> 0.2")
-  spec.add_dependency("faraday", "~> 1.0")
+  spec.add_dependency("faraday", ">= 1", "< 3")
   spec.add_dependency("oj", "~> 3.10")
   spec.add_development_dependency("bundler", "~> 2.0")
 end
