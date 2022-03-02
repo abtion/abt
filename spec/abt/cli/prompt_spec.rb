@@ -202,7 +202,7 @@ RSpec.describe Abt::Cli::Prompt do
           output = StringIO.new
           prompt = Abt::Cli::Prompt.new(output: output)
 
-          expect(prompt.choice("Pick an option", [], nil_option: "quit")).to be(nil)
+          expect(prompt.choice("Pick an option", [], nil_option: "quit")).to be_nil
           expect(output.string).to include("No available options")
         end
       end
@@ -212,7 +212,7 @@ RSpec.describe Abt::Cli::Prompt do
           prompt = Abt::Cli::Prompt.new(output: StringIO.new)
           allow(Abt::Helpers).to receive(:read_user_input).and_return("q")
 
-          expect(prompt.choice("Pick an option", [{ "name" => "Option" }], nil_option: true)).to eq(nil)
+          expect(prompt.choice("Pick an option", [{ "name" => "Option" }], nil_option: true)).to be_nil
         end
       end
     end
