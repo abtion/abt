@@ -2,7 +2,7 @@
 
 require "simplecov"
 
-unless ENV["DISABLE_SIMPLECOV"] == "true"
+unless ENV.key?("DISABLE_SIMPLECOV")
   SimpleCov.start do
     add_filter "spec"
 

@@ -170,11 +170,14 @@ RSpec.describe Abt::Cli do
 
   describe "ARIs" do
     it "correctly executes the matching provider command" do
+      # rubocop:disable Style/RedundantInitialize
       command = Class.new do
-        def initialize(ari:, cli:); end # rubocop:disable Style/RedundantInitialize
+        def initialize(ari:, cli:); end
 
         def perform; end
       end
+      # rubocop:enable Style/RedundantInitialize
+
       provider = Module.new do
         @command = command
 
