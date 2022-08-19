@@ -93,7 +93,7 @@ GEM
     simplecov_json_formatter (0.1.4)
     thor (1.2.1)
     unicode-display_width (2.2.0)
-    webmock (3.17.1)
+    webmock (3.18.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -111,7 +111,7 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rspec
   simplecov
-  webmock (~> 3.17)
+  webmock (~> 3.18)
 
 BUNDLED WITH
    2.2.33
