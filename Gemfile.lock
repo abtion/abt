@@ -47,7 +47,7 @@ GEM
     hashdiff (1.0.1)
     multipart-post (2.3.0)
     oj (3.14.2)
-    parallel (1.22.1)
+    parallel (1.23.0)
     parser (3.2.2.0)
       ast (~> 2.4.1)
     public_suffix (4.0.7)
