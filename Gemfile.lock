@@ -48,9 +48,11 @@ GEM
     multipart-post (2.3.0)
     oj (3.14.2)
     parallel (1.24.0)
-    parser (3.2.2.0)
+    parser (3.2.2.4)
       ast (~> 2.4.1)
+      racc
     public_suffix (4.0.7)
+    racc (1.7.1)
     rainbow (3.1.1)
     regexp_parser (2.8.3)
     rexml (3.3.0)
