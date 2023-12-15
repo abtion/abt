@@ -44,7 +44,7 @@ GEM
     faraday-patron (1.0.0)
     faraday-rack (1.0.0)
     faraday-retry (1.0.3)
-    hashdiff (1.0.1)
+    hashdiff (1.1.0)
     multipart-post (2.3.0)
     oj (3.14.2)
     parallel (1.23.0)
