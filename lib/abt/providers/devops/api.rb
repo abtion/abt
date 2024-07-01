@@ -57,7 +57,7 @@ module Abt
             Oj.load(response.body)
           else
             error_class = Abt::HttpError.error_class_for_status(response.status)
-            encoded_response_body = response.body.force_encoding("utf-8")
+            encoded_response_body = response.body.dup.force_encoding("utf-8")
             raise error_class, "Code: #{response.status}, body: #{encoded_response_body}"
           end
         rescue Abt::HttpError::ForbiddenError => e
